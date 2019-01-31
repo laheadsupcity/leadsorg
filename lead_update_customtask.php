@@ -17,7 +17,7 @@ $exemption=getexemptionlist();
 <meta name="Author" content="">
 <meta name="Keywords" content="">
 <meta name="Description" content="">
-<title>Scrapping</title>
+<title>Scraping</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -97,7 +97,7 @@ $exemption=getexemptionlist();
 						<tr>
 						<td><p><label><span>Tract</span></label><br/> <input type="text" class="edittext" name="tract" id="sazip" value="<?php echo  isset($propertdata['tract']) ? $propertdata['tract'] : '' ?>"></p></td>
 
-						<td><p><label><span>Lot Area SQFT</span></label><br/> <input type="text" class="edittext" name="lasqft" id="lasqft" value="<?php echo  isset($propertdata['lot_area_sqft']) ? $propertdata['lot_area_sqft'] : '' ?>"></p></td>
+						<td><p><label><span>Lot Area SQFT</span></label><br/> <input type="text" class="edittext" name="lot_area_sq_ft_mint" id="lot_area_sq_ft_mint" value="<?php echo  isset($propertdata['lot_area_sqft']) ? $propertdata['lot_area_sqft'] : '' ?>"></p></td>
 						
 						<td><p><label><span>Year Built</span></label><br/> <input type="text" class="edittext" name="yearbuilt" id="yearbuilt" value="<?php echo  isset($propertdata['year_built']) ? $propertdata['year_built'] : '' ?>"></p></td>
 						</tr>

@@ -1,42 +1,41 @@
 <?php
 require_once('config.php');
-$nouf=isset($_POST['nouf']) ? $_POST['nouf'] : '';
-$nout=isset($_POST['nout']) ? $_POST['nout'] : '';
+$num_units_min=isset($_POST['num_units_min']) ? $_POST['num_units_min'] : '';
+$num_units_max=isset($_POST['num_units_max']) ? $_POST['num_units_max'] : '';
 $fmlytype=isset($_POST['fmlytype']) ? $_POST['fmlytype'] : '';
 $sfmlytype=isset($_POST['sfmlytype']) ? $_POST['sfmlytype'] : '';
-$zip=isset($_POST['zipto']) ? $_POST['zipto'] : '';
-$cityto=isset($_POST['cityto']) ? $_POST['cityto'] : '';
-$zoning_to=isset($_POST['zoningto']) ? $_POST['zoningto'] : '';
-$exemptionto=isset($_POST['exemptionto']) ? $_POST['exemptionto'] : '';
-$casetypeto=isset($_POST['opencasetype']) ? $_POST['opencasetype'] : '';
+$zip=isset($_POST['zip_codes']) ? $_POST['zip_codes'] : '';
+$cities=isset($_POST['cities']) ? $_POST['cities'] : '';
+$zoning_to=isset($_POST['zoning']) ? $_POST['zoning'] : '';
+$tax_exemption_codes=isset($_POST['tax_exemption_codes']) ? $_POST['tax_exemption_codes'] : '';
 $cdate=isset($_POST['cdate']) ? $_POST['cdate'] : '';
 $ctime=isset($_POST['ctime']) ? $_POST['ctime'] : '';
-$nbedf=isset($_POST['nbedf']) ? $_POST['nbedf'] : '';
-$nbedt=isset($_POST['nbedt']) ? $_POST['nbedt'] : '';
-$nbathf=isset($_POST['nbathf']) ? $_POST['nbathf'] : '';
-$nbatht=isset($_POST['nbatht']) ? $_POST['nbatht'] : '';
-$nstrf=isset($_POST['nstrf']) ? $_POST['nstrf'] : '';
-$nstrt=isset($_POST['nstrt']) ? $_POST['nstrt'] : '';
-$cpsf=isset($_POST['cpsf']) ? $_POST['cpsf'] : '';
-$cpst=isset($_POST['cpst']) ? $_POST['cpst'] : '';
-$lasqf=isset($_POST['lasqf']) ? $_POST['lasqf'] : '';
-$lasqt=isset($_POST['lasqt']) ? $_POST['lasqt'] : '';
-$sprf=isset($_POST['sprf']) ? $_POST['sprf'] : '';
-$sprt=isset($_POST['sprt']) ? $_POST['sprt'] : '';
-$ybrf=isset($_POST['ybrf']) ? $_POST['ybrf'] : '';
-$ybrt=isset($_POST['ybrt']) ? $_POST['ybrt'] : '';
-$sdrf=isset($_POST['sdrf']) ? $_POST['sdrf'] : '';
-$sdrt=isset($_POST['sdrt']) ? $_POST['sdrt'] : '';
-$ooc=isset($_POST['ooc']) ? $_POST['ooc'] : '';
+$num_bedrooms_min=isset($_POST['num_bedrooms_min']) ? $_POST['num_bedrooms_min'] : '';
+$num_bedrooms_max=isset($_POST['num_bedrooms_max']) ? $_POST['num_bedrooms_max'] : '';
+$num_baths_min=isset($_POST['num_baths_min']) ? $_POST['num_baths_min'] : '';
+$num_baths_max=isset($_POST['num_baths_max']) ? $_POST['num_baths_max'] : '';
+$num_stories_min=isset($_POST['num_stories_min']) ? $_POST['num_stories_min'] : '';
+$num_stories_max=isset($_POST['num_stories_max']) ? $_POST['num_stories_max'] : '';
+$cost_per_sq_ft_min=isset($_POST['cost_per_sq_ft_min']) ? $_POST['cost_per_sq_ft_min'] : '';
+$cost_per_sq_ft_max=isset($_POST['cost_per_sq_ft_max']) ? $_POST['cost_per_sq_ft_max'] : '';
+$lot_area_sq_ft_min=isset($_POST['lot_area_sq_ft_min']) ? $_POST['lot_area_sq_ft_min'] : '';
+$lot_area_sq_ft_max=isset($_POST['lot_area_sq_ft_max']) ? $_POST['lot_area_sq_ft_max'] : '';
+$sales_price_min=isset($_POST['sales_price_min']) ? $_POST['sales_price_min'] : '';
+$sales_price_max=isset($_POST['sales_price_max']) ? $_POST['sales_price_max'] : '';
+$year_built_min=isset($_POST['year_built_min']) ? $_POST['year_built_min'] : '';
+$year_built_max=isset($_POST['year_built_max']) ? $_POST['year_built_max'] : '';
+$sales_date_from=isset($_POST['sales_date_from']) ? $_POST['sales_date_from'] : '';
+$sales_date_to=isset($_POST['sales_date_to']) ? $_POST['sales_date_to'] : '';
+$is_owner_occupied=isset($_POST['is_owner_occupied']) ? $_POST['is_owner_occupied'] : '';
 $filter=isset($_POST['filtername']) ? $_POST['filtername'] : '';
 $fcount=gettotalcount($filter);
 $searchid=getsearchid($filter);
 
 
 
-$arr_data=array('nouf'=>$nouf,'nout'=>$nout,'zip'=>$zip,'city'=>$cityto,'zoning'=>$zoning_to,'exemption'=>$exemptionto,'casetype'=>$casetypeto,
-'nbedf'=>$nbedf,'nbedt'=>$nbedt,'nbathf'=>$nbathf,'nbatht'=>$nbatht,'nstrf'=>$nstrf,'nstrt'=>$nstrt,'cpsf'=>$cpsf,'cpst'=>$cpst,'lasqf'=>$lasqf,
-'lasqt'=>$lasqt,'sprf'=>$sprf,'ooc'=>$ooc,'searchid'=>$searchid,'sprt'=>$sprt,'ybrf'=>$ybrf,'ybrt'=>$ybrt,'sdrf'=>$sdrf,'sdrt'=>$sdrt,'fmlytype'=>$fmlytype,'sfmlytype'=>$sfmlytype,'cdate'=>$cdate,'ctime'=>$ctime);
+$arr_data=array('num_units_min'=>$num_units_min,'num_units_max'=>$num_units_max,'zip'=>$zip,'city'=>$cities,'zoning'=>$zoning_to,'exemption'=>$tax_exemption_codes,'casetype'=>$casetypeto,
+'num_bedrooms_min'=>$num_bedrooms_min,'num_bedrooms_max'=>$num_bedrooms_max,'num_baths_min'=>$num_baths_min,'num_baths_max'=>$num_baths_max,'num_stories_min'=>$num_stories_min,'num_stories_max'=>$num_stories_max,'cost_per_sq_ft_min'=>$cost_per_sq_ft_min,'cost_per_sq_ft_max'=>$cost_per_sq_ft_max,'lot_area_sq_ft_min'=>$lot_area_sq_ft_min,
+'lot_area_sq_ft_max'=>$lot_area_sq_ft_max,'sales_price_min'=>$sales_price_min,'is_owner_occupied'=>$is_owner_occupied,'searchid'=>$searchid,'sales_price_max'=>$sales_price_max,'year_built_min'=>$year_built_min,'year_built_max'=>$year_built_max,'sales_date_from'=>$sales_date_from,'sales_date_to'=>$sales_date_to,'fmlytype'=>$fmlytype,'sfmlytype'=>$sfmlytype,'cdate'=>$cdate,'ctime'=>$ctime);
 $data=serialize($arr_data);
 
 if($fcount==0 && $searchid=='' ){
@@ -46,7 +45,7 @@ if($fcount==0 && $searchid=='' ){
         array(
             'name' => $filter,
             'data' => $data
-            
+
         )
     );
     $response=array('status'=>'sucess');
@@ -54,7 +53,7 @@ if($fcount==0 && $searchid=='' ){
 }
 else if($fcount>0){
     $db = Database::instance();
-    
+
     $db->update(
         'custom_search',
         array( // fields to be updated
@@ -95,10 +94,10 @@ function getsearchid($name){
     $db->select('custom_search', array('name' => $name),false, false,'','id');
     $result=$db->result_array();
     foreach($result as $key=>$val){
-    
+
      $id=$val['id'];
     }
     return $id;
-    
+
 }
 ?>

@@ -1,13 +1,26 @@
 <?php
+// csmail added set_error_handler, so that this warning goes in to the void
+// temporary fix since the way that sessions are handled is wonky and needs to be overhauled eventually
+// Currently session_start is called in signin.php and called again here, which causes
+// a warning about headers being sent twice
+// calling restore_error_handler after this block is executed means that future errors and warning will NOT go in to the void
+
+// swallow any warnings that surface from headers being sent again
+set_error_handler(function ($severity, $message, $file, $line) {
+    // no op
+});
 session_start();
 $name="";
-if (isset($_SESSION['userdeatil'])) {
-    $name=isset($_SESSION['userdeatil']['username']) ? $_SESSION['userdeatil']['username'] : '';
+if (isset($_SESSION['userdetail'])) {
+    $name=isset($_SESSION['userdetail']['username']) ? $_SESSION['userdetail']['username'] : '';
 }
 else{
     header("Location: login.php");
     die();
 }
+
+// restore the original error handler
+restore_error_handler();
 ?>
 <div class="topmenu">
     <link rel="stylesheet" href="css/style.css">
@@ -26,11 +39,11 @@ else{
                     </ul>
                 </li>
             <!--<li class="active2"><a href="#">Data Base</a></li> -->
-                <li class="active3"><a href="#">Scheduled Scrap</a>
+                <li class="active3"><a href="#">Scheduled Scrape</a>
                     <ul class="sub-menu">
-                        <li><a href="lead_schedulesearch.php">Schedule a New Scrap</a></li>
-                        <li><a href="lead_scheduledata.php">Scheduled Scrap</a></li>
-                        <li class="active4"><a href="lead_schedulebatch.php">Scrap Results</a></li>
+                        <li><a href="lead_schedulesearch.php">Schedule a New Scrape</a></li>
+                        <li><a href="lead_scheduledata.php">Scheduled Scrape</a></li>
+                        <li class="active4"><a href="lead_schedulebatch.php">Scrape Results</a></li>
                     </ul>
                 </li>
                 <li class="active1"><a href="#">Custom Search</a>

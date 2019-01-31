@@ -19,7 +19,7 @@ function getziplistforschedule()
     //$db->select('property', array(), false, false, '', 'DISTINCT site_address_zip');
 
 	$query = "select DISTINCT site_address_zip from property WHERE impstatus=1";
-   
+
     $db->query($query);
 
     $result = $db->result_array();
@@ -60,7 +60,7 @@ function getcitylist()
     $city = array();
     $db = Database::instance();
     $query = "select DISTINCT site_address_city_state from property WHERE impstatus=0 AND site_address_city_state like ('%CA')";
-    
+
     $db->query($query);
     $result = $db->result_array();
     foreach ($result as $key => $val) {
@@ -80,7 +80,7 @@ function getscrapper_data(){
     }
 
     return $resarray;
-    
+
 }
 
 function getscheduled_lead_task($id){
@@ -93,7 +93,7 @@ function getscheduled_lead_task($id){
     }
 
     return $resarray;
-    
+
 }
 function getbatch_count(){
 
@@ -133,7 +133,7 @@ function getlead_task_count(){
     $db->select('batch', array('id'=>$batchid), false, false,'','batchname');
     $result=$db->row();
     return $result->batchname;
-	
+
 }
 function getbatchlist(){
     $db = Database::instance();
@@ -143,9 +143,9 @@ function getbatchlist(){
     $rarray=array();
     foreach ($result as $key=>$val){
         $rarray[]=$val['id'];
-    } 
+    }
     return $rarray;
-    
+
 
 }
 function getActivebatchlist(){
@@ -156,7 +156,7 @@ function getActivebatchlist(){
     $rarray=array();
     foreach ($result as $key=>$val){
         $rarray[]=$val['batchid'];
-    } 
+    }
     return $rarray;
 }
 function getfinalbatchlist(){
@@ -197,13 +197,13 @@ function getinstances_data(){
     }
 
     return $resarray;
-    
+
 }
 function getzoninglist()
 {
     $zoning = array();
     $db = Database::instance();
-    
+
     $query = "select DISTINCT zoning from property WHERE impstatus=0 AND site_address_city_state like ('%CA')";
     $db->query($query);
     $result = $db->result_array();
@@ -258,14 +258,17 @@ function getcasetypelist()
 {
     $casetype = array();
     $db = Database::instance();
-    $db->select('property_cases', array(), false, false, '', 'DISTINCT case_type');
+
+    $db->select('property_cases', array(), false, false, '', 'DISTINCT `case_type`, `case_type_id`');
     $result = $db->result_array();
-    foreach ($result as $key => $val) {
+    return $result;
 
-        $casetype[] = $val['case_type'];
-    }
-    return $casetype;
+}
 
+function getCaseStatusTypes()
+{
+    $db = Database::instance();
+    return $db->getCaseStatusTypes();
 }
 
     function gethousingcasedetail($a, $b, $c)
@@ -292,5 +295,5 @@ function getcasetypelist()
         $command_output = shell_exec($command);
         return $command_output;
     }
-      
+
 ?>

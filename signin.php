@@ -19,7 +19,7 @@ if($uname!="" && $password!=""){
 
 	else{
 	$value = array('msg' => 'user');
-	$_SESSION["userdeatil"]=$result[0];
+	$_SESSION["userdetail"]=$result[0];
 	echo json_encode($value);
 	}
 

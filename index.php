@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>Scrapping</title>
+<title>Scraping</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript" src="js/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <style>
 .active5{background:#337ab7!important;}
@@ -40,7 +40,7 @@
 
 
                         <br>
-                        
+
                         <br>
 
 
@@ -119,15 +119,15 @@ $(".req").each(function() {
     if (this.value.length > 0)
         oneIsFilled = true;
         $('.leaderror').hide();
-        
-          
-});   
+
+
+});
 if(oneIsFilled !=true){
     $('.leaderror').show();
     return false;
 }
 
-   
+
 
 }
     </script>

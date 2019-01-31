@@ -14,7 +14,7 @@ $zipcount= count($zip);
 <meta name="Author" content="">
 <meta name="Keywords" content="">
 <meta name="Description" content="">
-<title>Scrapping</title>
+<title>Scraping</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -25,9 +25,9 @@ $zipcount= count($zip);
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <script type="text/javascript" src="js/moment.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js"></script>                       
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/js/bootstrap-datetimepicker.min.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/css/bootstrap-datetimepicker.min.css" /> 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/css/bootstrap-datetimepicker.min.css" />
  <!--<script src="js/jquery.datetimepicker.full.min.js"></script> -->
 <script type="text/javascript" src="js/multiselect.js"></script>
 <script type="text/javascript" src="js/myscr.js"></script>
@@ -65,7 +65,7 @@ $zipcount= count($zip);
 					<div class="col-sm-3">
 						<div class="col-sm-12">
 							<p class="heading1">Number of Units</p>
-							<p><label><span>From</span> <input type="text" class="number" name="nouf" id="nouf" value=""></label> <label><span>To</span> <input type="text" class="number" name="nout" id="nout"value=""> </label>
+							<p><label><span>From</span> <input type="text" class="number" name="num_units_min" id="num_units_min" value=""></label> <label><span>To</span> <input type="text" class="number" name="num_units_max" id="num_units_max"value=""> </label>
 							</p>
 						</div>
 					</div>
@@ -76,7 +76,7 @@ $zipcount= count($zip);
 							<tr><td><label><span class="lblspan">Single family only</span></label></td> <td> <input type="checkbox" id="sfmlytype" name="sfmlytype" value="single family only"></td> </tr>-->
 						</table>
 					</div>
-					
+
 					<div class="scr2">
 						<div class="col-sm-6">
 							<p class="heading1">Select Zip Codes</p>
@@ -84,8 +84,8 @@ $zipcount= count($zip);
 								<select  name="zip[]" id="zip" class="form-control" size="5" multiple="multiple">
 								<?php foreach($zip as $key=>$zval){  ?>
                                 <option value="<?php echo $zval; ?>" data-position="<?php echo $key; ?>"><?php echo $zval; ?></option>
-                             
-                            
+
+
                             <?php } ?>
 								</select>
 							</div>
@@ -99,7 +99,7 @@ $zipcount= count($zip);
 							</div>
 
 							<div class="col-sm-5">
-								<select name="zipto[]" id="zip_to" class="form-control" size="5" multiple="multiple"></select>
+								<select name="zip_codes[]" id="zip_to" class="form-control" size="5" multiple="multiple"></select>
 							</div>
 						</div>
 
@@ -109,8 +109,8 @@ $zipcount= count($zip);
 								<select name="city[]" id="city" class="form-control" size="5" multiple="multiple">
 								<?php foreach($city as $ckey=>$cval){  ?>
                                 <option value="<?php echo $cval; ?>" data-position="<?php echo $ckey; ?>"><?php echo $cval; ?></option>
-                             
-                            
+
+
                             <?php } ?>
 								</select>
 							</div>
@@ -124,7 +124,7 @@ $zipcount= count($zip);
 							</div>
 
 							<div class="col-sm-5">
-								<select name="cityto[]" id="city_to"  class="form-control" size="5" multiple="multiple"></select>
+								<select name="cities[]" id="city_to"  class="form-control" size="5" multiple="multiple"></select>
 							</div>
 						</div>
 					</div>
@@ -132,29 +132,29 @@ $zipcount= count($zip);
 
 				<div class="col-sm-2">
 						<p class="heading1">Number of Bedrooms</p>
-						<p><label><span>From</span> <input type="text" class="number" name="nbedf"  id="nbedf" value=""> </label> <label><span>To</span> <input type="text" class="number" name="nbedt" id="nbedt" value=""> </label></p>
+						<p><label><span>From</span> <input type="text" class="number" name="num_bedrooms_min"  id="num_bedrooms_min" value=""> </label> <label><span>To</span> <input type="text" class="number" name="num_bedrooms_max" id="num_bedrooms_max" value=""> </label></p>
 						<p class="heading1">Number of Bathrooms</p>
-						<p><label><span>From</span> <input type="text" class="number" name="nbathf" id="nbathf" value=""> </label> <label><span>To</span> <input type="text" class="number" name="nbatht" id="nbatht" value=""> </label></p>
+						<p><label><span>From</span> <input type="text" class="number" name="num_baths_min" id="num_baths_min" value=""> </label> <label><span>To</span> <input type="text" class="number" name="num_baths_max" id="num_baths_max" value=""> </label></p>
 						<p class="heading1">Number of Stories</p>
-						<p><label><span>From</span> <input type="text" class="number" name="nstrf" id="nstrf" value=""> </label> <label><span>To</span> <input type="text" class="number" name="nstrt" id="nstrt" value=""> </label></p>
+						<p><label><span>From</span> <input type="text" class="number" name="num_stories_min" id="num_stories_min" value=""> </label> <label><span>To</span> <input type="text" class="number" name="num_stories_max" id="num_stories_max" value=""> </label></p>
 					</div>
 
 			</div>
 
-			
-					
+
+
 			<div class="scr5" style="float:left; width:100%; text-align:center;">
-						<div class="col-sm-3" style="padding-top: 97px;">					
+						<div class="col-sm-3" style="padding-top: 97px;">
 						<div class="fileupload" style="display:none; margin:0 0 20px;"><input type="file" name="import_list" id="import_list" style="margin:0 0 10px 65px"/>  <button type="submit" id="btnUpload" name="Import" class="btn btn-primary button-loading" data-loading-text="Loading..." style="padding:8px 33px">Upload Now</button></div>
 						<p class="wait" style="display:none;"><img src="images/loading.gif" alt="" style="width:100px;"></p>
-					
-											
+
+
 						<p class="para1" style="margin:0 0 20px"><a href="#" class="btn btn-block importbtn" style="padding:10px 23px;">Import New List</a></p>
 						<button type="submit" id="searchn" class="btn btn-block" style="padding:8px 33px">Search Now</button>
 						</div>
                         <div class="col-sm-6" style="padding-top: 60px;">
-						<p class="heading1">Select Date and Time to Run Scrap</p>
-						
+						<p class="heading1">Select Date and Time to Run Scrape</p>
+
 						<!--<div class="controls" style="position: relative"><input type="text" id="datetimepicker6" name="scheduledate"/></div>-->
 						<div class="controls" style="position: relative"><input type="hidden" name="schedulername" id="schedulername" value="" /><input type="text" autocomplete="off" id="datetimepicker6" name="scheduledate" style="z-index:100px; cursor:pointer;"/></div>
 						<input type="hidden" name="searchsubmit" id="searchsubmit"  />
@@ -163,7 +163,7 @@ $zipcount= count($zip);
 						<?php } else{?>
 						<p style="margin:15px 0;"><button type="submit" id="" class="btn btn-block" style="padding:6px 23px" disabled>Submit</button></p>
 						<?php } ?>
-                        </div>						
+                        </div>
 				</div>
 		</form>
 

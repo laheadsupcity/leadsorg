@@ -18,7 +18,7 @@ $record=getscheduledetail();
 <meta name="Author" content="">
 <meta name="Keywords" content="">
 <meta name="Description" content="">
-<title>Scrapping | Lead Batch</title>
+<title>Scraping | Lead Batch</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -61,7 +61,7 @@ padding: 5px;
 		<thead>
 		<tr style="background:#337ab7!important;">
 		<th class="col-sm-3">Batch Name</th>
-		<th class="col-sm-3">Last Scrap Date</th>
+		<th class="col-sm-3">Last Scrape Date</th>
 		<!--<th>Scheduled Search date</th>-->
 		<th class="col-sm-3">Number of records</th>
 		<th class="col-sm-3">Options</th>

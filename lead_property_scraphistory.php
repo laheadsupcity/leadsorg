@@ -28,7 +28,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-	<title>Scrapping</title>
+	<title>Scraping</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -50,7 +50,7 @@
 </head>
  <body>
  <div style="width:100%; float:left; margin:0;"><?php  include('nav.php'); ?></div>
-	<h1 style="text-align:center; float:left; width:100%; margin:-10px 0 10px;">Property Scrap View</h1>
+	<h1 style="text-align:center; float:left; width:100%; margin:-10px 0 10px;">Property Scrape View</h1>
 	<div class="scr1" style="height:auto;">
     <table class="table table-fixed" style="margin:0;">
 		<thead>
@@ -58,8 +58,8 @@
 			<th class="col-sm-1"><p style="text-align:-webkit-center">#</th>
 			<th class="col-sm-2">Parcel Number</th>
 			<th class="col-sm-1">Batch Task</th>
-			<th class="col-sm-3">Scrap Status</th>
-			<th class="col-sm-2">Scrap Date</th>
+			<th class="col-sm-3">Scrape Status</th>
+			<th class="col-sm-2">Scrape Date</th>
 			</tr>
 		</thead>
 		<tbody>

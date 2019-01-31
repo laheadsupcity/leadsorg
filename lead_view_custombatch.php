@@ -25,7 +25,7 @@
 	<meta name="Author" content="">
 	<meta name="Keywords" content="">
 	<meta name="Description" content="">
-	<title>Scrapping</title>
+	<title>Scraping</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -74,7 +74,7 @@
 			<tr>
 			<td class="lf0" style="text-align:center;"><?php echo $i; ?></td>
 			<!--<td class="cal1"><?php echo date("m-d-y"); ?></td>-->
-			<td class="lf2"><?php echo $val['parcel_number']; ?> <br/> <a target="_blank" href="lead_property_scraphistory.php?hid=<?php echo $val['id'];?>&hapn=<?php echo $val['parcel_number'];?>" >Scrap Detail</a></td>
+			<td class="lf2"><?php echo $val['parcel_number']; ?> <br/> <a target="_blank" href="lead_property_scraphistory.php?hid=<?php echo $val['id'];?>&hapn=<?php echo $val['parcel_number'];?>" >Scrape Detail</a></td>
 			<td class="lf2"><?php echo $val['street_number'].','.$val['street_name'].',<br/> '.$val['site_address_city_state'].', '.$val['site_address_zip']; ?></td>
 			<!-- <td class="cal2"><?php echo $val['full_mail_address'].', '.$val['mail_address_city_state'].', '.$val['site_address_zip']; ?></td> -->
 			<td class="lf2"><?php echo $val['owner_name2']; ?></td>

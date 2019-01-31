@@ -7,7 +7,7 @@
 <meta name="Author" content="">
 <meta name="Keywords" content="">
 <meta name="Description" content="">
-<title>Scrapping</title>
+<title>Scraping</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -40,18 +40,18 @@ tr:nth-child(even) {background-color: #e9ebf5;}
 
         if(!empty($_POST)){
             $searchsubmit = isset($_POST['searchsubmit']) ? $_POST['searchsubmit'] : '';
-            $nouf         = isset($_POST['nouf']) ? $_POST['nouf'] : '';
-            $nout         = isset($_POST['nout']) ? $_POST['nout'] : '';
+            $num_units_min         = isset($_POST['num_units_min']) ? $_POST['num_units_min'] : '';
+            $num_units_max         = isset($_POST['num_units_max']) ? $_POST['num_units_max'] : '';
             $fmlytype     = isset($_POST['fmlytype']) ? $_POST['fmlytype'] : '';
             $sfmlytype    = isset($_POST['sfmlytype']) ? $_POST['sfmlytype'] : '';
-            $zip          = isset($_POST['zipto']) ? $_POST['zipto'] : '';
-            $cityto       = isset($_POST['cityto']) ? $_POST['cityto'] : '';
-            $nbedf        = isset($_POST['nbedf']) ? $_POST['nbedf'] : '';
-            $nbedt        = isset($_POST['nbedt']) ? $_POST['nbedt'] : '';
-            $nbathf       = isset($_POST['nbathf']) ? $_POST['nbathf'] : '';
-            $nbatht       = isset($_POST['nbatht']) ? $_POST['nbatht'] : '';
-            $nstrf        = isset($_POST['nstrf']) ? $_POST['nstrf'] : '';
-            $nstrt        = isset($_POST['nstrt']) ? $_POST['nstrt'] : '';
+            $zip          = isset($_POST['zip_codes']) ? $_POST['zip_codes'] : '';
+            $cities       = isset($_POST['cities']) ? $_POST['cities'] : '';
+            $num_bedrooms_min        = isset($_POST['num_bedrooms_min']) ? $_POST['num_bedrooms_min'] : '';
+            $num_bedrooms_max        = isset($_POST['num_bedrooms_max']) ? $_POST['num_bedrooms_max'] : '';
+            $num_baths_min       = isset($_POST['num_baths_min']) ? $_POST['num_baths_min'] : '';
+            $num_baths_max       = isset($_POST['num_baths_max']) ? $_POST['num_baths_max'] : '';
+            $num_stories_min        = isset($_POST['num_stories_min']) ? $_POST['num_stories_min'] : '';
+            $num_stories_max        = isset($_POST['num_stories_max']) ? $_POST['num_stories_max'] : '';
             $scheduledate = isset($_POST['scheduledate']) ? $_POST['scheduledate'] : '';
             $ndate        = date('Y-m-d H:i:s',strtotime($scheduledate)); 
             $name         = isset($_POST['schedulername']) ? $_POST['schedulername'] : '';
@@ -60,7 +60,7 @@ tr:nth-child(even) {background-color: #e9ebf5;}
             $resultcount = 0;
             $apnarr=array();
             if($searchsubmit == 'submitsearch'){
-                $arr_data=array('nouf'=>$nouf,'nout'=>$nout,'zip'=>$zip,'city'=>$cityto,'fmlytype'=>$fmlytype,'sfmlytype'=>$sfmlytype,'nbedf'=>$nbedf,'nbedt'=>$nbedt,'nbathf'=>$nbathf,'nbatht'=>$nbatht,'nstrf'=>$nstrf,'nstrt'=>$nstrt);
+                $arr_data=array('num_units_min'=>$num_units_min,'num_units_max'=>$num_units_max,'zip'=>$zip,'city'=>$cities,'fmlytype'=>$fmlytype,'sfmlytype'=>$sfmlytype,'num_bedrooms_min'=>$num_bedrooms_min,'num_bedrooms_max'=>$num_bedrooms_max,'num_baths_min'=>$num_baths_min,'num_baths_max'=>$num_baths_max,'num_stories_min'=>$num_stories_min,'num_stories_max'=>$num_stories_max);
                 $db->schedulelivesearchcron($arr_data);
                 $apnlist=$db->result_array();
                 if(count($apnlist)>0){
@@ -85,7 +85,7 @@ tr:nth-child(even) {background-color: #e9ebf5;}
                 header("Location: lead_scheduledata.php");die;
             }elseif($searchsubmit == 'searchnow'){
                 $_SESSION['ScheSerFrmData']=array();
-                $arr_data=array('nouf'=>$nouf,'nout'=>$nout,'zip'=>$zip,'city'=>$cityto,'fmlytype'=>$fmlytype,'sfmlytype'=>$sfmlytype,'nbedf'=>$nbedf,'nbedt'=>$nbedt,'nbathf'=>$nbathf,'nbatht'=>$nbatht,'nstrf'=>$nstrf,'nstrt'=>$nstrt);
+                $arr_data=array('num_units_min'=>$num_units_min,'num_units_max'=>$num_units_max,'zip'=>$zip,'city'=>$cities,'fmlytype'=>$fmlytype,'sfmlytype'=>$sfmlytype,'num_bedrooms_min'=>$num_bedrooms_min,'num_bedrooms_max'=>$num_bedrooms_max,'num_baths_min'=>$num_baths_min,'num_baths_max'=>$num_baths_max,'num_stories_min'=>$num_stories_min,'num_stories_max'=>$num_stories_max);
                 $_SESSION['ScheSerFrmData'] = $arr_data ;
                 
             }

@@ -1,37 +1,50 @@
 <?php
-	require_once('config.php');
-	require_once('Database.php');
-	$apn=isset($_POST['apn']) ? $_POST['apn'] : '';
-	$case_id=isset($_POST['case_id']) ? $_POST['case_id'] : '';
-	$case_det_id=isset($_POST['case_det_id']) ? $_POST['case_det_id'] : '';
-	function getcasedetail($apn,$case_id){
-		$db = Database::instance();
-		$db->select('property_cases_detail', array('APN' => $apn,'case_id'=>$case_id), false, false,'AND','*');
-		$result=$db->result_array();
-		return $result;
-	}
-	function getcaselist($apn,$case_id){
-		$db = Database::instance();
-		$db->select('property_cases', array('APN' => $apn,'case_id'=>$case_id), false, false,'AND','*');
-		$result=$db->result_array();
-		return $result;
-	}
-	function getcaseinspection($apn,$case_id,$case_det_id){
-		$db = Database::instance();
-		//$db->select('property_inspection', array('APN' => $apn,'lblCaseNo'=> $case_id ,'property_case_detail_id'=>$case_det_id), false,'DATE_FORMAT(STR_TO_DATE(`date`, "%m/%d/%Y %h:%i:%s %p"), "%Y-%m-%d %h:%i:%s %p") DESC','AND','*');
-               // $db->select('property_inspection', array('APN' => $apn,'lblCaseNo'=> $case_id ,'property_case_detail_id'=>$case_det_id), false, 'DATE_FORMAT(STR_TO_DATE(`date`, "%m/%d/%Y %h:%i:%s"), "%Y-%m-%d %h:%i:%s %p") DESC','AND','*');
-       // $db->select('property_inspection', array('APN' => $apn,'lblCaseNo'=> $case_id ,'property_case_detail_id'=>$case_det_id), false, 'date ASC','AND','DATE_FORMAT(STR_TO_DATE(`date`, "%m/%d/%Y %h:%i:%s %p"), "%m/%d/%Y %h:%i:%s %p") as date,id,lblCaseNo,APN,staus,property_case_detail_id,case_type_id');	
-       $db->select('property_inspection', array('APN' => $apn,'lblCaseNo'=> $case_id ,'property_case_detail_id'=>$case_det_id), false, 'STR_TO_DATE(`date`, "%m/%d/%Y %h:%i:%s %p") DESC,staus','AND','*');
-	$result=$db->result_array();
-		return $result;
-	}
-	$det=getcasedetail($apn,$case_id);
-	$case=getcaselist($apn,$case_id);
-	$insp=getcaseinspection($apn,$case_id,$case_det_id);
-	error_log("=========dfffffffffffff==================>".print_r($insp,true));
-	$det =isset( $det[0]) ?  $det[0]: '';
-	$url=isset( $det['imageurl']) ?  $det['imageurl']: '';
-	$img = explode('http://',$url);
+    require_once('config.php');
+    require_once('Database.php');
+    $apn=isset($_POST['apn']) ? $_POST['apn'] : '';
+    $case_id=isset($_POST['case_id']) ? $_POST['case_id'] : '';
+    $case_det_id=isset($_POST['case_det_id']) ? $_POST['case_det_id'] : '';
+    function getcasedetail($apn, $case_id)
+    {
+        $db = Database::instance();
+        $db->select('property_cases_detail', array('APN' => $apn,'case_id'=>$case_id), false, false, 'AND', '*');
+        $result=$db->result_array();
+        return $result;
+    }
+    function getcaselist($apn, $case_id)
+    {
+        $db = Database::instance();
+        $db->select('property_cases', array('APN' => $apn,'case_id'=>$case_id), false, false, 'AND', '*');
+        $result=$db->result_array();
+        return $result;
+    }
+
+    function getCaseInspection($apn, $case_id, $case_det_id)
+    {
+        $db = Database::instance();
+        $db->select(
+          'property_inspection',
+          array(
+            'APN' => $apn,
+            'lblCaseNo'=> $case_id ,
+            'property_case_detail_id'=>$case_det_id
+          ),
+          false,
+          'STR_TO_DATE(`date`, "%m/%d/%Y %h:%i:%s %p") DESC, staus',
+            'AND',
+            '*'
+        );
+        $result=$db->result_array();
+        return $result;
+    }
+
+    $det=getcasedetail($apn, $case_id);
+    $case=getcaselist($apn, $case_id);
+    $case_statuses=getCaseInspection($apn, $case_id, $case_det_id);
+    error_log("=========dfffffffffffff==================>".print_r($case_statuses, true));
+    $det =isset($det[0]) ?  $det[0]: '';
+    $url=isset($det['imageurl']) ?  $det['imageurl']: '';
+    $img = explode('http://', $url);
 ?>
 <div class="col-sm-12" style="padding:0;">
 	<h4>PROPERTY ACTIVITY REPORT</h4>
@@ -80,8 +93,8 @@
 		</tr>
 		<tr>
 		<td class="field2">Nature of Complaint:</td>
-		<td class="field2data" colspan="4"><?php echo $det['complaint_nature']; ?></td>
-		</tr> 
+		<td class="field2data" colspan="4"><!-- This is causing an illegal offset warning <?php echo det['complaint_nature']; ?> --></td>
+		</tr>
 	</table>
 </div>
 
@@ -93,13 +106,13 @@
 				<td style="padding:0 5px;">Status</td>
 			</tr>
 			<?php
-				foreach($insp as $row){
-				echo "<tr style='color:Black;background-color:White;'>
-				<td align='left' style='width:40%; border-right:1px solid #337ab7; border-bottom:1px solid #337ab7; padding:3px 5px;'>".$row['date']."</td>
-				<td align='left' style='width:60%; border-bottom:1px solid #337ab7; padding:3px 5px;'>".$row['staus']."</td>
-				</tr>";
-				}
-			?>
+        foreach ($case_statuses as $case_status) {
+          echo "<tr style='color:Black;background-color:White;'>
+            <td align='left' style='width:40%; border-right:1px solid #337ab7; border-bottom:1px solid #337ab7; padding:3px 5px;'>".$case_status['date']."</td>
+            <td align='left' style='width:60%; border-bottom:1px solid #337ab7; padding:3px 5px;'>".$case_status['staus']."</td>
+          </tr>";
+        }
+      ?>
 		</table>
 	</div>
 
@@ -112,7 +125,3 @@
 .caselist tr:nth-child(odd){background-color:#fff}
 .caselist tr:nth-child(even){background-color:#f2f2f2}
 </style>
-
-                
-                            
-                                                

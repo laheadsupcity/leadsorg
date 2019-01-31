@@ -1,50 +1,56 @@
 <?php
-	require_once('config.php');
-	require_once('Database.php');
-	$apn=isset($_REQUEST['apn']) ? $_REQUEST['apn'] : '';
-	$det=getpropertydetail($apn);
-	$totalcount=count($det);
-	$case=getcasedetail($apn);
-	$property=getpropertyinfo($apn);
-	$imgurl=getimglist($apn);
-	$property = $property[0];
+    require_once('config.php');
+    require_once('Database.php');
+    $parcel_number = isset($_REQUEST['apn']) ? $_REQUEST['apn'] : '';
+    $det = getpropertydetail($parcel_number);
+    $totalcount = count($det);
+    $cases = getCasesForProperty($parcel_number);
+    $property = getpropertyinfo($parcel_number);
+    $imgurl = getimglist($parcel_number);
+    $property = $property[0];
 
-	function getimgurl($imgurl){
-		$url = explode('http://',$imgurl);
-		$newurl=isset($url[1]) ? $url[1] : '';
-		return $newurl;
-	}
-	$det = isset($det[0]) ? $det[0] : '';
-	function getcasetypeid($id,$caseid){
-		$db = Database::instance();
-		$db->select('property_cases_detail', array('property_case_id' => $id,'case_id'=>$caseid), false, false,'AND','id');
-		$result=$db->row_array();
-		return $result;
-	}
-	function getpropertydetail($apn){
-		$db = Database::instance();
-		$db->select('property_detail', array('APN' => $apn), false, false,'','*');
-		$result=$db->result_array();
-		return $result;
-	}
-	function getcasedetail($apn){
-		$db = Database::instance();
-		$db->select('property_cases', array('APN' => $apn), false, 'pcid desc','','*');
-		$result=$db->result_array();
-		return $result;
-	}
-	function getimglist($apn){
-		$db = Database::instance();
-		$db->select('property_cases_detail', array('apn' => $apn), false, false,"",'imageurl');
-		$result=$db->result_array();
-		return $result;
-	}
-	function getpropertyinfo($apn){
-		$db = Database::instance();
-		$db->select('property', array('parcel_number' => $apn), false, false,'','*');
-		$result=$db->result_array();
-		return $result;
-	}
+    function getimgurl($imgurl)
+    {
+        $url = explode('http://', $imgurl);
+        $newurl=isset($url[1]) ? $url[1] : '';
+        return $newurl;
+    }
+    $det = isset($det[0]) ? $det[0] : '';
+    function getcasetypeid($id, $caseid)
+    {
+        $db = Database::instance();
+        $db->select('property_cases_detail', array('property_case_id' => $id,'case_id'=>$caseid), false, false, 'AND', 'id');
+        $result=$db->row_array();
+        return $result;
+    }
+    function getpropertydetail($parcel_number)
+    {
+        $db = Database::instance();
+        $db->select('property_detail', array('APN' => $parcel_number), false, false, '', '*');
+        $result=$db->result_array();
+        return $result;
+    }
+    function getCasesForProperty($parcel_number)
+    {
+        $db = Database::instance();
+        $db->select('property_cases', array('APN' => $parcel_number), false, 'pcid desc', '', '*');
+        $result=$db->result_array();
+        return $result;
+    }
+    function getimglist($parcel_number)
+    {
+        $db = Database::instance();
+        $db->select('property_cases_detail', array('apn' => $parcel_number), false, false, "", 'imageurl');
+        $result=$db->result_array();
+        return $result;
+    }
+    function getpropertyinfo($parcel_number)
+    {
+        $db = Database::instance();
+        $db->select('property', array('parcel_number' => $parcel_number), false, false, '', '*');
+        $result=$db->result_array();
+        return $result;
+    }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -257,13 +263,13 @@
 							<?php
 							$defaultimage="images/No_Image.jpg";
 							if(count($imgurl) > 0){
-							foreach($imgurl as $key){	
-							 $cimge= getimgurl($key['imageurl']); 
+							foreach($imgurl as $key){
+							 $cimge= getimgurl($key['imageurl']);
 							?>
 								<div class="mySlides">
 								 <img src="<?php echo isset($cimge) ? '//'.$cimge : $defaultimage ?>" style="width:100%;">
 								</div>
-							<?php 
+							<?php
 							}
 							}
 
@@ -280,10 +286,10 @@
 
 						<div style="text-align:center; display:none;">
 							<?php
-							foreach($imgurl as $key){	
-							$cimge= getimgurl($key['imageurl']); 
+							foreach($imgurl as $key){
+							$cimge= getimgurl($key['imageurl']);
 							?>
-						      <span class="dot" onclick="currentSlide()"></span> 
+						      <span class="dot" onclick="currentSlide()"></span>
 						  <?php
 							}
 							?>
@@ -298,9 +304,9 @@
 							<tr>
 							<td class="field1">Address:</td>
 							<td class="field1data spdata">
-							<?php echo $property['full_mail_address']; echo "<br/>"; 
+							<?php echo $property['full_mail_address']; echo "<br/>";
 							echo $property['mail_address_city_state']; echo "<br/>" ;
-							echo $property['mail_address_zip']; 
+							echo $property['mail_address_zip'];
 							?>
 							</td>
 							</tr>
@@ -342,7 +348,7 @@
 							</tr>
 						</table>
 				</div>
-                               <?php  
+                               <?php
 				   $upstatus=isset($det['update_status']) ? $det['update_status'] : '';
 				   if($upstatus >0 ){
 				?>
@@ -368,17 +374,17 @@
 						<td style='padding:3px 5px;'>Date Closed</td>
 						</tr>
 						<?php
-						foreach($case as $row){
+						foreach($cases as $row){
                                                 $caseid=getcasetypeid($row['pcid'],$row['case_id']);
 						echo "<tr style='color:#333;'>
 						<td style='border-bottom:1px solid #337ab7; border-right:1px solid #337ab7; padding:3px 5px;'>".$row['case_type']."</td>
 						<td style='border-bottom:1px solid #337ab7; border-right:1px solid #337ab7; padding:3px 5px;'>
-						<a href='#' onclick='return opencasedetail(".$apn.", ".$row['case_id'].",".$caseid['id'].");'  style='color:DarkBlue;'>".$row['case_id']."</a>
+						<a href='#' onclick='return opencasedetail(".$parcel_number.", ".$row['case_id'].",".$caseid['id'].");'  style='color:DarkBlue;'>".$row['case_id']."</a>
 						</td>
 						<td style='padding:3px 5px; border-bottom:1px solid #337ab7;'>".$row['case_date']."</td>
 						</tr>";
 						}
-						?>	
+						?>
 					</table>
 				</div>
 
@@ -391,8 +397,8 @@
 </div>
                 <?php } ?>
 		</div>
-	</div>   
-	
+	</div>
+
 	<script type="text/javascript">
 	var slideIndex1 = 0;
 	showSlides1();
@@ -402,18 +408,17 @@
 		var slides = document.getElementsByClassName("mySlides");
 		var dots = document.getElementsByClassName("dot");
 		for (i = 0; i < slides.length; i++) {
-		   slides[i].style.display = "none";  
+		   slides[i].style.display = "none";
 		}
 		slideIndex1++;
-		if (slideIndex1 > slides.length) {slideIndex1 = 1}    
+		if (slideIndex1 > slides.length) {slideIndex1 = 1}
 		for (i = 0; i < dots.length; i++) {
 			dots[i].className = dots[i].className.replace(" active", "");
 		}
-		slides[slideIndex1-1].style.display = "block";  
+		slides[slideIndex1-1].style.display = "block";
 		dots[slideIndex1-1].className += " active";
 		setTimeout(showSlides1, 3000); // Change image every 2 seconds
 	}
-
 
 	var slideIndex = 1;
 	showSlides(slideIndex);
@@ -430,15 +435,15 @@
 	  var i;
 	  var slides = document.getElementsByClassName("mySlides");
 	  var dots = document.getElementsByClassName("dot");
-	  if (n > slides.length) {slideIndex = 1}    
+	  if (n > slides.length) {slideIndex = 1}
 	  if (n < 1) {slideIndex = slides.length}
 	  for (i = 0; i < slides.length; i++) {
-		  slides[i].style.display = "none";  
+		  slides[i].style.display = "none";
 	  }
 	  for (i = 0; i < dots.length; i++) {
 		  dots[i].className = dots[i].className.replace(" active", "");
 	  }
-	  slides[slideIndex-1].style.display = "block";  
+	  slides[slideIndex-1].style.display = "block";
 	  dots[slideIndex-1].className += " active";
 	}
 </script>

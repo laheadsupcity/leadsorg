@@ -1,0 +1,76 @@
+/*  Custom Database Search  */
+.custom-database-search {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  border: 1px solid #0070c0;
+  max-width: 1200px;
+  overflow: hidden;
+}
+
+.custom-database-search .heading {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.custom-database-search label {
+  font-weight: 500;
+}
+
+.custom-database-search .disabled {
+  color: rgb(206, 212, 218);
+}
+
+.blue-background {
+  background-color: #337ab7;
+}
+
+.small-search-button {
+  padding: 1px 12px !important;
+  font-size: 10px;
+}
+
+.case-type-table-fixed {
+  font-size: 13px;
+}
+
+.case-type-table-fixed > thead {
+  height: 40px;
+  padding-right: 14px;
+}
+
+.case-type-table-fixed > thead > tr {
+  display: block;
+}
+
+.case-type-table-fixed > thead,
+.case-type-table-fixed > tbody,
+.case-type-table-fixed > tr,
+.case-type-table-fixed > td,
+.case-type-table-fixed > th {
+  display: block;
+}
+
+.case-type-table-fixed > tr:after {
+  content: ' ';
+  display: block;
+  visibility: hidden;
+  clear: both;
+}
+
+.case-type-table-fixed > thead th {
+  height: 30px;
+  text-align: left;
+}
+
+.case-type-table-fixed > tbody {
+  height: 321px;
+  overflow-y: auto;
+}
+
+.case-type-table-fixed > i {
+  font-size: 16px;
+}
+
+.case-status-type-table {
+  font-size: 11px;
+}
