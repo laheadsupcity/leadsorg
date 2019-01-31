@@ -1,0 +1,133 @@
+@font-face {font-family: "Assistant-bold" ;  src: url('fonts/Assistant-Bold.ttf');}
+@font-face {font-family: "Assistant-Regular"; src: url('fonts/Assistant-Regular.ttf');}
+body{margin:0 auto;}
+.menu{float:left; width:100%;}
+.menu1{max-width:1200px; margin:0 auto 55px;}
+.scr1{font-family: "Helvetica Neue",Helvetica,Arial,sans-serif; border:1px solid #0070c0; padding:0px 0;max-width:1200px; margin:0 auto 20px; overflow:hidden; height:750px;}
+.scr1 h4{margin:0; background:#337ab7; color:#fff; padding:9px 15px 9px; font-size:14px; text-transform:uppercase;}
+.scr1 .heading1{font-family: "Helvetica Neue",Helvetica,Arial,sans-serif; font-weight: 600; font-size:13px; margin:15px 0 0;}
+.scr1 .number{width:30px; height:30px; border:1px solid #337ab7; background:#fff;  padding:3px;}
+.scr1 .numberdate{width:62px; height:30px; border:1px solid #337ab7; background:#fff;  padding:3px 1px; font-size:11.1px;  text-align: left;}
+.scr1 .numberdate1{width:62px; height:30px; border:1px solid #337ab7; background:#fff;  padding:3px 1px; font-size:11.1px;  text-align: right; cursor:pointer;}
+.scr1 input[type=checkbox]{width:20px; height:20px; border:1px solid #337ab7; background:#fff; cursor:pointer; position:relative; top:-10px;}
+.scr1 label span{position:relative; top:-3px;}
+.scr1 .radiospan{position:relative; top:-7px;}
+.scr1 .lblspan{position:relative; top:-10px;}
+.scr1 label{cursor:pointer;  padding:0 5px; font-size:14px; font-family: "Helvetica Neue",Helvetica,Arial,sans-serif; font-weight:500; color:#000;}
+.scr1 input[type=radio]{width:22px; height:22px; cursor:pointer;}
+.scr2, .scr3{width:100%; height:auto; overflow:hidden; margin-bottom:2px;}
+.scr2 .btn{padding:1px 12px!important; background:#888; color:#fff; font-size:10px;}
+.scr3 .btn{padding:1px 12px!important; background:#888; color:#fff; font-size:10px;}
+.scr4 .btn{background:#337ab7; color:#fff; font-size:13px;}
+.scr4 {position:relative; top:0px; float: left;}
+.scr5 .btn-block{display:inline!important; width:auto; background:#337ab7; color:#fff;}
+.scr5 .form-control{width:300px; margin:0 auto;}
+.scr2 .heading1, .scr3 .heading1{padding-left:15px;}
+.scr6{font-family: "Helvetica Neue",Helvetica,Arial,sans-serif; border:1px solid #337ab7;padding:0px 0;max-width:1200px; margin:0 auto 20px; overflow:hidden;}
+.scr6 table tr td{font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;}
+#nav {list-style:none inside;margin:0;padding:0;text-align:center;}
+#nav li {display:block; position:relative; float:left; background: #000; border-right: 1px solid #fff; width:33.333333333333333%;}
+#nav li ul li{width: 100%; z-index:100; border-bottom:1px solid #fff; border-right:none;}
+#nav li a {display:block; padding:0; text-decoration:none; line-height:35px; color:#ffffff; }
+#nav li li a {font-size:90%;} 
+#nav li:hover {background:#337ab7;}
+#nav ul {position:absolute; padding:0; left:0; display:none; width: 100%;}
+#nav li:hover ul ul {display:none;} 
+#nav li:hover ul {display:block;} 
+#nav li li:hover ul {display:block; margin-left:200px; margin-top:-35px; }
+.panel {margin-bottom: 20px; background-color: #fff; border: 1px solid transparent; border-radius: 4px;
+-webkit-box-shadow: 0 1px 1px rgba(0,0,0,.0);  box-shadow: 0 1px 1px rgba(0,0,0,.0); }
+#overlay, #overlay1,#overlay3,#overlay4 {position: fixed; display: none;  width:100%; height: 100%; top: 0;
+left: 0; right: 0; bottom: 0; background-color: rgba(0,0,0,0.5); z-index: 2; cursor: pointer;}
+#stopschedulerform{ text-align:left;position: absolute; top: 50%; left: 50%; font-size: 17px; color: #000; transform: translate(-50%,-50%);
+    -ms-transform: translate(-50%,-50%); background:#fff; padding:10px; max-width: 500px; width: 100%; border: 5px solid #0070c0;}
+#batchform{ position: absolute; top: 50%; left: 50%; font-size: 17px; color: #000; transform: translate(-50%,-50%);
+-ms-transform: translate(-50%,-50%); background:#fff; padding:10px; max-width: 500px; width: 100%; border: 5px solid #0070c0;}
+#allschedulerform{ position: absolute; top: 50%; left: 50%; font-size: 17px; color: #000; transform: translate(-50%,-50%);
+-ms-transform: translate(-50%,-50%); background:#fff; padding:10px; max-width: 500px; width: 100%; border: 5px solid #0070c0;}
+#batchname{width: 100%; height: 40px; border: 1px solid #555; padding:5px; margin-bottom:15px;}
+.closeicon{float: right; position: relative; top: -20px; left: 17px; cursor: pointer;}
+.box{width:100%; padding:5px 7px; border:1px solid #000;}
+.login{max-width:500px; margin:10% auto 0; width:99%; background:#f2f2f2; padding:40px 20px;}
+.login .btn-block{display:inline!important; width:100%; background:#337ab7; color:#fff;}
+.welcome{max-width:1200px; margin:0 auto; background:#f2f2f2; overflow:hidden;}
+.welcome_2{float:right; text-align:right; font-size:14px; padding:2px 15px 5px 0;}
+.welcome_2 a{color:#000;}
+.welcome_2 a:hover{color:#337ab7; text-decoration:none;}
+.editform label{padding: 0px;font-size: 12px; font-family: "Helvetica Neue",Helvetica,Arial,sans-serif; font-weight: 600; color: #000;}
+.editform label span{top:3px;}
+.editform p{margin:0 0 15px;}
+.heading2{color:#337ab7; font-size:16px; font-weight:600; margin:0;}
+.edittext{width:92%;}
+.edittext1{width:96%;}
+.edittext3{padding:4px 0;}
+.editform .btn-block{display:inline!important; width:100%; background:#337ab7; color:#fff;}
+.mrt{ padding: 11px 12px !important;}
+.mbt{ padding: 11px 12px !important;}
+.field1{font-weight:600; font-size:12px; width: 48%; background:#f2f2f2; border-bottom:1px solid #fff; padding: 2px 5px;}
+.field1data{font-size:12px; width: 52%; background:#acb8ca; border-bottom:1px solid #fff; padding: 2px 5px;}
+.spdata{background:#f7caac!important;}
+.field2{font-weight:600; font-size:12px; width: 20%; background:#f2f2f2; border-bottom:1px solid #fff; padding: 2px 5px;}
+.field2data{font-size:12px; width: 25%; background:#acb8ca; border-bottom:1px solid #fff; padding: 2px 5px;}
+.pageno a{background:#0070c0; padding:2px 8px; color:#fff; margin-right:3px;}
+.topmenu{ width:100%;}
+.leadscr1{position:relative; top:-10px;}
+.scr4lead{width:200px; margin:0 auto;}
+.scr1 .col-sm-2 .heading1{margin:30px 0 0px;}
+.cal1{width:6%;}
+.cal2{width:11%;}
+.leadcal1{width:7.333333%;}
+.leadcal2{width:8%;} 
+.leadcal3{width:5%;}  
+.leadcal4{width:13%;} 
+/*================fixed Header=======================*/
+.table-fixed thead {width: 100%; display: inline-block; color:#fff;}
+.table-fixed tbody {height: 325px; overflow-y: auto; width: 100%; display: inline-block;}
+.table-fixed th {font-size:12px; vertical-align: middle!important}
+.table-fixed tr{display: inline-table; width:100%;}
+.table-fixed tbody td, .table-fixed thead > tr> th { border-bottom-width: 0;}
+.lf0{width:4%; text-align:right;}
+.lf1{width:6%;}
+.lf2{width:11%;}
+.table-fixed tbody::-webkit-scrollbar {width: 12px;background-color: #f5f5f5;}
+.table-fixed tbody::-webkit-scrollbar-track {-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3); border-radius: 10px; background-color: #f5f5f5;}
+.table-fixed tbody::-webkit-scrollbar-thumb {border-radius: 10px; -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3); background-color: #0070c0;}
+.btn.focus, .btn:focus, .btn:hover {color: #fff!important; text-decoration: none;}
+
+@media screen and (min-width: 950px) and (max-width: 1050px) { 
+.scr1 label {font-size: 11px;}
+.scr1 .heading1{font-size: 12px;}
+.form-control{font-size:11px;}
+.scr1 .number, .scr1 .numberdate{width: 18px; height: 18px;}
+}
+
+@media screen and (min-width: 900px) and (max-width: 950px) { 
+.scr1 label {font-size: 10px;}
+.scr1 .heading1{font-size: 11px;}
+.form-control{font-size:10px;}
+.scr1 .number, .scr1 .numberdate {width: 18px; height: 18px;}
+}
+
+@media screen and (min-width: 786px) and (max-width: 900px) { 
+.scr1{height:auto; padding-bottom:15px;}
+.scr1 label {font-size: 10px;}
+.scr1 .heading1{font-size: 11px;}
+.form-control{font-size:10px;}
+.scr1 .number, .scr1 .numberdate {width: 18px; height: 18px;}
+}
+
+@media screen and (min-width: 500px) and (max-width: 786px) { 
+.scr1{height:auto; padding-bottom:15px; max-width: 500px;}
+.scr1 label {font-size: 10px;}
+.scr1 .heading1{font-size: 11px;}
+.form-control{font-size:10px;}
+.scr1 .number, .scr1 .numberdate {width: 18px; height: 18px;}
+.scr1 .col-sm-5 .col-sm-6{width:50%!important;}
+}
+
+@media screen and (max-width: 500px) {
+.scr1{height:auto;}
+#nav li{width:100%; margin:0 0 1px}
+.leadtop{height:133px;}
+}
+
