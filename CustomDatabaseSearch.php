@@ -15,7 +15,7 @@ class CustomDatabaseSearch {
 
   public function getResults($limit = 10)
   {
-      $conditions = $this->getConditionsForCustomSearchResults();
+      $conditions = $this->getConditions();
 
       if (count($conditions) > 0) {
         $where = implode(' AND ', $conditions);
@@ -107,7 +107,7 @@ class CustomDatabaseSearch {
     return $this->results_count;
   }
 
-  public function getConditionsForCustomSearchResults() {
+  public function getConditions() {
     $search_param_data = $this->search_params->getSearchParamData();
 
     $conditions = array();
