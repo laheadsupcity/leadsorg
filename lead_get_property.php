@@ -8,6 +8,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <script type="text/javascript" src="js/jquery.min.js"></script>
+  <script type="text/javascript" src="js/moment.js"></script>
+  <script src="js/jquery.datetimepicker.full.min.js"></script>
   <script type="text/javascript" src="js/multiselect.js"></script>
   <script type="text/javascript" src="js/myscr.js"></script>
   <link rel="stylesheet" href="css/style.css">
