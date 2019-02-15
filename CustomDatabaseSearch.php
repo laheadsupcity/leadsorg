@@ -85,13 +85,12 @@ class CustomDatabaseSearch {
         );
       }
 
-      // $this->prettyPrint($query);
+      Debug::dumpR($query);
 
       $this->db->query($query);
 
       $results = $this->db->result_array();
 
-      // set total count
       $this->results_count = count($results);
 
       return $results;

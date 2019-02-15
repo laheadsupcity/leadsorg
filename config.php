@@ -1,5 +1,6 @@
 <?php
     require_once('Database.php');
+    require_once('Debug.php');
     $database_name='lead_housing';
     $username='headsupcity';
     $password='Temp@12345';
