@@ -149,7 +149,7 @@ function handleFormSubmit(form) {
 
   form_object['case_types'] = gatherCaseTypeFilterData();
 
-  window.location = "/lead_get_property.php?" + $.param(form_object);
+  window.location = "lead_get_property.php?" + $.param(form_object);
 }
 
 function toggleExcludeForCaseTypeDisabled(case_type_id, is_disabled) {
