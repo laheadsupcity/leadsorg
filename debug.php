@@ -4,7 +4,7 @@ class Debug {
 
   public static function dumpR($object, $die = false) {
     echo("<pre>");
-    print_r([$object]);
+    var_dump([$object]);
     echo("</pre>");
 
     if ($die) {
