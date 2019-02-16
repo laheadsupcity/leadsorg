@@ -96,12 +96,6 @@ class CustomDatabaseSearch {
       return $results;
   }
 
-  private function prettyPrint($object) {
-    echo("<pre>");
-    var_dump($object);
-    echo("</pre>");
-  }
-
   public function getResultCount() {
     return $this->results_count;
   }
