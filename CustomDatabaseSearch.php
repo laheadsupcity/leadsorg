@@ -13,55 +13,142 @@ class CustomDatabaseSearch {
     $this->search_params = new SearchParameters($search_param_data);
   }
 
+  private function getOpenAPNsAfterExclusions($case_type_filter_builder) {
+    $excluded_ids = null;
+    $included_ids = null;
+
+    if (!empty($case_type_filter_builder->getExclusionFilters())) {
+      $excluded_ids = $case_type_filter_builder->getExcludedIDsExpression();
+    }
+
+    if (!empty($case_type_filter_builder->getInclusionFilters())) {
+      $included_ids = $case_type_filter_builder->getIncludedIDsExpression();
+    }
+
+    $basic_select = "SELECT APN, case_id FROM property_cases
+      WHERE case_id IN (
+        SELECT case_id FROM property_cases
+        GROUP BY case_id
+        HAVING SUM(CASE WHEN case_date <> \"\" THEN 1 ELSE 0 END) = 0
+      )";
+
+
+    if (!$excluded_ids && !$included_ids) {
+      $open_case_subquery = $basic_select . " GROUP BY APN, case_id";
+    } else {
+      $conditions = [];
+      if ($excluded_ids) {
+        $conditions[] = sprintf(
+          "(APN NOT IN (
+              SELECT APN
+              FROM property_cases
+              GROUP BY APN, case_id
+              HAVING SUM(CASE WHEN case_date <> \"\" THEN 1 ELSE 0 END) = 0 AND
+                     SUM(CASE WHEN case_type_id IN (\"%s\") THEN 1 ELSE 0 END) > 0
+            )
+          )",
+          $excluded_ids
+      );
+      }
+      if ($included_ids) {
+        $conditions[] = sprintf("case_type_id IN (\"%s\")", $included_ids);
+      }
+
+      if (!empty($conditions)) {
+        $open_case_subquery = sprintf(
+          "%s
+          AND
+          (%s)
+          GROUP BY APN, case_id",
+          $basic_select,
+          implode(" AND ", $conditions)
+        );
+      } else {
+        $open_case_subquery = sprintf(
+          "%s
+          GROUP BY APN, case_id",
+          $basic_select
+        );
+      }
+    }
+
+    $query = sprintf(
+      "SELECT c.APN, c.case_id, c.case_type_id FROM property_cases AS c
+      JOIN (
+        %s
+      ) AS open_cases
+      ON open_cases.APN = c.APN AND open_cases.case_id = c.case_id
+      GROUP BY c.APN, c.case_id, c.case_type_id",
+      $open_case_subquery
+    );
+
+    $query = $query . ";";
+
+    $this->db->query($query);
+
+    $results = $this->db->result_array();
+
+    $matching_apns = $this->filterOnConstraints($results, $case_type_filter_builder);
+
+    return $matching_apns;
+  }
+
+  private function filterOnConstraints($apn_case_id_data, $case_type_filter_builder) {
+    $case_type_map = [];
+    $all_apns = [];
+
+    foreach ($apn_case_id_data as $data) {
+      $apn = $data['APN'];
+      $case_id = $data['case_id'];
+      $case_type_id = $data['case_type_id'];
+
+      $case_type_map[$case_type_id][$apn][] = $case_id;
+
+      $all_apns[] = $apn;
+    }
+
+    if (empty($case_type_filter_builder->getInclusionFilters())) {
+      return $all_apns;
+    }
+
+    $matching_apns = [];
+    foreach ($case_type_map as $case_type_id => $case_type_apns) {
+      $filter = $case_type_filter_builder->getInclusionFilterForCaseTypeID($case_type_id);
+
+      if (!isset($filter)) {
+        continue;
+      }
+
+      foreach ($case_type_apns as $apn => $apn_cases) {
+        $matches = true;
+        foreach ($apn_cases as $case_id) {
+          if (!$filter->doesMatch($case_id)) {
+            $matches = false;
+            break;
+          }
+        }
+        if ($matches) {
+          $matching_apns[] = $apn;
+        }
+      }
+    }
+
+    return $matching_apns;
+  }
+
   public function getResults($limit = 10)
   {
-      $conditions = $this->getConditions();
+      $case_type_filters = $this->search_params->getCaseTypeFilters();
+      $case_type_filter_builder = new CaseTypeFilters($case_type_filters);
+      $relevant_apns = $this->getOpenAPNsAfterExclusions($case_type_filter_builder);
+
+      $conditions = $this->getConditions($relevant_apns);
 
       if (count($conditions) > 0) {
         $where = implode(' AND ', $conditions);
       }
 
-      $select = "
-        SELECT
-          p.parcel_number,
-          p.street_number,
-          p.street_name,
-          p.site_address_city_state,
-          p.site_address_zip,
-          p.owner_name2,
-          p.number_of_units,
-          p.number_of_stories,
-          p.bedrooms,
-          p.bathrooms,
-          p.lot_area_sqft,
-          p.cost_per_sq_ft,
-          p.year_built,
-          p.sales_date,
-          p.sales_price
-        FROM property AS p
-        JOIN property_cases AS c
-        ON p.parcel_number = c.APN
-        JOIN property_inspection AS pi
-        ON pi.lblCaseNo = c.case_id";
-
-      $group_by = "
-        GROUP BY
-          p.parcel_number,
-          p.street_number,
-          p.street_name,
-          p.site_address_city_state,
-          p.site_address_zip,
-          p.owner_name2,
-          p.number_of_units,
-          p.number_of_stories,
-          p.bedrooms,
-          p.bathrooms,
-          p.lot_area_sqft,
-          p.cost_per_sq_ft,
-          p.year_built,
-          p.sales_date,
-          p.sales_price
-      ";
+      $select = "SELECT * FROM property";
 
       if (isset($where)) {
         $query = sprintf(
@@ -69,23 +156,16 @@ class CustomDatabaseSearch {
           WHERE (
             %s
           )
-          %s;
           ",
           $select,
-          $where,
-          $group_by
+          $where
         );
       } else {
         $query = sprintf(
-          "%s
-          %s;
-          ",
-          $select,
-          $group_by
+          "%s;",
+          $select
         );
       }
-
-      Debug::dumpR($query);
 
       $this->db->query($query);
 
@@ -100,10 +180,15 @@ class CustomDatabaseSearch {
     return $this->results_count;
   }
 
-  public function getConditions() {
+  public function getConditions($relevant_apns) {
     $search_param_data = $this->search_params->getSearchParamData();
 
     $conditions = array();
+
+    $conditions[] = sprintf(
+      "(parcel_number IN ('%s'))",
+      implode("','", $relevant_apns)
+    );
 
     $num_units_min = $search_param_data['num_units_min'];
     $num_units_max = $search_param_data['num_units_max'];
@@ -234,27 +319,6 @@ class CustomDatabaseSearch {
       $sdatefirst=date('Y-m-d', strtotime($sales_date_min));
       $sdatesecond=date('Y-m-d', strtotime($sales_date_max));
       $conditions[]=  '(sales_date >="'.$sdatefirst.'" and sales_date <="'.$sdatesecond.'")';
-    }
-
-
-    $open_case_condition =
-      "(c.case_id in (
-          SELECT case_id
-          FROM property_cases
-          GROUP BY case_id
-          HAVING SUM(CASE WHEN case_date <> \"\" THEN 1 ELSE 0 END) = 0
-        )
-      )";
-    $conditions[] = $open_case_condition;
-
-    $case_type_filters = $this->search_params->getCaseTypeFilters();
-    if (!empty($case_type_filters)) {
-      $case_type_filter_builder = new CaseTypeFilters($case_type_filters);
-
-      $case_types_condition = $case_type_filter_builder->getCaseTypesCondition();
-      if (!empty($case_types_condition)) {
-        $conditions[] = $case_types_condition;
-      }
     }
 
     return $conditions;

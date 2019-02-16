@@ -1,14 +1,19 @@
 <?php
+require_once('config.php');
 include('CaseTypeStatusFilter.php');
 
 class InclusionFilter {
 
+  const DATE_FORMAT = "m/d/Y";
+
+  private $db;
   private $case_type_id;
   private $from_date;
   private $to_date;
   private $status_filters;
 
   function __construct($data_array) {
+    $this->db = Database::instance();
     $this->case_type_id = $data_array['case_type_id'];
     $this->from_date = $data_array['from_date'];
     $this->to_date = $data_array['to_date'];
@@ -99,45 +104,39 @@ class InclusionFilter {
     );
   }
 
+  private function getCaseTypeDateRangeClause() {
+    $date_clause = null;
+    if ($this->hasFromDate() && $this->hasToDate()) {
+      $date_clause = sprintf(
+        "SUM(CASE WHEN c.case_type_id = %s AND STR_TO_DATE(pi.date, \"%%m/%%d/%%Y\") >= %s AND STR_TO_DATE(pi.date, \"%%m/%%d/%%Y\") <= %s THEN 1 ELSE 0 END) > 0",
+        $this->getCaseTypeID(),
+        $this->getFromDateAsExpression(),
+        $this->getToDateAsExpression()
+      );
+    } else if ($this->hasFromDate()) {
+      $date_clause = sprintf(
+        "SUM(CASE WHEN c.case_type_id = %s AND STR_TO_DATE(pi.date, \"%%m/%%d/%%Y\") >= %s AND STR_TO_DATE(pi.date, \"%%m/%%d/%%Y\") <= %s THEN 1 ELSE 0 END) > 0",
+        $this->getCaseTypeID(),
+        $this->getFromDateAsExpression(),
+        $this->getCurrentDateAsDateObject()
+      );
+    } else if ($this->hasToDate()) {
+      $date_clause = sprintf(
+        "SUM(CASE WHEN c.case_type_id = %s AND STR_TO_DATE(pi.date, \"%%m/%%d/%%Y\") <= %s THEN 1 ELSE 0 END) > 0",
+        $this->getCaseTypeID(),
+        $this->getToDateAsExpression()
+      );
+    }
+
+    return $date_clause;
+  }
+
   public function getConditionExpression() {
     $inclusion_clauses = [];
     $exclusion_clauses = [];
 
     if (($this->hasFromDate() || $this->hasToDate()) && !$this->hasStatusFilters()) {
-      if ($this->hasFromDate() && $this->hasToDate()) {
-        $date_clause = sprintf(
-          "SUM(CASE WHEN STR_TO_DATE(pi.date, \"%%m/%%d/%%Y\") >= %s AND STR_TO_DATE(pi.date, \"%%m/%%d/%%Y\") <= %s THEN 1 ELSE 0 END) > 0",
-          $this->getFromDateAsExpression(),
-          $this->getToDateAsExpression()
-        );
-      } else if ($this->hasFromDate()) {
-        $date_clause = sprintf(
-          "SUM(CASE WHEN STR_TO_DATE(pi.date, \"%%m/%%d/%%Y\") >= %s AND STR_TO_DATE(pi.date, \"%%m/%%d/%%Y\") <= %s THEN 1 ELSE 0 END) > 0",
-          $this->getFromDateAsExpression(),
-          $this->getCurrentDateAsDateObject()
-        );
-      } else if ($this->hasToDate()) {
-        $date_clause = sprintf(
-          "SUM(CASE WHEN STR_TO_DATE(pi.date, \"%%m/%%d/%%Y\") <= %s THEN 1 ELSE 0 END) > 0",
-          $this->getToDateAsExpression()
-        );
-      }
-
-      return sprintf(
-        "(
-          c.case_id in (
-            SELECT case_id
-            FROM property_cases AS c
-            JOIN property_inspection AS pi
-            ON c.case_id = pi.lblCaseNo
-            WHERE c.case_type_id = %s
-            GROUP BY c.case_id
-            HAVING %s
-          )
-        )",
-        $this->getCaseTypeID(),
-        $date_clause
-      );
+      return $this->getCaseTypeDateRangeClause();
     }
 
     $status_exclusions = $this->getStatusExclusions();
@@ -198,7 +197,7 @@ class InclusionFilter {
         );
       } else if ($status_filter->hasFromDate() && !$status_filter->hasToDate()) {
         $date_clause = sprintf(
-          "STR_TO_DATE(pi.date, \"%%m/%%d/%%Y\") >= %s AND STR_TO_DATE(pi.date, \"%%m/%%d/%%Y\") <= %s)",
+          "STR_TO_DATE(pi.date, \"%%m/%%d/%%Y\") >= %s AND STR_TO_DATE(pi.date, \"%%m/%%d/%%Y\") <= %s",
           $status_filter->getFromDateAsExpression(),
           $status_filter->getCurrentDateAsDateObject()
         );
@@ -209,7 +208,7 @@ class InclusionFilter {
         );
       } else if (!$status_filter->hasFromDate() && $status_filter->hasToDate()) {
         $date_clause = sprintf(
-          "STR_TO_DATE(pi.date, \"%%m/%%d/%%Y\") <= %s)",
+          "STR_TO_DATE(pi.date, \"%%m/%%d/%%Y\") <= %s",
           $status_filter->getToDateAsExpression()
         );
         $having_clause = sprintf(
@@ -231,56 +230,41 @@ class InclusionFilter {
     }
 
     if (isset($exclusion_clause) && empty($inclusion_clauses)) {
-      return sprintf(
-        "(
-          c.case_id in (
-            SELECT case_id
-            FROM property_cases AS c
-            JOIN property_inspection AS pi
-            ON c.case_id = pi.lblCaseNo
-            WHERE c.case_type_id = %s
-            GROUP BY c.case_id
-            HAVING %s
-          )
-        )",
-        $this->getCaseTypeID(),
-        $exclusion_clause
-      );
+      return $exclusion_clause;
     } else if (isset($exclusion_clause) && !empty($inclusion_clauses)) {
       return sprintf(
-        "(
-          c.case_id in (
-            SELECT case_id
-            FROM property_cases AS c
-            JOIN property_inspection AS pi
-            ON c.case_id = pi.lblCaseNo
-            WHERE c.case_type_id = %s
-            GROUP BY c.case_id
-            HAVING %s AND %s
-          )
-        )",
-        $this->getCaseTypeID(),
+        "%s AND (%s)",
         $exclusion_clause,
-        implode(" AND ", $inclusion_clauses)
+        implode(" OR ", $inclusion_clauses)
       );
     } else if (!isset($exclusion_clause) && !empty($inclusion_clauses)) {
-        return sprintf(
-          "(
-            c.case_id in (
-              SELECT case_id
-              FROM property_cases AS c
-              JOIN property_inspection AS pi
-              ON c.case_id = pi.lblCaseNo
-              WHERE c.case_type_id = %s
-              GROUP BY c.case_id
-              HAVING %s
-            )
-          )",
-          $this->getCaseTypeID(),
-          implode(" AND ", $inclusion_clauses)
-        );
+      return sprintf(
+        "(%s)",
+        implode(" OR ", $inclusion_clauses)
+      );
+    }
+  }
+
+  public function doesMatch($case_id) {
+    $clauses = $this->getConditionExpression();
+    $query = sprintf(
+      "SELECT case_id FROM property_cases AS c
+      JOIN property_inspection AS pi
+      ON c.case_id = pi.lblCaseNo
+      WHERE c.case_id = %s
+      GROUP BY c.case_id",
+      $case_id
+    );
+
+    if (!empty($clauses)) {
+      $query = $query . " HAVING " . $clauses . ";";
+    } else {
+      $query = $query . ";";
     }
 
+    $this->db->query($query);
+
+    return !empty($this->db->result());
   }
 
 }

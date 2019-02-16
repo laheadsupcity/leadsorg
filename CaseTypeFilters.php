@@ -10,8 +10,10 @@ class CaseTypeFilters {
 
   function __construct($case_type_filter_data) {
     $this->db = Database::instance();
-    $this->setInclusionFilters($case_type_filter_data['include']);
-    $this->setExclusionFilters($case_type_filter_data['exclude']);
+    if (!empty($case_type_filter_data)) {
+      $this->setInclusionFilters($case_type_filter_data['include']);
+      $this->setExclusionFilters($case_type_filter_data['exclude']);
+    }
   }
 
   private function setInclusionFilters($data_array) {
@@ -30,12 +32,56 @@ class CaseTypeFilters {
     }
   }
 
-  private function getInclusionFilters() {
+  public function hasSpecificCaseFilters() {
+    return !empty($this->getInclusionFilters()) || !empty($this->getExclusionFilters());
+  }
+
+  public function getInclusionFilterForCaseTypeID($case_type_id) {
+    foreach ($this->inclusion_filters as $filter) {
+      if ($filter->getCaseTypeID() == $case_type_id) {
+        return $filter;
+      }
+    }
+
+    return null;
+  }
+
+  public function getInclusionFilters() {
     return $this->inclusion_filters;
   }
 
-  private function getExclusionFilters() {
+  public function getExclusionFilters() {
     return $this->exclusion_filters;
+  }
+
+  public function getIncludedIDsExpression() {
+    if (empty($this->inclusion_filters)) {
+      return null;
+    }
+
+    $ids = array_map(
+      create_function('$filter', 'return $filter->getCaseTypeID();'),
+      $this->inclusion_filters
+    );
+
+    $expr = implode('","', $ids);
+
+    return $expr;
+  }
+
+  public function getExcludedIDsExpression() {
+    if (empty($this->exclusion_filters)) {
+      return null;
+    }
+
+    $ids = array_map(
+      create_function('$filter', 'return $filter->getCaseTypeID();'),
+      $this->exclusion_filters
+    );
+
+    $expr = implode('","', $ids);
+
+    return $expr;
   }
 
   private function getExclusionCondition($parcel_number_field = "p.parcel_number") {
@@ -43,23 +89,16 @@ class CaseTypeFilters {
       return null;
     }
 
-    $case_type_ids_to_exclude = array_map(
-      create_function('$filter', 'return $filter->getCaseTypeID();'),
-      $this->exclusion_filters
-    );
-
-    $expr = implode('","', $case_type_ids_to_exclude);
-
     return sprintf(
-      "(c.case_id in (
+      "(c.case_id NOT in (
           SELECT case_id
           FROM property_cases
           GROUP BY case_id
           HAVING SUM(CASE WHEN case_date <> \"\" THEN 1 ELSE 0 END) = 0 AND
-                 SUM(CASE WHEN case_type_id IN (\"%s\") THEN 1 ELSE 0 END) = 0
+                 SUM(CASE WHEN case_type_id IN (\"%s\") THEN 1 ELSE 0 END) > 0
         )
       )",
-      $expr
+      $this->getExcludedIDsExpression()
     );
   }
 
@@ -93,7 +132,7 @@ class CaseTypeFilters {
     );
   }
 
-  private function getFiltersWithConstraints() {
+  public function getFiltersWithConstraints() {
     return array_filter(
       $this->inclusion_filters,
       create_function('$filter', 'return $filter->hasConstraints();')
