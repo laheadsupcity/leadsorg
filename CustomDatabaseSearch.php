@@ -25,64 +25,44 @@ class CustomDatabaseSearch {
       $included_ids = $case_type_filter_builder->getIncludedIDsExpression();
     }
 
-    $basic_select = "SELECT APN, case_id FROM property_cases
-      WHERE case_id IN (
-        SELECT case_id FROM property_cases
-        GROUP BY case_id
-        HAVING SUM(CASE WHEN case_date <> \"\" THEN 1 ELSE 0 END) = 0
-      )";
+    $basic_select = "SELECT APN as open_APN, case_id as open_case_id FROM property_cases
+      GROUP BY open_APN, open_case_id
+      HAVING SUM(CASE WHEN case_date <> \"\" THEN 1 ELSE 0 END) = 0";
 
-
-    if (!$excluded_ids && !$included_ids) {
-      $open_case_subquery = $basic_select . " GROUP BY APN, case_id";
-    } else {
-      $conditions = [];
-      if ($excluded_ids) {
-        $conditions[] = sprintf(
-          "(APN NOT IN (
-              SELECT APN
-              FROM property_cases
-              GROUP BY APN, case_id
-              HAVING SUM(CASE WHEN case_date <> \"\" THEN 1 ELSE 0 END) = 0 AND
-                     SUM(CASE WHEN case_type_id IN (\"%s\") THEN 1 ELSE 0 END) > 0
-            )
-          )",
-          $excluded_ids
+    $conditions = [];
+    if ($excluded_ids) {
+      $conditions[] = sprintf(
+        "SUM(CASE WHEN case_type IN (\"%s\") THEN 1 ELSE 0 END) = 0",
+        $excluded_ids
       );
-      }
-      if ($included_ids) {
-        $conditions[] = sprintf("case_type_id IN (\"%s\")", $included_ids);
-      }
-
-      if (!empty($conditions)) {
-        $open_case_subquery = sprintf(
-          "%s
-          AND
-          (%s)
-          GROUP BY APN, case_id",
-          $basic_select,
-          implode(" AND ", $conditions)
+    }
+    if ($included_ids) {
+      $conditions[] = sprintf(
+          "SUM(CASE WHEN case_type_id IN (\"%s\") THEN 1 ELSE 0 END) > 0",
+          $included_ids
         );
-      } else {
-        $open_case_subquery = sprintf(
-          "%s
-          GROUP BY APN, case_id",
-          $basic_select
-        );
-      }
     }
 
-    $query = sprintf(
-      "SELECT c.APN, c.case_id, c.case_type_id FROM property_cases AS c
-      JOIN (
-        %s
-      ) AS open_cases
-      ON open_cases.APN = c.APN AND open_cases.case_id = c.case_id
-      GROUP BY c.APN, c.case_id, c.case_type_id",
-      $open_case_subquery
-    );
-
-    $query = $query . ";";
+    if (!empty($conditions)) {
+      $query = sprintf(
+        "SELECT APN, case_id, case_type_id FROM property_cases
+        JOIN (
+          %s
+          AND
+          %s
+        ) as open_cases
+        ON open_cases.open_APN = property_cases.APN AND open_cases.open_case_id = property_cases.case_id;",
+        $basic_select,
+        implode(" AND ", $conditions)
+      );
+    } else {
+      $query = sprintf(
+        "SELECT DISTINCT open_case_APN FROM (
+          %s
+        ) as open_cases;",
+        $basic_select
+      );
+    }
 
     $this->db->query($query);
 
