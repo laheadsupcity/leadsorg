@@ -1,8 +1,7 @@
 <?php
     require_once('Database.php');
-    require_once('Debug.php');
     $database_name='lead_housing';
-    $username='root';
+    $username='headsupcity';
     $password='Temp@12345';
     $host='localhost';
     $db = new Database($database_name, $username, $password, $host);
