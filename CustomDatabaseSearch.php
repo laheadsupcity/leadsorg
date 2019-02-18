@@ -57,9 +57,11 @@ class CustomDatabaseSearch {
       );
     } else {
       $query = sprintf(
-        "SELECT DISTINCT open_case_APN FROM (
+        "SELECT APN, case_id, case_type_id FROM property_cases
+        JOIN (
           %s
-        ) as open_cases;",
+        ) as open_cases
+        ON open_cases.open_APN = property_cases.APN AND open_cases.open_case_id = property_cases.case_id;",
         $basic_select
       );
     }
