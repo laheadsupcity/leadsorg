@@ -118,7 +118,7 @@
                 <div class="heading mb-2">Zoning</div>
                 <div class="container d-flex no-gutters p-0">
                   <div class="col pr-2">
-                    <select name="zoning" id="zoning" class="form-control h-100 mrt" size="4" multiple="multiple">
+                    <select name="zoning_list" id="zoning" class="form-control h-100 mrt" size="4" multiple="multiple">
                       <?php foreach ($zoning as $zkey=>$zval) { ?>
                         <option value="<?php echo $zval; ?>" data-position="<?php echo $zkey; ?>"><?php echo $zval; ?></option>
                       <?php } ?>

@@ -56,7 +56,6 @@ class SearchParameters {
     return $exemption;
   }
 
-
   public function getNumUnitsMin()
   {
     return $this->search_params['num_units_min'];

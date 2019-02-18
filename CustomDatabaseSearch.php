@@ -32,7 +32,7 @@ class CustomDatabaseSearch {
     $conditions = [];
     if ($excluded_ids) {
       $conditions[] = sprintf(
-        "SUM(CASE WHEN case_type IN (\"%s\") THEN 1 ELSE 0 END) = 0",
+        "SUM(CASE WHEN case_type_id IN (\"%s\") THEN 1 ELSE 0 END) = 0",
         $excluded_ids
       );
     }
