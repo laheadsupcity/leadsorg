@@ -287,9 +287,8 @@
 
 <script>
   $(document).ready(function(){
-    //$("#perpgform1").hide();
     var totrec = <?= $total_records ?>;
-    var totpgs = <?= $total_pages ?>;
+
     var currpg = <?= (isset($_GET['page']))?$_GET['page']:1 ?>
 
     var num_rec_per_page = <?= (isset($_GET['num_rec_per_page']))?$_GET['num_rec_per_page']:10 ?>;
@@ -305,7 +304,7 @@
 
     function chk(val){
       total_pages = Math.ceil(totrec / val);
-      //console.log('totpgs:'+totpgs+' total_pages:'+total_pages+' val:'+val);
+
       if(total_pages < currpg){
         $(".pagecl").val(total_pages);
         return false;
