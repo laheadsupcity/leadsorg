@@ -48,10 +48,10 @@ class CustomDatabaseSearch {
         "SELECT APN, case_id, case_type_id FROM property_cases
         JOIN (
           %s
-          AND
-          %s
         ) as open_cases
-        ON open_cases.open_APN = property_cases.APN AND open_cases.open_case_id = property_cases.case_id;",
+        ON open_cases.open_APN = property_cases.APN AND open_cases.open_case_id = property_cases.case_id
+        GROUP BY APN, case_id, case_type_id
+        HAVING %s;",
         $basic_select,
         implode(" AND ", $conditions)
       );
