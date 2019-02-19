@@ -70,12 +70,34 @@ class CustomDatabaseSearch {
 
     $results = $this->db->result_array();
 
-    $matching_apns = $this->filterOnConstraints($results, $case_type_filter_builder);
+    $excluded_apns = [];
+    if ($excluded_ids) {
+      $excluded_apns_query = sprintf(
+        "SELECT APN FROM property_cases
+        JOIN (
+          SELECT APN as open_APN, case_id as open_case_id FROM property_cases
+            GROUP BY open_APN, open_case_id
+            HAVING SUM(CASE WHEN case_date <> \"\" THEN 1 ELSE 0 END) = 0
+        ) as open_cases
+        ON open_cases.open_APN = property_cases.APN AND open_cases.open_case_id = property_cases.case_id
+        WHERE property_cases.case_type_id IN (\"%s\");",
+        $excluded_ids
+      );
+      $this->db->query($excluded_apns_query);
+      $excluded_apns_results = $this->db->result_array();
+
+      $excluded_apns = array_map(
+        create_function('$data', 'return $data["APN"];'),
+        $excluded_apns_results
+      );
+    }
+
+    $matching_apns = $this->filterOnConstraints($results, $excluded_apns, $case_type_filter_builder);
 
     return $matching_apns;
   }
 
-  private function filterOnConstraints($apn_case_id_data, $case_type_filter_builder) {
+  private function filterOnConstraints($apn_case_id_data, $excluded_apns, $case_type_filter_builder) {
     $case_type_map = [];
     $all_apns = [];
 
@@ -83,6 +105,10 @@ class CustomDatabaseSearch {
       $apn = $data['APN'];
       $case_id = $data['case_id'];
       $case_type_id = $data['case_type_id'];
+
+      if (in_array($apn, $excluded_apns)) {
+        continue;
+      }
 
       $case_type_map[$case_type_id][$apn][] = $case_id;
 
