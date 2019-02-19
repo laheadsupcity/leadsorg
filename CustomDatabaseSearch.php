@@ -128,14 +128,13 @@ class CustomDatabaseSearch {
       }
 
       foreach ($case_type_apns as $apn => $apn_cases) {
-        $matches = true;
+        $matches_count = 0;
         foreach ($apn_cases as $case_id) {
-          if (!$filter->doesMatch($case_id)) {
-            $matches = false;
-            break;
+          if ($filter->doesMatch($case_id)) {
+            $matches_count += 1;
           }
         }
-        if ($matches) {
+        if ($matches_count > 0) {
           $matching_apns[] = $apn;
         }
       }
