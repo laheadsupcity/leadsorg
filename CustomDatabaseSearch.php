@@ -143,7 +143,7 @@ class CustomDatabaseSearch {
     return $matching_apns;
   }
 
-  public function getResults($limit = 10)
+  public function getResults($limit = 100)
   {
       $case_type_filters = $this->search_params->getCaseTypeFilters();
       $case_type_filter_builder = new CaseTypeFilters($case_type_filters);
@@ -151,34 +151,34 @@ class CustomDatabaseSearch {
 
       $conditions = $this->getConditions($relevant_apns);
 
-      if (count($conditions) > 0) {
-        $where = implode(' AND ', $conditions);
-      }
+      $where = implode(' AND ', $conditions);
 
       $select = "SELECT * FROM property";
 
-      if (isset($where)) {
-        $query = sprintf(
-          "%s
-          WHERE (
-            %s
-          )
-          ",
-          $select,
-          $where
-        );
-      } else {
-        $query = sprintf(
-          "%s;",
-          $select
-        );
-      }
 
-      $this->db->query($query);
+      $query = sprintf(
+        "%s
+        WHERE (
+          %s
+        )
+        ",
+        $select,
+        $where
+      );
+
+      $this->db->query($query . ";");
+
+      $this->results_count = count($this->db->result_array());
+
+      $this->db->query(
+        sprintf(
+          "%s LIMIT %s;",
+          $query,
+          $limit
+        )
+      );
 
       $results = $this->db->result_array();
-
-      $this->results_count = count($results);
 
       return $results;
   }

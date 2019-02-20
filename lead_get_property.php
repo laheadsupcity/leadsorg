@@ -106,7 +106,7 @@
 
       $start_from = $offset = null;
       $page = isset($_GET["page"])?$_GET["page"]:1;
-      $num_rec_per_page = isset($_REQUEST['num_rec_per_page'])?$_REQUEST['num_rec_per_page']:10;
+      $num_rec_per_page = isset($_REQUEST['num_rec_per_page'])?$_REQUEST['num_rec_per_page']:100;
 
       $searcher = new CustomDatabaseSearch($search_params);
       $result = $searcher->getResults();
