@@ -93,7 +93,7 @@
 		</tr>
 		<tr>
 		<td class="field2">Nature of Complaint:</td>
-		<td class="field2data" colspan="4"><!-- This is causing an illegal offset warning <?php echo det['complaint_nature']; ?> --></td>
+		<td class="field2data" colspan="4"><?php echo $det['complaint_nature']; ?></td>
 		</tr>
 	</table>
 </div>
