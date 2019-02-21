@@ -13,6 +13,37 @@ class CustomDatabaseSearch {
     $this->search_params = new SearchParameters($search_param_data);
   }
 
+  private function getAllOpenCases()
+  {
+    $query = sprintf(
+      "
+      SELECT case_counts.APN, case_counts.case_id, cases.case_type_id FROM (
+        SELECT
+          pc.APN,
+          pc.case_id,
+          count(pc.case_id) 'dup_count',
+          count(IF(pc.case_date=\"\", 1, NULL)) 'open_count'
+        FROM property_cases AS pc
+        GROUP BY pc.APN, pc.case_id
+      ) as case_counts
+      JOIN property_cases AS cases
+      ON cases.APN = case_counts.APN AND cases.case_id = case_counts.case_id
+      WHERE
+        ((case_counts.dup_count = 1 AND case_counts.open_count = 1) OR (case_counts.dup_count > 1)) AND
+        NOT EXISTS (
+          SELECT 1 FROM property_inspection
+          WHERE staus=\"%s\"
+          AND lblCaseNo = case_counts.case_id
+        );
+      ",
+      "All Violations Resolved Date"
+    );
+
+    $this->db->query($query);
+
+    return $this->db->result_array();
+  }
+
   private function getOpenAPNsAfterExclusions($case_type_filter_builder) {
     $excluded_ids = null;
     $included_ids = null;
@@ -25,50 +56,7 @@ class CustomDatabaseSearch {
       $included_ids = $case_type_filter_builder->getIncludedIDsExpression();
     }
 
-    $basic_select = "SELECT APN as open_APN, case_id as open_case_id FROM property_cases
-      GROUP BY open_APN, open_case_id
-      HAVING SUM(CASE WHEN case_date <> \"\" THEN 1 ELSE 0 END) = 0";
-
-    $conditions = [];
-    if ($excluded_ids) {
-      $conditions[] = sprintf(
-        "SUM(CASE WHEN case_type_id IN (\"%s\") THEN 1 ELSE 0 END) = 0",
-        $excluded_ids
-      );
-    }
-    if ($included_ids) {
-      $conditions[] = sprintf(
-          "SUM(CASE WHEN case_type_id IN (\"%s\") THEN 1 ELSE 0 END) > 0",
-          $included_ids
-        );
-    }
-
-    if (!empty($conditions)) {
-      $query = sprintf(
-        "SELECT APN, case_id, case_type_id FROM property_cases
-        JOIN (
-          %s
-        ) as open_cases
-        ON open_cases.open_APN = property_cases.APN AND open_cases.open_case_id = property_cases.case_id
-        GROUP BY APN, case_id, case_type_id
-        HAVING %s;",
-        $basic_select,
-        implode(" AND ", $conditions)
-      );
-    } else {
-      $query = sprintf(
-        "SELECT APN, case_id, case_type_id FROM property_cases
-        JOIN (
-          %s
-        ) as open_cases
-        ON open_cases.open_APN = property_cases.APN AND open_cases.open_case_id = property_cases.case_id;",
-        $basic_select
-      );
-    }
-
-    $this->db->query($query);
-
-    $results = $this->db->result_array();
+    $all_open_cases = $this->getAllOpenCases();
 
     $excluded_apns = [];
     if ($excluded_ids) {
@@ -92,7 +80,7 @@ class CustomDatabaseSearch {
       );
     }
 
-    $matching_apns = $this->filterOnConstraints($results, $excluded_apns, $case_type_filter_builder);
+    $matching_apns = $this->filterOnConstraints($all_open_cases, $excluded_apns, $case_type_filter_builder);
 
     return $matching_apns;
   }

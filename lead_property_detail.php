@@ -16,10 +16,10 @@
         return $newurl;
     }
     $det = isset($det[0]) ? $det[0] : '';
-    function getcasetypeid($id, $caseid)
+    function getcasetypeid($pcid, $caseid)
     {
         $db = Database::instance();
-        $db->select('property_cases_detail', array('property_case_id' => $id,'case_id'=>$caseid), false, false, 'AND', 'id');
+        $db->select('property_cases_detail', array('property_case_id' => $pcid,'case_id'=>$caseid), false, false, 'AND', 'id');
         $result=$db->row_array();
         return $result;
     }
