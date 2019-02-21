@@ -231,7 +231,7 @@ tr:nth-child(even) {background-color: #e9ebf5;}
 
             <!--<p style='text-align:center;'><?php echo $goto_1st_pg.$goto_pg_no.$goto_last_pg."&emsp;<span style='color:#0066CC'>[ PAGE : ".$page." ]</span>";  ?></p>-->
             <?php if($resultcount > 0 ){ ?>
-            <p class="pageno" style='text-align:center; font-size:14px; padding:15px 0 5px;'><span style='color:#333; font-size:14px; font-weight:500;'>Page <?php echo $page; ?> of <?php echo $total_pages; ?> &nbsp;</span> <?php echo $goto_1st_pg.$goto_pg_no.$goto_last_pg. "&emsp;";  ?></p>
+            <p class="results-pagination" style='text-align:center; font-size:14px; padding:15px 0 5px;'><span style='color:#333; font-size:14px; font-weight:500;'>Page <?php echo $page; ?> of <?php echo $total_pages; ?> &nbsp;</span> <?php echo $goto_1st_pg.$goto_pg_no.$goto_last_pg. "&emsp;";  ?></p>
             <?php } ?>
         </div>    
 

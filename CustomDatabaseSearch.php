@@ -131,7 +131,7 @@ class CustomDatabaseSearch {
     return $matching_apns;
   }
 
-  public function getResults($limit = 100)
+  public function getResults($limit = 100, $page = 1)
   {
       $case_type_filters = $this->search_params->getCaseTypeFilters();
       $case_type_filter_builder = new CaseTypeFilters($case_type_filters);
@@ -158,9 +158,15 @@ class CustomDatabaseSearch {
 
       $this->results_count = count($this->db->result_array());
 
+      $limit = sprintf(
+        "LIMIT %s, %s",
+        $limit * ($page - 1),
+        $limit
+      );
+
       $this->db->query(
         sprintf(
-          "%s LIMIT %s;",
+          "%s %s;",
           $query,
           $limit
         )
