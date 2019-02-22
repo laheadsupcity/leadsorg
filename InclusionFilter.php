@@ -249,7 +249,7 @@ class InclusionFilter {
     $clauses = $this->getConditionExpression();
     $query = sprintf(
       "SELECT case_id FROM property_cases AS c
-      JOIN property_inspection AS pi
+      LEFT JOIN property_inspection AS pi
       ON c.case_id = pi.lblCaseNo
       WHERE c.case_id = %s
       GROUP BY c.case_id",

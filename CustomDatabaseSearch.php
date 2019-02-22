@@ -13,8 +13,10 @@ class CustomDatabaseSearch {
     $this->search_params = new SearchParameters($search_param_data);
   }
 
-  private function getAllOpenCases()
+  private function getAllOpenCases($case_type_filter_builder)
   {
+    $included_case_types_expr = $case_type_filter_builder->getIncludedIDsExpression();
+
     $query = sprintf(
       "
       SELECT case_counts.APN, case_counts.case_id, cases.case_type_id FROM (
@@ -34,9 +36,14 @@ class CustomDatabaseSearch {
           SELECT 1 FROM property_inspection
           WHERE staus=\"%s\"
           AND lblCaseNo = case_counts.case_id
-        );
+        ) %s;
       ",
-      "All Violations Resolved Date"
+      "All Violations Resolved Date",
+      isset($included_case_types_expr) ?
+        sprintf(
+          " AND cases.case_type_id IN (\"%s\")",
+          $included_case_types_expr
+        ) : ""
     );
 
     $this->db->query($query);
@@ -56,7 +63,7 @@ class CustomDatabaseSearch {
       $included_ids = $case_type_filter_builder->getIncludedIDsExpression();
     }
 
-    $all_open_cases = $this->getAllOpenCases();
+    $all_open_cases = $this->getAllOpenCases($case_type_filter_builder);
 
     $excluded_apns = [];
     if ($excluded_ids) {
@@ -142,7 +149,6 @@ class CustomDatabaseSearch {
       $where = implode(' AND ', $conditions);
 
       $select = "SELECT * FROM property";
-
 
       $query = sprintf(
         "%s
