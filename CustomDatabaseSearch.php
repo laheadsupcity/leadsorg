@@ -16,6 +16,7 @@ class CustomDatabaseSearch {
   private function getAllOpenCases($case_type_filter_builder)
   {
     $included_case_types_expr = $case_type_filter_builder->getIncludedIDsExpression();
+    $excluded_case_types_expr = $case_type_filter_builder->getExcludedIDsExpression();
 
     $query = sprintf(
       "
@@ -36,13 +37,18 @@ class CustomDatabaseSearch {
           SELECT 1 FROM property_inspection
           WHERE staus=\"%s\"
           AND lblCaseNo = case_counts.case_id
-        ) %s;
+        ) %s %s;
       ",
       "All Violations Resolved Date",
       isset($included_case_types_expr) ?
         sprintf(
           " AND cases.case_type_id IN (\"%s\")",
           $included_case_types_expr
+        ) : "",
+      isset($excluded_case_types_expr) ?
+        sprintf(
+          "AND cases.case_type_id NOT IN (\"%s\")",
+          $excluded_case_types_expr
         ) : ""
     );
 
@@ -52,47 +58,14 @@ class CustomDatabaseSearch {
   }
 
   private function getOpenAPNsAfterExclusions($case_type_filter_builder) {
-    $excluded_ids = null;
-    $included_ids = null;
-
-    if (!empty($case_type_filter_builder->getExclusionFilters())) {
-      $excluded_ids = $case_type_filter_builder->getExcludedIDsExpression();
-    }
-
-    if (!empty($case_type_filter_builder->getInclusionFilters())) {
-      $included_ids = $case_type_filter_builder->getIncludedIDsExpression();
-    }
-
     $all_open_cases = $this->getAllOpenCases($case_type_filter_builder);
 
-    $excluded_apns = [];
-    if ($excluded_ids) {
-      $excluded_apns_query = sprintf(
-        "SELECT APN FROM property_cases
-        JOIN (
-          SELECT APN as open_APN, case_id as open_case_id FROM property_cases
-            GROUP BY open_APN, open_case_id
-            HAVING SUM(CASE WHEN case_date <> \"\" THEN 1 ELSE 0 END) = 0
-        ) as open_cases
-        ON open_cases.open_APN = property_cases.APN AND open_cases.open_case_id = property_cases.case_id
-        WHERE property_cases.case_type_id IN (\"%s\");",
-        $excluded_ids
-      );
-      $this->db->query($excluded_apns_query);
-      $excluded_apns_results = $this->db->result_array();
-
-      $excluded_apns = array_map(
-        create_function('$data', 'return $data["APN"];'),
-        $excluded_apns_results
-      );
-    }
-
-    $matching_apns = $this->filterOnConstraints($all_open_cases, $excluded_apns, $case_type_filter_builder);
+    $matching_apns = $this->filterOnConstraints($all_open_cases, $case_type_filter_builder);
 
     return $matching_apns;
   }
 
-  private function filterOnConstraints($apn_case_id_data, $excluded_apns, $case_type_filter_builder) {
+  private function filterOnConstraints($apn_case_id_data, $case_type_filter_builder) {
     $case_type_map = [];
     $all_apns = [];
 
@@ -100,10 +73,6 @@ class CustomDatabaseSearch {
       $apn = $data['APN'];
       $case_id = $data['case_id'];
       $case_type_id = $data['case_type_id'];
-
-      if (in_array($apn, $excluded_apns)) {
-        continue;
-      }
 
       $case_type_map[$case_type_id][$apn][] = $case_id;
 
