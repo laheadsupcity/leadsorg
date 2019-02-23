@@ -251,9 +251,11 @@ class InclusionFilter {
       "SELECT case_id FROM property_cases AS c
       LEFT JOIN property_inspection AS pi
       ON c.case_id = pi.lblCaseNo
-      WHERE c.case_id = %s
+      WHERE c.case_id = %s AND
+      c.case_type_id = %s
       GROUP BY c.case_id",
-      $case_id
+      $case_id,
+      $this->getCaseTypeID()
     );
 
     if (!empty($clauses)) {
