@@ -240,7 +240,7 @@ class InclusionFilter {
     } else if (!isset($exclusion_clause) && !empty($inclusion_clauses)) {
       return sprintf(
         "(%s)",
-        implode(" OR ", $inclusion_clauses)
+        implode(" AND ", $inclusion_clauses)
       );
     }
   }

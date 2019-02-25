@@ -18,38 +18,46 @@ class CustomDatabaseSearch {
     $included_case_types_expr = $case_type_filter_builder->getIncludedIDsExpression();
     $excluded_case_types_expr = $case_type_filter_builder->getExcludedIDsExpression();
 
+    if (isset($excluded_case_types_expr)) {
+      $excluded_expr = sprintf(
+        "AND APN NOT IN (
+          SELECT APN FROM property_cases
+          WHERE
+          case_id IN (
+            SELECT case_id FROM property_cases
+            WHERE case_id NOT IN (
+              SELECT lblCaseNo FROM property_inspection
+              WHERE staus=\"All Violations Resolved Date\"
+            )
+            GROUP BY case_id
+            HAVING COUNT(case_id) > 1 OR (COUNT(case_id) = 1 AND COUNT(IF(case_date=\"\", 1, NULL)) = 1)
+          ) AND case_type_id IN (\"%s\")
+        )",
+        $excluded_case_types_expr
+      );
+    }
+
     $query = sprintf(
-      "
-      SELECT case_counts.APN, case_counts.case_id, cases.case_type_id FROM (
-        SELECT
-          pc.APN,
-          pc.case_id,
-          count(pc.case_id) 'dup_count',
-          count(IF(pc.case_date=\"\", 1, NULL)) 'open_count'
-        FROM property_cases AS pc
-        GROUP BY pc.APN, pc.case_id
-      ) as case_counts
-      JOIN property_cases AS cases
-      ON cases.APN = case_counts.APN AND cases.case_id = case_counts.case_id
+      "SELECT APN, case_id, case_type_id FROM property_cases
       WHERE
-        ((case_counts.dup_count = 1 AND case_counts.open_count = 1) OR (case_counts.dup_count > 1)) AND
-        NOT EXISTS (
-          SELECT 1 FROM property_inspection
-          WHERE staus=\"%s\"
-          AND lblCaseNo = case_counts.case_id
-        ) %s %s;
-      ",
-      "All Violations Resolved Date",
+        %s
+        case_id IN (
+          SELECT case_id FROM property_cases
+          WHERE case_id NOT IN (
+            SELECT lblCaseNo FROM property_inspection
+            WHERE staus=\"All Violations Resolved Date\"
+          )
+          GROUP BY case_id
+          HAVING COUNT(case_id) > 1 OR (COUNT(case_id) = 1 AND COUNT(IF(case_date=\"\", 1, NULL)) = 1)
+        ) %s;",
       isset($included_case_types_expr) ?
         sprintf(
-          " AND cases.case_type_id IN (\"%s\")",
+          "case_type_id IN (\"%s\") AND",
           $included_case_types_expr
         ) : "",
-      isset($excluded_case_types_expr) ?
-        sprintf(
-          "AND cases.case_type_id NOT IN (\"%s\")",
-          $excluded_case_types_expr
-        ) : ""
+      isset($excluded_expr) ?
+        $excluded_expr :
+        ""
     );
 
     $this->db->query($query);
