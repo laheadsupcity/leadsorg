@@ -32,20 +32,6 @@ class CaseTypeFilters {
     }
   }
 
-  public function hasSpecificCaseFilters() {
-    return !empty($this->getInclusionFilters()) || !empty($this->getExclusionFilters());
-  }
-
-  public function getInclusionFilterForCaseTypeID($case_type_id) {
-    foreach ($this->inclusion_filters as $filter) {
-      if ($filter->getCaseTypeID() == $case_type_id) {
-        return $filter;
-      }
-    }
-
-    return null;
-  }
-
   public function getInclusionFilters() {
     return $this->inclusion_filters;
   }
@@ -64,7 +50,7 @@ class CaseTypeFilters {
       $this->inclusion_filters
     );
 
-    $expr = implode('","', $ids);
+    $expr = implode("','", $ids);
 
     return $expr;
   }

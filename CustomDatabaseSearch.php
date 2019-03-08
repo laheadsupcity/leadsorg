@@ -7,139 +7,78 @@ class CustomDatabaseSearch {
 
   private $search_params;
   private $results_count;
+  private $case_type_filter_builder;
 
   function __construct($search_param_data) {
     $this->db = Database::instance();
     $this->search_params = new SearchParameters($search_param_data);
+
+    $case_type_filters = $this->search_params->getCaseTypeFilters();
+    $this->case_type_filter_builder = new CaseTypeFilters($case_type_filters);
   }
 
-  private function getAllOpenCases($case_type_filter_builder)
-  {
-    $included_case_types_expr = $case_type_filter_builder->getIncludedIDsExpression();
-    $excluded_case_types_expr = $case_type_filter_builder->getExcludedIDsExpression();
+  private function getStatusInclusionClauses() {
 
-    if (isset($excluded_case_types_expr)) {
-      $excluded_expr = sprintf(
-        "AND APN NOT IN (
-          SELECT APN FROM property_cases
-          WHERE
-          case_id IN (
-            SELECT case_id FROM property_cases
-            WHERE case_id NOT IN (
-              SELECT lblCaseNo FROM property_inspection
-              WHERE staus=\"All Violations Resolved Date\"
-            )
-            GROUP BY case_id
-            HAVING COUNT(case_id) > 1 OR (COUNT(case_id) = 1 AND COUNT(IF(case_date=\"\", 1, NULL)) = 1)
-          ) AND case_type_id IN (\"%s\")
-        )",
-        $excluded_case_types_expr
+    $inclusion_filters = $this->case_type_filter_builder->getInclusionFilters();
+    if (empty($inclusion_filters)) {
+      return "";
+    }
+
+    $clauses = [];
+    foreach ($inclusion_filters as $filter) {
+      $clauses[] = $filter->getConditionExpression();
+    }
+
+    $expression = implode(" OR ", $clauses);
+
+    if (empty($expression)) {
+      return "";
+    } else {
+      return sprintf(
+        "%s AND",
+        $expression
       );
+    }
+  }
+
+  private function getExclusionSubquery() {
+    $expr = $this->case_type_filter_builder->getExcludedIDsExpression();
+
+    if (empty($expr)) {
+      return null;
     }
 
     $query = sprintf(
-      "SELECT APN, case_id, case_type_id FROM property_cases
-      WHERE
-        %s
-        case_id IN (
-          SELECT case_id FROM property_cases
-          WHERE case_id NOT IN (
-            SELECT lblCaseNo FROM property_inspection
-            WHERE staus=\"All Violations Resolved Date\"
-          )
-          GROUP BY case_id
-          HAVING COUNT(case_id) > 1 OR (COUNT(case_id) = 1 AND COUNT(IF(case_date=\"\", 1, NULL)) = 1)
-        ) %s;",
-      isset($included_case_types_expr) ?
-        sprintf(
-          "case_type_id IN (\"%s\") AND",
-          $included_case_types_expr
-        ) : "",
-      isset($excluded_expr) ?
-        $excluded_expr :
-        ""
+      'LEFT JOIN (
+        SELECT APN FROM property_inspection
+        WHERE case_type_id IN ("%s")
+        GROUP BY APN, property_case_detail_id
+        HAVING COUNT(IF(staus="All Violations Resolved Date", 1, NULL)) = 0
+      ) AS open_excluded_cases
+      ON p.parcel_number = open_excluded_cases.APN',
+      $expr
     );
 
-    $this->db->query($query);
-
-    return $this->db->result_array();
-  }
-
-  private function getOpenAPNsAfterExclusions($case_type_filter_builder) {
-    $all_open_cases = $this->getAllOpenCases($case_type_filter_builder);
-
-    $matching_apns = $this->filterOnConstraints($all_open_cases, $case_type_filter_builder);
-
-    return $matching_apns;
-  }
-
-  private function filterOnConstraints($apn_case_id_data, $case_type_filter_builder) {
-    $case_type_map = [];
-    $all_apns = [];
-
-    foreach ($apn_case_id_data as $data) {
-      $apn = $data['APN'];
-      $case_id = $data['case_id'];
-      $case_type_id = $data['case_type_id'];
-
-      $case_type_map[$case_type_id][$apn][] = $case_id;
-
-      $all_apns[] = $apn;
-    }
-
-    if (empty($case_type_filter_builder->getInclusionFilters())) {
-      return $all_apns;
-    }
-
-    $matching_apns = [];
-    foreach ($case_type_map as $case_type_id => $case_type_apns) {
-      $filter = $case_type_filter_builder->getInclusionFilterForCaseTypeID($case_type_id);
-
-      if (!isset($filter)) {
-        continue;
-      }
-
-      foreach ($case_type_apns as $apn => $apn_cases) {
-        $matches_count = 0;
-        foreach ($apn_cases as $case_id) {
-          if ($filter->doesMatch($case_id)) {
-            $matches_count += 1;
-          }
-        }
-        if ($matches_count > 0) {
-          $matching_apns[] = $apn;
-        }
-      }
-    }
-
-    return $matching_apns;
+    return $query;
   }
 
   public function getResults($limit = 100, $page = 1)
   {
-      $case_type_filters = $this->search_params->getCaseTypeFilters();
-      $case_type_filter_builder = new CaseTypeFilters($case_type_filters);
-      $relevant_apns = $this->getOpenAPNsAfterExclusions($case_type_filter_builder);
+      $conditions = $this->getConditions();
 
-      $conditions = $this->getConditions($relevant_apns);
+      $included_case_types_expr = $this->case_type_filter_builder->getIncludedIDsExpression();
+      $inclusion_clauses = $this->getStatusInclusionClauses();
 
-      $where = implode(' AND ', $conditions);
 
-      $select = "SELECT * FROM property";
+      $exclusion_subquery = $this->getExclusionSubquery();
 
-      $query = sprintf(
-        "%s
-        WHERE (
-          %s
-        )
-        ",
-        $select,
-        $where
-      );
+      if (isset($exclusion_subquery)) {
+        $conditions[] = "open_excluded_cases.APN IS NULL";
+      }
 
-      $this->db->query($query . ";");
-
-      $this->results_count = count($this->db->result_array());
+      if (!empty($conditions)) {
+        $where = implode(' AND ', $conditions);
+      }
 
       $limit = sprintf(
         "LIMIT %s, %s",
@@ -147,15 +86,52 @@ class CustomDatabaseSearch {
         $limit
       );
 
-      $this->db->query(
-        sprintf(
-          "%s %s;",
-          $query,
-          $limit
-        )
+      $query = sprintf(
+        "SELECT
+          -- SQL_CALC_FOUND_ROWS
+          DISTINCT p.parcel_number,
+          p.street_number,
+          p.street_name,
+          p.site_address_city_state,
+          p.owner_name2,
+          p.number_of_units,
+          p.number_of_stories,
+          p.bedrooms,
+          p.bathrooms,
+          p.lot_area_sqft,
+          p.cost_per_sq_ft,
+          p.year_built,
+          p.sales_date,
+          p.sales_price,
+          p.id
+        FROM (
+          SELECT APN, property_case_detail_id FROM property_inspection AS pi
+          %s
+          GROUP BY APN, property_case_detail_id
+          HAVING %s
+          COUNT(IF(staus='All Violations Resolved Date', 1, NULL)) = 0
+        ) as open_cases
+        JOIN property AS p
+        ON p.parcel_number = open_cases.APN
+        %s
+        %s
+        %s;",
+        isset($included_case_types_expr) ? sprintf(" WHERE pi.case_type_id IN ('%s')", $included_case_types_expr) : "",
+        !empty($inclusion_clauses) ? $inclusion_clauses : "",
+        isset($exclusion_subquery) ? $exclusion_subquery : "",
+        isset($where) ? " WHERE $where" : "",
+        $limit
       );
 
+      //Debug::dumpR($query);
+
+      $this->db->query($query);
+
       $results = $this->db->result_array();
+
+      // $this->db->query("SELECT FOUND_ROWS();");
+      //
+      $this->results_count = count($results);// $this->db->result_array()[0]["FOUND_ROWS()"];
 
       return $results;
   }
@@ -164,15 +140,10 @@ class CustomDatabaseSearch {
     return $this->results_count;
   }
 
-  public function getConditions($relevant_apns) {
+  public function getConditions() {
     $search_param_data = $this->search_params->getSearchParamData();
 
     $conditions = array();
-
-    $conditions[] = sprintf(
-      "(parcel_number IN ('%s'))",
-      implode("','", $relevant_apns)
-    );
 
     $num_units_min = $search_param_data['num_units_min'];
     $num_units_max = $search_param_data['num_units_max'];

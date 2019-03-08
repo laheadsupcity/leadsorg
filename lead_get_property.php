@@ -115,7 +115,7 @@
   </div>
   <h1 style="text-align:center; float:left; width:100%; margin:-10px 0 0px;">Search Results</h1>
   <div class="scr1" style="height:auto;">
-    <?php  if ($total_records > 0) { ?>
+    <?php  if (true) { ?>
       <div style="float:left; width:100%; padding:10px;">
         <div style="float:left; width:45%;">
           <p style="margin:0; font-weight:600; font-size:12px;">Total Records: <?php echo $total_records; ?></p>
