@@ -1,0 +1,56 @@
+.main-content {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  border: 1px solid #ffffff;
+  max-width: 1200px;
+  overflow: hidden;
+}
+
+.content-border {
+  border: 1px solid #0070c0;
+}
+
+.blue-background {
+  background-color: #337ab7;
+}
+
+.fixed-head-table > thead {
+  height: 65px;
+  padding-right: 14px;
+}
+
+.fixed-head-table > thead > tr {
+  display: block;
+}
+
+.fixed-head-table > thead,
+.fixed-head-table > tbody,
+.fixed-head-table > tr,
+.fixed-head-table > td,
+.fixed-head-table > th {
+  display: block;
+}
+
+.fixed-head-table td {
+  vertical-align: middle;
+}
+
+.fixed-head-table > tr:after {
+  content: ' ';
+  display: block;
+  visibility: hidden;
+  clear: both;
+}
+
+.fixed-head-table > thead th {
+  height: 30px;
+  text-align: left;
+}
+
+.fixed-head-table > tbody {
+  overflow-x: auto;
+  overflow-y: auto;
+}
+
+.fixed-head-table > i {
+  font-size: 16px;
+}
