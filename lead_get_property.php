@@ -191,7 +191,6 @@
       <div>
         <button type="submit" id="batch" class="btn btn-primary">Create Lead batch </button>
         <button type="submit" id="expcsvbtn" class="btn btn-primary">Export selected</button>
-        <button type="submit" data-toggle="modal" data-target="#addToFavoritesModal" class="btn btn-primary">Add to favorites</button>
       </div>
     </div>
     <div id="overlay">
@@ -208,6 +207,5 @@
     </div>
   </div>
 
-  <?php include('includes/add_to_favorites_modal.php')?>
  </body>
 </html>
