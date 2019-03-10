@@ -14,6 +14,7 @@ CREATE TABLE `favorite_properties_folders` (
 CREATE TABLE `favorite_properties` (
   `parcel_number` bigint(10) NOT NULL DEFAULT '0',
   `folder_id` bigint(10) NOT NULL DEFAULT '0',
+  `date_last_viewed` timestamp NOT NULL,
   `date_created` timestamp DEFAULT CURRENT_TIMESTAMP,
   `date_modified` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   FOREIGN KEY (`folder_id`) REFERENCES `favorite_properties_folders`(`folder_id`),

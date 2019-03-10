@@ -42,10 +42,48 @@ class FavoriteProperties {
 
   public function getPropertiesForFolder($folder_id) {
     $query = sprintf(
-      "SELECT `property`.* FROM `property`
-      JOIN `favorite_properties` AS `fav` ON (
-        fav.parcel_number = property.parcel_number
-      ) WHERE fav.folder_id = %s",
+      "SELECT `property1`.*, `properties_with_updates_info`.`has_unseen_updates` FROM `property` AS `property1`
+      JOIN (
+        SELECT
+          DISTINCT `property2`.`parcel_number`,
+          IF(
+            (count(`cases`.APN) +
+            count(`case_detail`.APN) +
+            count(`property_detail`.APN) +
+            count(`pi`.APN) > 0) OR
+            (`property2`.date_modified > fav.date_last_viewed),
+            1 ,
+            0
+          ) AS 'has_unseen_updates'
+        FROM `property` AS `property2`
+        JOIN `favorite_properties` AS `fav` ON (
+          fav.parcel_number = property2.parcel_number
+        )
+        LEFT JOIN property_cases AS `cases` ON (
+          cases.APN = fav.parcel_number AND
+          cases.date_modified > fav.date_last_viewed
+        )
+        LEFT JOIN property_cases_detail AS `case_detail` ON (
+          case_detail.apn = fav.parcel_number AND
+          case_detail.date_modified > fav.date_last_viewed
+        )
+        LEFT JOIN property_detail AS `property_detail` ON (
+          property_detail.apn = fav.parcel_number AND
+          property_detail.date_modified > fav.date_last_viewed
+        )
+        LEFT JOIN property_inspection AS `pi` ON (
+          pi.APN = fav.parcel_number AND
+          pi.date_modified > fav.date_last_viewed
+        )
+        WHERE
+          fav.folder_id = %s
+        GROUP BY
+          `property2`.`parcel_number`,
+          `property2`.`date_modified`
+      ) AS `properties_with_updates_info` ON (
+        `properties_with_updates_info`.`parcel_number` = `property1`.`parcel_number`
+      )
+      ORDER BY `properties_with_updates_info`.`has_unseen_updates` DESC;",
       $folder_id
     );
 
@@ -54,6 +92,24 @@ class FavoriteProperties {
     $folders = $this->db->result_array();
 
     return $folders;
+  }
+
+  public function markPropertyAsSeen($user_id, $parcel_number) {
+    date_default_timezone_set('America/Los_Angeles');
+    $query = sprintf(
+      "UPDATE `favorite_properties` SET
+      `date_last_viewed`='%s'
+      WHERE `folder_id` IN (
+        SELECT `folder_id` FROM `favorite_properties_folders`
+        WHERE `user_id`=%s
+      ) AND
+      parcel_number=%s",
+      date('Y-m-d H:i:s'),
+      $user_id,
+      $parcel_number
+    );
+
+    $this->db->query($query);
   }
 
 }

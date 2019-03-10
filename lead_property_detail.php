@@ -1,6 +1,8 @@
 <?php
     require_once('config.php');
     require_once('Database.php');
+    require_once('FavoriteProperties.php');
+
     $parcel_number = isset($_REQUEST['apn']) ? $_REQUEST['apn'] : '';
     $det = getpropertydetail($parcel_number);
     $totalcount = count($det);
@@ -51,6 +53,7 @@
         $result=$db->result_array();
         return $result;
     }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -140,6 +143,17 @@
 </head>
 <body>
 <div style="width:100%; float:left; margin:0;"><?php  include('nav.php'); ?></div>
+
+  <?php
+
+    $favorites = new FavoriteProperties();
+    $favorites->markPropertyAsSeen(
+      $_SESSION['userdetail']['id'],
+      $parcel_number
+    );
+
+  ?>
+
 	<div class="scr1" style="border:1px solid #fff; height:auto;">
 		<h4>PROPERTY INFORMATION</h4>
                 <?php if($totalcount >0 ){  ?>
