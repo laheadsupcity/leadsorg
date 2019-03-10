@@ -35,7 +35,7 @@
             <h5 class="card-title"><?php echo($folder['name']); ?></h5>
             <p class="card-text font-weight-light"><?php echo($folder['property_count']); ?></p>
             <div class="d-flex flex-column">
-              <a href="#" class="">View</a>
+              <a href="favorite_properties.php?folder_id=<?php echo($folder['folder_id']); ?>" class="">View</a>
               <a href="#" class="">Rename</a>
               <a href="#" class="text-danger">Delete</a>
             </div>
