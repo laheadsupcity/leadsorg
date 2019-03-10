@@ -3,7 +3,7 @@
 ?>
 
 <table class="table table-borderless border case-type-table-fixed">
-  <thead class="blue-background text-light text-nowrap">
+  <thead class="text-nowrap border-bottom bg-light">
     <tr>
       <th class="float-left col-1"><i class="ml-1 fas fa-check"></i></th>
       <th class="float-left col-4">Open Case Type</th>

@@ -1,0 +1,39 @@
+.flag-col,
+.checkbox-col {
+  width: 2.8%;
+}
+
+.apn-col {
+  width: 11.2%;
+}
+
+.address-col {
+  width: 16.7%;
+}
+
+.owner-col {
+  width: 20.2%;
+}
+
+.units-col,
+.beds-col,
+.baths-col {
+  width: 5%;
+}
+
+.lot-sqft-col,
+.year-built-col {
+  width: 5.8%;
+}
+
+.sale-date-col {
+  width: 10%;
+}
+
+.sale-price-col {
+  width: 7.3%;
+}
+
+.options-col {
+ width: 3.5%;
+}

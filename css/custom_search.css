@@ -1,27 +1,16 @@
 /*  Custom Database Search  */
-.custom-database-search {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  border: 1px solid #0070c0;
-  max-width: 1200px;
-  overflow: hidden;
-}
-
-.custom-database-search .heading {
+.main-content .heading {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: 600;
   font-size: 13px;
 }
 
-.custom-database-search label {
+.main-content label {
   font-weight: 500;
 }
 
-.custom-database-search .disabled {
+.main-content .disabled {
   color: rgb(206, 212, 218);
-}
-
-.blue-background {
-  background-color: #337ab7;
 }
 
 .small-search-button {

@@ -28,6 +28,7 @@
     <link rel="stylesheet" type="text/css" href="css/fontawesome/all.min.css" />
     <link rel="stylesheet" type="text/css" href="css/jquery.datetimepicker.css"/>
     <link rel="stylesheet" type="text/css" href="css/custom_search.css"/>
+    <link rel="stylesheet" type="text/css" href="css/main_content.css"/>
     <script type="text/javascript" src="js/jquery.min.js"></script>
     <script type="text/javascript" src="js/moment.js"></script>
     <script src="js/jquery.datetimepicker.full.min.js"></script>
@@ -43,9 +44,7 @@
       <?php include('nav.php'); ?>
     </div>
 
-    <div class="custom-database-search h-100 mx-auto">
-      <div class="blue-background p-3 text-light">FILTER DATABASE SEARCH</div>
-
+    <div class="main-content content-border h-100 mx-auto">
       <form action="lead_get_property.php" id="cdsearchform" method="post" >
         <div class="container pt-3">
           <div class="row">
