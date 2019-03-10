@@ -42,7 +42,7 @@
       <?php include('includes/properties_table.php') ?>
 
       <div class="mt-3">
-        <button type="submit" id="expcsvbtn" class="btn btn-primary">Export selected</button>
+        <button type="submit" id="export_properties_csv_button" class="btn btn-primary">Export selected</button>
         <button type="submit" data-action="remove_from_folder" class="btn btn-warning">Remove selected</button>
         <button type="submit" data-action="remove_from_folder" class="btn btn-danger float-right">Delete folder</button>
       </div>

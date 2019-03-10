@@ -12,8 +12,8 @@
   <script type="text/javascript" src="js/moment.js"></script>
   <script src="js/jquery.datetimepicker.full.min.js"></script>
   <script type="text/javascript" src="js/multiselect.js"></script>
-  <script type="text/javascript" src="js/myscr.js"></script>
   <script type="text/javascript" src="js/custom_database_search/results.js"></script>
+  <script type="text/javascript" src="js/custom_database_search/actions.js"></script>
   <link rel="stylesheet" type="text/css" href="css/main_content.css"/>
   <link rel="stylesheet" type="text/css" href="css/custom_search_results.css"/>
   <style>
@@ -135,8 +135,8 @@
     <div class="mt-3">
       <input type="hidden" value="" id="ckeckvall" />
       <div>
-        <button type="submit" id="batch" class="btn btn-primary">Create Lead Batch</button>
-        <button type="submit" id="expcsvbtn" class="btn btn-primary">Export Selected</button>
+        <button type="submit" id="create_batch_button" class="btn btn-primary">Create Lead Batch</button>
+        <button type="submit" id="export_properties_csv_button" class="btn btn-primary">Export Selected</button>
       </div>
     </div>
     <div id="overlay">
