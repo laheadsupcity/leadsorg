@@ -1,68 +1,88 @@
-function getValueUsingClass() {
-  var chkArray = [];
+function getCheckedProperties() {
+  var checkedProperties = [];
 
-  /* look for all checkboes that have a class 'chk' attached to it and check if it was checked */
-  $(".chk:checked").each(function() {
-    chkArray.push($(this).val());
+  $("[data-property-checkbox]:checked").each(function() {
+    checkedProperties.push($(this).val());
   });
 
-  /* we join the array separated by the comma */
-  var selected;
-  selected = chkArray.join(',');
+  return checkedProperties.join(',');
+}
 
-  $("#ckeckvall").val(selected);
+function resetLeadBatchModalErrors() {
+  var modal = $('#createLeadBatchModal');
+  $(modal).find('.is-invalid').removeClass('is-invalid');
+}
+
+function resetLeadBatchModal() {
+  var modal = $('#createLeadBatchModal');
+  resetLeadBatchModalErrors();
+
+  $('#batchSuccess').hide();
+  $('#batchNameExists').hide();
+
+  $(modal).find('#batchName').val("");
 }
 
 $(document).ready(function() {
 
-  $(".chk").click(function() {
-    getValueUsingClass();
+  $("[data-property-checkbox],#checkAll").change(function() {
+    $('#selectPropertiesWarning').removeClass('d-block').addClass('d-none');
   });
+
+  $('#batchNameExists').alert();
+  resetLeadBatchModal();
 
   $("#checkAll").click(function() {
     $('input:checkbox').not(this).prop('checked', this.checked);
-    getValueUsingClass();
   });
 
-  $("#create_batch_button").click(function() {
-    var check = $("#ckeckvall").val();
-    if (check) {
-      $('.leadbatch').prop('disabled', false);
-      $("#overlay").show();
-      $("#batchform").show();
+  // reset create lead batch modal
+  $('#createLeadBatchModal').on('hide.bs.modal', function() {
+    resetLeadBatchModal();
+  });
+
+  $('[data-target="#createLeadBatchModal"],[data-target="#addToFavoritesModal"]').click(function(event) {
+    event.stopPropagation();
+
+    var checked_properties = getCheckedProperties();
+
+    if (checked_properties.length == 0) {
+      $('#selectPropertiesWarning').addClass('d-block');
     } else {
-      alert("Please select at least one check box");
-      return false;
+      var target_modal = $(event.target).data('target');
+      $(target_modal).modal('show');
     }
   });
 
-  $("#batchsubmit").click(function() {
-    var check = $("#ckeckvall").val();
-    var name = $("#batchname").val();
+  $("[data-action=batch_submit]").click(function(event) {
+    var checked_properties = getCheckedProperties(),
+        name_input = $("#batchName");
+
+    var name = name_input.val();
+
     if (name == "") {
-      $(".errormsg").show();
+      name_input.addClass('is-invalid');
+      return;
     } else {
-      $(".errormsg").hide();
+      resetLeadBatchModalErrors();
+
       jQuery.ajax({
         type: "POST",
         url: "lead_batch.php",
         dataType: 'json',
         data: {
-          'check': check,
+          'check': checked_properties,
           'name': name
         },
         success: function(data) {
           if (data.msg == 'Add') {
-            $('.leadbatch').prop('disabled', true);
-            $("#batchname").val('');
-            $(".succmsg").show();
+            $('#batchNameExists').hide();
+            $("#batchSuccess").show();
             setTimeout(function() {
-              $("#overlay").hide();
-              $("#batchform").hide();
-              $(".succmsg").hide();
-            }, 5000);
+              $('#createLeadBatchModal').modal('hide')
+            }, 2000);
           } else {
-            alert("Batch name alredy exist");
+            $('#batchNameExists').show();
           }
         }
       });
@@ -73,16 +93,15 @@ $(document).ready(function() {
 
   $("#export_properties_csv_button").click(function() {
 
-    var check = $("#ckeckvall").val();
+    var checked_properties = getCheckedProperties();
     filename = "customsearch.csv"
-    if (check) {
-
+    if (checked_properties) {
       jQuery.ajax({
         type: "POST",
         url: "lead_export.php",
 
         data: {
-          'check': check
+          'check': checked_properties
         },
         success: function(response) {
           // console.log(response);
@@ -124,8 +143,6 @@ $(document).ready(function() {
       alert("Please select at least one check box");
       return false;
     }
-
   });
-
 
 });

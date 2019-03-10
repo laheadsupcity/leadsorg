@@ -22,7 +22,7 @@
     <?php
       foreach ($properties as $property) { ?>
         <tr class="border-bottom">
-          <td class="checkbox-col"><input type="checkbox" class="apncheck chk"  value="<?php echo $property['parcel_number']; ?>" /></td>
+          <td class="checkbox-col"><input type="checkbox" data-property-checkbox value="<?php echo $property['parcel_number']; ?>" /></td>
           <td class="apn-col"><?php echo $property['parcel_number']; ?></td>
           <td class="address-col"><?php echo $property['street_number'].','.$property['street_name'].',<br/> '.$property['site_address_city_state'].',
  '.$property['site_address_zip']; ?></td>

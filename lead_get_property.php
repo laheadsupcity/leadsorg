@@ -8,14 +8,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap.min.css" />
   <link rel="stylesheet" type="text/css" href="css/fontawesome/all.min.css" />
-  <script type="text/javascript" src="js/jquery.min.js"></script>
-  <script type="text/javascript" src="js/moment.js"></script>
-  <script src="js/jquery.datetimepicker.full.min.js"></script>
-  <script type="text/javascript" src="js/multiselect.js"></script>
-  <script type="text/javascript" src="js/custom_database_search/results.js"></script>
-  <script type="text/javascript" src="js/custom_database_search/actions.js"></script>
   <link rel="stylesheet" type="text/css" href="css/main_content.css"/>
   <link rel="stylesheet" type="text/css" href="css/custom_search_results.css"/>
+
+  <script type="text/javascript" src="js/jquery.min.js"></script>
+  <script type="text/javascript" src="js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="js/custom_database_search/results.js"></script>
+  <script type="text/javascript" src="js/custom_database_search/actions.js"></script>
   <style>
     .active1{background:#337ab7!important;}
   </style>
@@ -133,25 +132,21 @@
       <?php } ?>
     </div>
     <div class="mt-3">
-      <input type="hidden" value="" id="ckeckvall" />
       <div>
-        <button type="submit" id="create_batch_button" class="btn btn-primary">Create Lead Batch</button>
+        <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#createLeadBatchModal">Create Lead Batch</button>
         <button type="submit" id="export_properties_csv_button" class="btn btn-primary">Export Selected</button>
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addToFavoritesModal">Add to Favorites</button>
       </div>
     </div>
-    <div id="overlay">
-        <div id="batchform">
-         <div class="closeicon"><a href="#" class="closeimg"><img src='images/close.png'></a></div>
-          <form method="post" action="#">
-            <label style="color:#000;">Batch Name</label><br/><input type="text" name="batchname" id="batchname" placeholder="Enter Batch Name">
-            <button type="submit" id="batchsubmit" class="btn btn-block leadbatch" style="padding:5px 10px;">Submit</button> &nbsp; <button type="submit" id="closebtn" class="btn btn-block" style="padding:5px 10px;">Close</button>
-            <p style="text-align:left; padding:10px; color:green; display:none;" class="succmsg">Batch created successfully</p>
-            <p style="text-align:left; padding:10px; color:red; display:none;" class="errormsg">Please enter batch name</p>
-          </form>
-        </div>
+
+    <div class="mt-3">
+      <div id="selectPropertiesWarning" class="alert alert-warning fade show d-none" role="alert">
+        You must select at least one property.
       </div>
     </div>
   </div>
 
+  <?php include('includes/create_lead_batch_modal.php') ?>
+  <?php include('includes/add_to_favorites_modal.php') ?>
  </body>
 </html>

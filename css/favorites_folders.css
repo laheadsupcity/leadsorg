@@ -6,3 +6,11 @@
   border: 2px solid #e5d997;
   background-color: #fffced;
 }
+
+.favorite-folder-link {
+  cursor: pointer;
+}
+
+.favorite-folder-link:hover {
+  background-color: #fafafa;
+}
