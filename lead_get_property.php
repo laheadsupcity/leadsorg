@@ -101,7 +101,7 @@
       $num_rec_per_page = isset($_REQUEST['num_rec_per_page']) ? $_REQUEST['num_rec_per_page'] : 1000;
 
       $searcher = new CustomDatabaseSearch($search_params);
-      $result = $searcher->getResults($num_rec_per_page, $current_page);
+      $properties = $searcher->getResults($num_rec_per_page, $current_page);
       $total_records = $searcher->getResultCount();
     ?>
   </div>
@@ -127,61 +127,7 @@
           </div>
         </div>
 
-        <table class="table table-borderless table-striped fixed-head-table border">
-          <thead class="border-bottom">
-            <tr>
-              <th class="checkbox-col">
-                <input type="checkbox" id="checkAll" name="all">
-              </th>
-              <th class="apn-col">Parcel #</th>
-              <th class="address-col">Address</th>
-              <th class="owner-col">Owner Name</th>
-              <th class="units-col">Units</th>
-              <th class="beds-col">Beds</th>
-              <th class="baths-col">Baths</th>
-              <th class="lot-sqft-col">Lot SQFT</th>
-              <th class="year-built-col">Year Built</th>
-              <th class="sale-date-col">Sale Date</th>
-              <th class="sale-price-col">Sale Price</th>
-              <th class="options-col"></th>
-            </tr>
-          </thead>
-          <tbody style="height: 500px;">
-            <?php
-              foreach ($result as $key=>$val) { ?>
-                <tr class="border-bottom">
-                  <td class="checkbox-col"><input type="checkbox" class="apncheck chk"  value="<?php echo $val['parcel_number']; ?>" /></td>
-                  <td class="apn-col"><?php echo $val['parcel_number']; ?></td>
-                  <td class="address-col"><?php echo $val['street_number'].','.$val['street_name'].',<br/> '.$val['site_address_city_state'].',
-         '.$val['site_address_zip']; ?></td>
-                  <td class="owner-col"><?php echo $val['owner_name2']; ?></td>
-                  <td class="units-col"><?php echo $val['number_of_units']; ?></td>
-                  <td class="beds-col"><?php echo $val['bedrooms']; ?></td>
-                  <td class="baths-col"><?php echo $val['bathrooms']; ?></td>
-                  <td class="lot-sqft-col"><?php echo $val['lot_area_sqft']; ?></td>
-                  <td class="year-built-col"><?php echo $val['year_built']; ?></td>
-                  <td class="sale-date-col">
-                    <?php
-                      if ($val['sales_date']!='0000-00-00') {
-                          echo date('m/d/Y',
-         strtotime($val['sales_date']));
-                      } else {
-                          echo "";
-                      } ?>
-                  </td>
-                  <td class="sale-price-col"><?php echo $val['sales_price']; ?></td>
-                  <td class="options-col">
-                    <div>
-                      <a target="_blank" class="br-1 pr-1 mr-1" href="lead_property_detail.php?apn=<?php echo $val['parcel_number']; ?>"><i class="text-secondary fas fa-chevron-circle-right"></i></a>
-                    </div>
-                    <div>
-                      <a href="lead_update_customtask.php?editid=<?php echo $val['id']; ?>" target="_blank"><i class="text-secondary fas fa-edit"></i></a>
-                    </div>
-                  </td>
-                </tr>
-              <?php } ?>
-            </tbody>
-        </table>
+        <?php include('includes/properties_table.php') ?>
 
         <?php require('includes/search_results/pagination.php'); ?>
       <?php } ?>
@@ -189,8 +135,8 @@
     <div class="mt-3">
       <input type="hidden" value="" id="ckeckvall" />
       <div>
-        <button type="submit" id="batch" class="btn btn-primary">Create Lead batch </button>
-        <button type="submit" id="expcsvbtn" class="btn btn-primary">Export selected</button>
+        <button type="submit" id="batch" class="btn btn-primary">Create Lead Batch</button>
+        <button type="submit" id="expcsvbtn" class="btn btn-primary">Export Selected</button>
       </div>
     </div>
     <div id="overlay">
