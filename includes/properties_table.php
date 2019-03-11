@@ -1,9 +1,13 @@
 <table class="table table-borderless table-striped fixed-head-table border">
   <thead class="border-bottom">
     <tr>
-      <th class="flag-col">
-        <i class="far fa-flag"></i>
-      </th>
+      <?php
+      $favorites_enabled = false;
+      if ($favorites_enabled) { ?>
+        <th class="flag-col">
+          <i class="far fa-flag"></i>
+        </th>
+      <?php } ?>
       <th class="checkbox-col">
         <input type="checkbox" id="checkAll" name="all">
       </th>
@@ -25,11 +29,15 @@
     <?php
       foreach ($properties as $property) { ?>
         <tr class="border-bottom">
-          <td class="flag-col">
-            <?php if($property['has_unseen_updates']) { ?>
-              <i class="fas fa-flag text-danger"></i>
-            <?php } ?>
-          </td>
+          <?php
+          $favorites_enabled = false;
+          if ($favorites_enabled) { ?>
+            <td class="flag-col">
+              <?php if($property['has_unseen_updates']) { ?>
+                <i class="fas fa-flag text-danger"></i>
+              <?php } ?>
+            </td>
+          <?php } ?>
           <td class="checkbox-col"><input type="checkbox" data-property-checkbox value="<?php echo $property['parcel_number']; ?>" /></td>
           <td class="apn-col"><?php echo $property['parcel_number']; ?></td>
           <td class="address-col"><?php echo $property['street_number'].','.$property['street_name'].',<br/> '.$property['site_address_city_state'].',

@@ -49,9 +49,14 @@ restore_error_handler();
                     <ul class="sub-menu">
                         <li><a href="lead_customdatabase_search.php">Custom Database Search</a></li>
                         <li><a href="lead_custombatch.php">Lead Batches</a></li>
-                        <li>
-                          <a href="favorites_folders.php"><span class="ml-2">Favorites</span></a>
-                        </li>
+
+                        <?php
+                        $favorites_enabled = false;
+                        if ($favorites_enabled) { ?>
+                          <li>
+                            <a href="favorites_folders.php"><span class="ml-2">Favorites</span></a>
+                          </li>
+                        <?php } ?>
                     </ul>
                 </li>
             </ul>

@@ -135,7 +135,11 @@
       <div>
         <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#createLeadBatchModal">Create Lead Batch</button>
         <button type="submit" id="export_properties_csv_button" class="btn btn-primary">Export Selected</button>
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addToFavoritesModal">Add to Favorites</button>
+        <?php
+        $favorites_enabled = false;
+        if ($favorites_enabled) { ?>
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addToFavoritesModal">Add to Favorites</button>
+        <?php } ?>
       </div>
     </div>
 
