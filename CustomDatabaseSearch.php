@@ -93,6 +93,7 @@ class CustomDatabaseSearch {
           p.street_number,
           p.street_name,
           p.site_address_city_state,
+          p.site_address_zip,
           p.owner_name2,
           p.number_of_units,
           p.number_of_stories,

@@ -104,50 +104,57 @@
       $total_records = $searcher->getResultCount();
     ?>
   </div>
+
   <div class="main-content mx-auto">
-    <div>
-      <?php  if (true) { ?>
-        <div class="d-flex justify-content-between p-2">
-          <div>
-            <span class="font-weight-bold pr-1">Total Records:</span> <?php echo $total_records; ?>
-          </div>
-          <div>
-            <span class="font-weight-bold pr-1">No. of Records Per Page:</span>
-            <select id='num_rec_per_page' name="num_rec_per_page">
-              <option <?php echo ($num_rec_per_page==10)?"selected='selected'":''; ?> value='10'>10</option>
-              <option <?php echo ($num_rec_per_page==25)?"selected='selected'":''; ?> value='25'>25</option>
-              <option <?php echo ($num_rec_per_page==50)?"selected='selected'":''; ?> value='50'>50</option>
-              <option <?php echo ($num_rec_per_page==100)?"selected='selected'":''; ?> value='100'>100</option>
-              <option <?php echo ($num_rec_per_page==250)?"selected='selected'":''; ?> value='250'>250</option>
-              <option <?php echo ($num_rec_per_page==500)?"selected='selected'":''; ?> value='500'>500</option>
-              <option <?php echo ($num_rec_per_page==1000)?"selected='selected'":''; ?> value='1000'>1000</option>
-              <option <?php echo ($num_rec_per_page==5000)?"selected='selected'":''; ?> value='5000'>5000</option>
-            </select>
-          </div>
+    <?php if (!empty($properties)) { ?>
+      <div class="d-flex justify-content-between p-2">
+        <div>
+          <span class="font-weight-bold pr-1">Total Records:</span> <?php echo $total_records; ?>
         </div>
-
-        <?php include('includes/properties_table.php') ?>
-
-        <?php require('includes/search_results/pagination.php'); ?>
-      <?php } ?>
-    </div>
-    <div class="mt-3">
-      <div>
-        <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#createLeadBatchModal">Create Lead Batch</button>
-        <button type="submit" id="export_properties_csv_button" class="btn btn-primary">Export Selected</button>
-        <?php
-        $favorites_enabled = false;
-        if ($favorites_enabled) { ?>
-          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addToFavoritesModal">Add to Favorites</button>
-        <?php } ?>
+        <div>
+          <span class="font-weight-bold pr-1">No. of Records Per Page:</span>
+          <select id='num_rec_per_page' name="num_rec_per_page">
+            <option <?php echo ($num_rec_per_page==10)?"selected='selected'":''; ?> value='10'>10</option>
+            <option <?php echo ($num_rec_per_page==25)?"selected='selected'":''; ?> value='25'>25</option>
+            <option <?php echo ($num_rec_per_page==50)?"selected='selected'":''; ?> value='50'>50</option>
+            <option <?php echo ($num_rec_per_page==100)?"selected='selected'":''; ?> value='100'>100</option>
+            <option <?php echo ($num_rec_per_page==250)?"selected='selected'":''; ?> value='250'>250</option>
+            <option <?php echo ($num_rec_per_page==500)?"selected='selected'":''; ?> value='500'>500</option>
+            <option <?php echo ($num_rec_per_page==1000)?"selected='selected'":''; ?> value='1000'>1000</option>
+            <option <?php echo ($num_rec_per_page==5000)?"selected='selected'":''; ?> value='5000'>5000</option>
+          </select>
+        </div>
       </div>
-    </div>
 
-    <div class="mt-3">
-      <div id="selectPropertiesWarning" class="alert alert-warning fade show d-none" role="alert">
-        You must select at least one property.
+      <?php include('includes/properties_table.php') ?>
+
+      <?php require('includes/search_results/pagination.php'); ?>
+
+      <div class="mt-3">
+        <div>
+          <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#createLeadBatchModal">Create Lead Batch</button>
+          <button type="submit" id="export_properties_csv_button" class="btn btn-primary">Export Selected</button>
+          <?php
+          $favorites_enabled = false;
+          if ($favorites_enabled) { ?>
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addToFavoritesModal">Add to Favorites</button>
+          <?php } ?>
+        </div>
       </div>
-    </div>
+
+      <div class="mt-3">
+        <div id="selectPropertiesWarning" class="alert alert-warning fade show d-none" role="alert">
+          You must select at least one property.
+        </div>
+      </div>
+    <?php } else { ?>
+      <div class="jumbotron jumbotron-fluid">
+        <div class="container">
+          <h1 class="display-4">No results...</h1>
+          <p class="lead">There are no properties matching your filters. Try adjusting your filters to get more results.</p>
+        </div>
+      </div>
+    <?php } ?>
   </div>
 
   <?php include('includes/create_lead_batch_modal.php') ?>

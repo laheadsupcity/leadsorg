@@ -15,7 +15,7 @@ foreach($array as $key=>$val){
 
  $objmerged[] =  array_merge((array) $data, (array) $table);
 
-    
+
 }
 
 
@@ -40,8 +40,6 @@ function getexportdatabyid($id){
     $db = Database::instance();
 
     $db->select('property', array('parcel_number'=>$id), false, false,'','*');
-
-	//$db->getexpotresult($id);
 
     $result=$db->result_array();
 
