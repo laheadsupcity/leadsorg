@@ -37,15 +37,24 @@
         $properties = $favorites->getPropertiesForFolder($folder_id);
       ?>
 
-      <h5><?php echo($folder['name']); ?></h5>
+      <?php if (empty($properties)) { ?>
+        <div class="jumbotron jumbotron-fluid">
+          <div class="container">
+            <h1 class="display-4">Favorites folder does not exist...</h1>
+            <p class="lead">Create a new favorites folder to save properties of interest.</p>
+          </div>
+        </div>
+      <?php } else { ?>
+        <h5><?php echo($folder['name']); ?></h5>
 
-      <?php include('includes/properties_table.php') ?>
+        <?php include('includes/properties_table.php') ?>
 
-      <div class="mt-3">
-        <button type="submit" id="export_properties_csv_button" class="btn btn-primary">Export selected</button>
-        <button type="submit" data-action="remove_from_folder" class="btn btn-warning">Remove selected</button>
-        <button type="submit" data-action="remove_from_folder" class="btn btn-danger float-right">Delete folder</button>
-      </div>
+        <div class="mt-3">
+          <button type="submit" id="export_properties_csv_button" class="btn btn-primary">Export selected</button>
+          <button type="submit" data-action="remove_from_folder" class="btn btn-warning">Remove selected</button>
+          <button type="submit" data-action="remove_from_folder" class="btn btn-danger float-right">Delete folder</button>
+        </div>
+      <?php } ?>
     </div>
   </body>
 </html>

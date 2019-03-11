@@ -10,7 +10,7 @@
       <div class="modal-body">
         <div class="form-group">
           <label for="batchName">Batch name</label>
-          <input type="email" class="form-control" id="batchName" placeholder="Enter batch name" required>
+          <input type="text" class="form-control" id="batchName" placeholder="Enter batch name" required>
           <div class="invalid-feedback">
             Please choose a batch name.
           </div>

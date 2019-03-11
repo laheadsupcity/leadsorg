@@ -33,23 +33,32 @@
     <div class="main-content mx-auto">
       <div class="d-flex flex-wrap justify-content-center">
         <div class="w-100 m-3">
-          <?php foreach ($favorites_folders as $folder) { ?>
-            <div data-folder-id="<?php echo($folder['folder_id']); ?>" class="favorite-folder-link card mb-2">
-              <div class="card-body d-flex justify-content-between align-items-center">
-                <div data-folder-name-and-count>
-                  <span class="mr-2"><?php echo($folder['name']); ?></span>
-                  <span class="badge badge-primary badge-pill"><?php echo($folder['property_count']); ?></span>
-                </div>
-                <div data-folder-name-input class='d-none'>
-                  <input class="form-control" type="text" placeholder="New folder name">
-                </div>
-                <div>
-                  <button data-action="rename-folder" type="button" class="btn btn-sm btn-warning"><i class="far fa-edit"></i></button>
-                  <button data-action="delete-folder" type="button" class="btn btn-sm btn-danger"><i class="far fa-trash-alt"></i></button>
-                </div>
+          <?php if (empty($favorites_folders)) { ?>
+            <div class="jumbotron jumbotron-fluid">
+              <div class="container">
+                <h1 class="display-4">No favorites yet...</h1>
+                <p class="lead">Create a new favorites folder to save properties of interest.</p>
               </div>
             </div>
-          <?php } ?>
+          <?php } else { ?>
+            <?php foreach ($favorites_folders as $folder) { ?>
+              <div data-folder-id="<?php echo($folder['folder_id']); ?>" class="favorite-folder-link card mb-2">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                  <div data-folder-name-and-count>
+                    <span class="mr-2"><?php echo($folder['name']); ?></span>
+                    <span class="badge badge-primary badge-pill"><?php echo($folder['property_count']); ?></span>
+                  </div>
+                  <div data-folder-name-input class='d-none'>
+                    <input class="form-control" type="text" placeholder="New folder name">
+                  </div>
+                  <div>
+                    <button data-action="rename-folder" type="button" class="btn btn-sm btn-warning"><i class="far fa-edit"></i></button>
+                    <button data-action="delete-folder" type="button" class="btn btn-sm btn-danger"><i class="far fa-trash-alt"></i></button>
+                  </div>
+                </div>
+              </div>
+            <?php } ?>
+          <?php }?>
         </div>
       </div>
 
