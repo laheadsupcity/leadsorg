@@ -84,12 +84,6 @@ class CustomDatabaseSearch {
         $where = implode(' AND ', $conditions);
       }
 
-      // $limit = sprintf(
-      //   "LIMIT %s, %s",
-      //   $limit * ($page - 1),
-      //   $limit
-      // );
-
       $query = sprintf(
         "SELECT
           p.parcel_number,
@@ -101,13 +95,16 @@ class CustomDatabaseSearch {
           HAVING %s
           COUNT(IF(staus=\"All Violations Resolved Date\", 1, NULL)) = 0
         ) as open_cases
-        JOIN property AS p
-        ON p.parcel_number = open_cases.APN
+        JOIN property AS p ON (
+          p.parcel_number = open_cases.APN
+        )
         JOIN property_cases_detail AS pcd ON (
-          pcd.id = open_cases.property_case_detail_id
+          pcd.id = open_cases.property_case_detail_id AND
+          pcd.apn = open_cases.APN
         )
         JOIN property_cases AS cases ON (
-          cases.pcid = pcd.property_case_id
+          cases.pcid = pcd.property_case_id AND
+          cases.APN = pcd.apn
         )
         %s
         %s
