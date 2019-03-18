@@ -110,7 +110,7 @@ class CustomDatabaseSearch {
           %s
           GROUP BY APN, property_case_detail_id
           HAVING %s
-          COUNT(IF(status_type_id IN (27,1,328,53,104,206,180,155,232,79,278,303,130,357,268,377), 1, NULL)) = 0
+          COUNT(IF(staus=\"All Violations Resolved Date\", 1, NULL)) = 0
         ) as open_cases
         JOIN property AS p
         ON p.parcel_number = open_cases.APN
