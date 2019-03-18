@@ -3,7 +3,7 @@
 class Debug {
 
   public static function dumpR($object, $die = false) {
-    echo("<pre>");
+    echo("<pre style='border: 1px solid;'>");
     var_dump([$object]);
     echo("</pre>");
 
