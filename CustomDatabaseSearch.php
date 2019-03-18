@@ -7,6 +7,7 @@ class CustomDatabaseSearch {
 
   private $search_params;
   private $results_count;
+  private $apns_to_cases_map;
   private $case_type_filter_builder;
 
   function __construct($search_param_data) {
@@ -18,15 +19,18 @@ class CustomDatabaseSearch {
   }
 
   private function getStatusInclusionClauses() {
-
     $inclusion_filters = $this->case_type_filter_builder->getInclusionFilters();
+
     if (empty($inclusion_filters)) {
       return "";
     }
 
     $clauses = [];
     foreach ($inclusion_filters as $filter) {
-      $clauses[] = $filter->getConditionExpression();
+      $condition_expr = $filter->getConditionExpression();
+      if (!empty($condition_expr)) {
+        $clauses[] = $condition_expr;
+      }
     }
 
     $expression = implode(" OR ", $clauses);
@@ -41,7 +45,8 @@ class CustomDatabaseSearch {
     }
   }
 
-  private function getExclusionSubquery() {
+  private function getExclusionSubquery()
+  {
     $expr = $this->case_type_filter_builder->getExcludedIDsExpression();
 
     if (empty($expr)) {
@@ -69,7 +74,6 @@ class CustomDatabaseSearch {
       $included_case_types_expr = $this->case_type_filter_builder->getIncludedIDsExpression();
       $inclusion_clauses = $this->getStatusInclusionClauses();
 
-
       $exclusion_subquery = $this->getExclusionSubquery();
 
       if (isset($exclusion_subquery)) {
@@ -80,31 +84,16 @@ class CustomDatabaseSearch {
         $where = implode(' AND ', $conditions);
       }
 
-      $limit = sprintf(
-        "LIMIT %s, %s",
-        $limit * ($page - 1),
-        $limit
-      );
+      // $limit = sprintf(
+      //   "LIMIT %s, %s",
+      //   $limit * ($page - 1),
+      //   $limit
+      // );
 
       $query = sprintf(
         "SELECT
-          -- SQL_CALC_FOUND_ROWS
-          DISTINCT p.parcel_number,
-          p.street_number,
-          p.street_name,
-          p.site_address_city_state,
-          p.site_address_zip,
-          p.owner_name2,
-          p.number_of_units,
-          p.number_of_stories,
-          p.bedrooms,
-          p.bathrooms,
-          p.lot_area_sqft,
-          p.cost_per_sq_ft,
-          p.year_built,
-          p.sales_date,
-          p.sales_price,
-          p.id
+          p.parcel_number,
+          cases.pcid
         FROM (
           SELECT APN, property_case_detail_id FROM property_inspection AS pi
           %s
@@ -114,29 +103,93 @@ class CustomDatabaseSearch {
         ) as open_cases
         JOIN property AS p
         ON p.parcel_number = open_cases.APN
+        JOIN property_cases_detail AS pcd ON (
+          pcd.id = open_cases.property_case_detail_id
+        )
+        JOIN property_cases AS cases ON (
+          cases.pcid = pcd.property_case_id
+        )
         %s
         %s
-        %s;",
+        ORDER BY p.parcel_number;",
         isset($included_case_types_expr) ? sprintf(" WHERE pi.case_type_id IN ('%s')", $included_case_types_expr) : "",
         !empty($inclusion_clauses) ? $inclusion_clauses : "",
         isset($exclusion_subquery) ? $exclusion_subquery : "",
-        isset($where) ? " WHERE $where" : "",
-        $limit
+        isset($where) ? " WHERE $where" : ""
       );
 
       $this->db->query($query);
 
-      $results = $this->db->result_array();
+      $apns_and_cases = $this->db->result_array();
+
+      $apns_to_cases_map = [];
+
+      $last_apn = null;
+      $limit_reached = false;
+      foreach ($apns_and_cases as $entry) {
+        $apn = $entry['parcel_number'];
+        $pcid = $entry['pcid'];
+
+        if ($limit_reached && $last_apn != $apn) {
+          break;
+        }
+
+        $apns_to_cases_map[$apn][] = $pcid;
+
+        $last_apn = $apn;
+
+        if (count($apns_to_cases_map) == $limit) {
+          $limit_reached = true;
+        }
+      }
+
+      $apns_to_search = array_slice(
+        array_keys($apns_to_cases_map),
+        $limit * ($page - 1),
+        $limit
+      );
+
+      $property_query = sprintf(
+        "SELECT
+        p.parcel_number,
+        p.street_number,
+        p.street_name,
+        p.site_address_city_state,
+        p.site_address_zip,
+        p.owner_name2,
+        p.number_of_units,
+        p.number_of_stories,
+        p.bedrooms,
+        p.bathrooms,
+        p.lot_area_sqft,
+        p.cost_per_sq_ft,
+        p.year_built,
+        p.sales_date,
+        p.sales_price,
+        p.id
+        FROM `property` AS p WHERE p.parcel_number IN (
+          \"%s\"
+        );",
+        implode('","', $apns_to_search)
+      );
 
       // $this->db->query("SELECT FOUND_ROWS();");
 
-      $this->results_count = count($results);// $this->db->result_array()[0]["FOUND_ROWS()"];
+      $this->db->query($property_query);
+      $results = $this->db->result_array();
+      $this->results_count = count($results); // $this->db->result_array()[0]["FOUND_ROWS()"];
+      $this->apns_to_cases_map = $apns_to_cases_map;
 
       return $results;
   }
 
   public function getResultCount() {
     return $this->results_count;
+  }
+
+  public function getMatchingCasesForProperties()
+  {
+    return $this->apns_to_cases_map;
   }
 
   public function getConditions() {
@@ -254,7 +307,6 @@ class CustomDatabaseSearch {
       $conditions[]=  '(sales_price >='.$sales_price_min.' and sales_price <='.$sales_price_max.')';
     }
 
-
     if ($year_built_min !='' && $year_built_max =='') {
       $conditions[]= '(year_built >="'.$year_built_min.'")' ;
     } elseif ($year_built_min =='' && $year_built_max!='') {
@@ -276,6 +328,70 @@ class CustomDatabaseSearch {
     }
 
     return $conditions;
+  }
+
+  private function getCaseClosedDateClause() {
+    $case_closed_date_filters = $this->case_type_filter_builder->getCaseClosedDateFilters();
+
+    if (empty($case_closed_date_filters)) {
+      return null;
+    }
+
+    $clauses = array();
+    foreach ($case_closed_date_filters as $inclusion_filter) {
+      $filter = $inclusion_filter->getCaseClosedDateFilter();
+      $clause = null;
+      if ($filter->isExclude()) {
+        $clause = "case_date = \"\"";
+      } else if (!$filter->hasFromDate() && !$filter->hasToDate()) {
+        $clause = "case_date <> \"\"";
+      } else {
+        $from_date_expr = $filter->getFromDateAsExpression();
+        $to_date_expr = $filter->getToDateAsExpression();
+
+        if ($filter->hasFromDate() && $filter->hasToDate()) {
+          $clause = sprintf(
+            "STR_TO_DATE(case_date, '%s') >= %s AND STR_TO_DATE(case_date, '%s') <= %s",
+            '%m/%d/%Y',
+            $from_date_expr,
+            '%m/%d/%Y',
+            $to_date_expr
+          );
+        } else if ($filter->hasFromDate()) {
+          $clause = sprintf(
+            "STR_TO_DATE(case_date, '%s') >= %s",
+            '%m/%d/%Y',
+            $from_date_expr
+          );
+        } else if ($filter->hasToDate()) {
+          $clause = sprintf(
+            "STR_TO_DATE(case_date, '%s') <= %s",
+            '%m/%d/%Y',
+            $to_date_expr
+          );
+        }
+      }
+
+      $clause = sprintf(
+        "(case_type_id = %s AND %s)",
+        $inclusion_filter->getCaseTypeID(),
+        $clause
+      );
+
+      $clauses[] = $clause;
+    }
+
+    $case_closed_clause = sprintf(
+      "EXISTS (
+        SELECT 1 FROM `property_cases`
+        WHERE
+          %s AND
+          pcid = pcd.property_case_id
+      )",
+      implode(' OR ', $clauses)
+    );
+
+    return $case_closed_clause;
   }
 
 }

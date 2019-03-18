@@ -14,7 +14,6 @@ class CaseTypeStatusFilter {
     $this->to_date = $data_array['to_date'];
   }
 
-
   public function hasFromDate() {
     return !empty($this->from_date);
   }
@@ -23,9 +22,12 @@ class CaseTypeStatusFilter {
     return !empty($this->to_date);
   }
 
-
   public function isExclude() {
     return !$this->is_include;
+  }
+
+  public function isCaseClosedDateFilter() {
+    return $this->getStatus() == "case_closed_date";
   }
 
   public function getFromDateAsExpression() {

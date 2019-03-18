@@ -60,7 +60,7 @@
           <td class="sale-price-col"><?php echo $property['sales_price']; ?></td>
           <td class="options-col">
             <div>
-              <a target="_blank" class="br-1 pr-1 mr-1" href="lead_property_detail.php?apn=<?php echo $property['parcel_number']; ?>"><i class="text-secondary fas fa-chevron-circle-right"></i></a>
+              <a target="_blank" class="br-1 pr-1 mr-1" href="lead_property_detail.php?apn=<?php echo $property['parcel_number']; ?>&matching_cases=<?php echo implode(",", $matching_cases[$property['parcel_number']]);?>"><i class="text-secondary fas fa-chevron-circle-right"></i></a>
             </div>
             <div>
               <a href="lead_update_customtask.php?editid=<?php echo $property['id']; ?>" target="_blank"><i class="text-secondary fas fa-edit"></i></a>

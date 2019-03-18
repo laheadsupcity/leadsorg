@@ -1,59 +1,65 @@
 <?php
-    require_once('config.php');
-    require_once('Database.php');
-    require_once('FavoriteProperties.php');
+  require_once('config.php');
+  require_once('Database.php');
+  require_once('FavoriteProperties.php');
 
-    $parcel_number = isset($_REQUEST['apn']) ? $_REQUEST['apn'] : '';
-    $det = getpropertydetail($parcel_number);
-    $totalcount = count($det);
-    $cases = getCasesForProperty($parcel_number);
-    $property = getpropertyinfo($parcel_number);
-    $imgurl = getimglist($parcel_number);
-    $property = $property[0];
+  $parcel_number = isset($_REQUEST['apn']) ? $_REQUEST['apn'] : '';
+  $det = getpropertydetail($parcel_number);
+  $totalcount = count($det);
+  $cases = getCasesForProperty($parcel_number);
+  $property = getpropertyinfo($parcel_number);
+  $imgurl = getimglist($parcel_number);
+  $property = $property[0];
 
-    function getimgurl($imgurl)
-    {
-        $url = explode('http://', $imgurl);
-        $newurl=isset($url[1]) ? $url[1] : '';
-        return $newurl;
-    }
-    $det = isset($det[0]) ? $det[0] : '';
-    function getcasetypeid($pcid, $caseid)
-    {
-        $db = Database::instance();
-        $db->select('property_cases_detail', array('property_case_id' => $pcid,'case_id'=>$caseid), false, false, 'AND', 'id');
-        $result=$db->row_array();
-        return $result;
-    }
-    function getpropertydetail($parcel_number)
-    {
-        $db = Database::instance();
-        $db->select('property_detail', array('APN' => $parcel_number), false, false, '', '*');
-        $result=$db->result_array();
-        return $result;
-    }
-    function getCasesForProperty($parcel_number)
-    {
-        $db = Database::instance();
-        $db->select('property_cases', array('APN' => $parcel_number), false, 'pcid desc', '', '*');
-        $result=$db->result_array();
-        return $result;
-    }
-    function getimglist($parcel_number)
-    {
-        $db = Database::instance();
-        $db->select('property_cases_detail', array('apn' => $parcel_number), false, false, "", 'imageurl');
-        $result=$db->result_array();
-        return $result;
-    }
-    function getpropertyinfo($parcel_number)
-    {
-        $db = Database::instance();
-        $db->select('property', array('parcel_number' => $parcel_number), false, false, '', '*');
-        $result=$db->result_array();
-        return $result;
-    }
+  $matching_cases = isset($_REQUEST['matching_cases']) ? explode(',', $_REQUEST['matching_cases']) : '';
 
+  function getimgurl($imgurl)
+  {
+      $url = explode('http://', $imgurl);
+      $newurl=isset($url[1]) ? $url[1] : '';
+      return $newurl;
+  }
+
+  $det = isset($det[0]) ? $det[0] : '';
+  function getcasetypeid($pcid, $caseid)
+  {
+      $db = Database::instance();
+      $db->select('property_cases_detail', array('property_case_id' => $pcid,'case_id'=>$caseid), false, false, 'AND', 'id');
+      $result=$db->row_array();
+      return $result;
+  }
+
+  function getpropertydetail($parcel_number)
+  {
+      $db = Database::instance();
+      $db->select('property_detail', array('APN' => $parcel_number), false, false, '', '*');
+      $result=$db->result_array();
+      return $result;
+  }
+
+  function getCasesForProperty($parcel_number)
+  {
+      $db = Database::instance();
+      $db->select('property_cases', array('APN' => $parcel_number), false, 'pcid desc', '', '*');
+      $result=$db->result_array();
+      return $result;
+  }
+
+  function getimglist($parcel_number)
+  {
+      $db = Database::instance();
+      $db->select('property_cases_detail', array('apn' => $parcel_number), false, false, "", 'imageurl');
+      $result=$db->result_array();
+      return $result;
+  }
+
+  function getpropertyinfo($parcel_number)
+  {
+      $db = Database::instance();
+      $db->select('property', array('parcel_number' => $parcel_number), false, false, '', '*');
+      $result=$db->result_array();
+      return $result;
+  }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -138,7 +144,6 @@
   .active1, .dot:hover {
     background-color: #717171;
   }
-
   </style>
 </head>
 <body>
@@ -397,24 +402,21 @@
             <tr style="background: #337ab7; color:#fff;">
             <td style='padding:3px 5px; border-right:1px solid #fff;'>Case Type</td>
             <td style='padding:3px 5px; border-right:1px solid #fff;'>Case Number</td>
-            <td style='padding:3px 5px; border-right:1px solid #fff;'>Date Opened</td>
             <td style='padding:3px 5px;'>Date Closed</td>
             </tr>
             <?php
             foreach ($cases as $row) {
                 $caseid=getcasetypeid($row['pcid'], $row['case_id']);
-
                 $case_start_date = date_create($row['date_modified']);
-
-                echo "<tr style='color:#333;'>
-            <td style='border-bottom:1px solid #337ab7; border-right:1px solid #337ab7; padding:3px 5px;'>".$row['case_type']."</td>
-            <td style='border-bottom:1px solid #337ab7; border-right:1px solid #337ab7; padding:3px 5px;'>
-            <a href='#' onclick='return opencasedetail(".$parcel_number.", ".$row['case_id'].",".$caseid['id'].");'  style='color:DarkBlue;'>".$row['case_id']."</a>
-            </td>
-            <td style='padding:3px 5px; border-bottom:1px solid #337ab7; border-right:1px solid #337ab7;'>" . date_format($case_start_date, 'm/d/Y') . "</td>
-            <td style='padding:3px 5px; border-bottom:1px solid #337ab7;'>".$row['case_date']."</td>
-            </tr>";
-            } ?>
+            ?>
+              <tr style='color:#333; <?php if (in_array($row["pcid"], $matching_cases)) { ?>background-color: #fcf8e3;<?php } ?>'>
+                <td style='border-bottom:1px solid #337ab7; border-right:1px solid #337ab7; padding:3px 5px;'><?php echo $row['case_type']; ?></td>
+                <td style='border-bottom:1px solid #337ab7; border-right:1px solid #337ab7; padding:3px 5px;'>
+                  <a href='#' onclick='return opencasedetail(<?php echo $parcel_number; ?>,<?php echo $row['case_id']; ?>,<?php echo $caseid['id']; ?>);'  style='color: DarkBlue;'><?php echo $row['case_id']; ?></a>
+                </td>
+                <td style='padding:3px 5px; border-bottom:1px solid #337ab7;'><?php echo $row['case_date']; ?></td>
+              </tr>
+            <?php } ?>
           </table>
         </div>
 

@@ -101,6 +101,7 @@
 
       $searcher = new CustomDatabaseSearch($search_params);
       $properties = $searcher->getResults($num_rec_per_page, $current_page);
+      $matching_cases = $searcher->getMatchingCasesForProperties();
       $total_records = $searcher->getResultCount();
     ?>
   </div>

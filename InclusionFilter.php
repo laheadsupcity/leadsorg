@@ -49,7 +49,12 @@ class InclusionFilter {
   }
 
   private function hasStatusFilters() {
-    return !empty($this->status_filters);
+    return !empty(
+      array_filter(
+        $this->status_filters,
+        create_function('$filter', 'return !$filter->isCaseClosedDateFilter();')
+      )
+    );
   }
 
   private function getStatusFilters($data_array) {
@@ -79,11 +84,6 @@ class InclusionFilter {
     return !empty($this->to_date);
   }
 
-  public function hasDateConstraintsOnly() {
-    return ($this->hasFromDate() || $this->hasToDate()) &&
-           !$this->hasStatusFilters();
-  }
-
   public function hasConstraints() {
     return $this->hasFromDate() ||
            $this->hasToDate() ||
@@ -93,15 +93,25 @@ class InclusionFilter {
   private function getStatusExclusions() {
     return array_filter(
       $this->status_filters,
-      create_function('$filter', 'return $filter->isExclude();')
+      create_function('$filter', 'return $filter->isExclude() && !$filter->isCaseClosedDateFilter();')
     );
   }
 
   private function getStatusInclusions() {
     return array_filter(
       $this->status_filters,
-      create_function('$filter', 'return !$filter->isExclude();')
+      create_function('$filter', 'return !$filter->isExclude() && !$filter->isCaseClosedDateFilter();')
     );
+  }
+
+  public function getCaseClosedDateFilter() {
+    // There is only one case closed date status filter
+    // Grab the first and only one
+    foreach ($this->status_filters as $filter) {
+      if ($filter->isCaseClosedDateFilter()) {
+        return $filter;
+      }
+    }
   }
 
   private function getCaseTypeDateRangeClause() {
