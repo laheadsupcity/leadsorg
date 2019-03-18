@@ -80,6 +80,11 @@ class CustomDatabaseSearch {
         $conditions[] = "open_excluded_cases.APN IS NULL";
       }
 
+      $case_closed_date_clause = $this->getCaseClosedDateClause();
+      if(isset($case_closed_date_clause)) {
+        $conditions[] = $case_closed_date_clause;
+      }
+
       if (!empty($conditions)) {
         $where = implode(' AND ', $conditions);
       }
@@ -140,11 +145,7 @@ class CustomDatabaseSearch {
         }
       }
 
-      $apns_to_search = array_slice(
-        array_keys($apns_to_cases_map),
-        $limit * ($page - 1),
-        $limit
-      );
+      $apns_to_search = array_keys($apns_to_cases_map);
 
       $property_query = sprintf(
         "SELECT
@@ -175,7 +176,7 @@ class CustomDatabaseSearch {
       $this->db->query($property_query);
       $results = $this->db->result_array();
       $this->results_count = count($results); // $this->db->result_array()[0]["FOUND_ROWS()"];
-      $this->apns_to_cases_map = $apns_to_cases_map;
+      $this->matching_cases_map = $apns_to_cases_map;
 
       return $results;
   }
@@ -186,7 +187,7 @@ class CustomDatabaseSearch {
 
   public function getMatchingCasesForProperties()
   {
-    return $this->apns_to_cases_map;
+    return $this->matching_cases_map;
   }
 
   public function getConditions() {
@@ -339,16 +340,16 @@ class CustomDatabaseSearch {
       $filter = $inclusion_filter->getCaseClosedDateFilter();
       $clause = null;
       if ($filter->isExclude()) {
-        $clause = "case_date = \"\"";
+        $clause = "cases.case_date = \"\"";
       } else if (!$filter->hasFromDate() && !$filter->hasToDate()) {
-        $clause = "case_date <> \"\"";
+        $clause = "cases.case_date <> \"\"";
       } else {
         $from_date_expr = $filter->getFromDateAsExpression();
         $to_date_expr = $filter->getToDateAsExpression();
 
         if ($filter->hasFromDate() && $filter->hasToDate()) {
           $clause = sprintf(
-            "STR_TO_DATE(case_date, '%s') >= %s AND STR_TO_DATE(case_date, '%s') <= %s",
+            "STR_TO_DATE(cases.case_date, '%s') >= %s AND STR_TO_DATE(cases.case_date, '%s') <= %s",
             '%m/%d/%Y',
             $from_date_expr,
             '%m/%d/%Y',
@@ -356,13 +357,13 @@ class CustomDatabaseSearch {
           );
         } else if ($filter->hasFromDate()) {
           $clause = sprintf(
-            "STR_TO_DATE(case_date, '%s') >= %s",
+            "STR_TO_DATE(cases.case_date, '%s') >= %s",
             '%m/%d/%Y',
             $from_date_expr
           );
         } else if ($filter->hasToDate()) {
           $clause = sprintf(
-            "STR_TO_DATE(case_date, '%s') <= %s",
+            "STR_TO_DATE(cases.case_date, '%s') <= %s",
             '%m/%d/%Y',
             $to_date_expr
           );
@@ -370,7 +371,7 @@ class CustomDatabaseSearch {
       }
 
       $clause = sprintf(
-        "(case_type_id = %s AND %s)",
+        "WHEN cases.case_type_id = %s THEN %s",
         $inclusion_filter->getCaseTypeID(),
         $clause
       );
@@ -378,17 +379,16 @@ class CustomDatabaseSearch {
       $clauses[] = $clause;
     }
 
-    $case_closed_clause = sprintf(
-      "EXISTS (
-        SELECT 1 FROM `property_cases`
-        WHERE
-          %s AND
-          pcid = pcd.property_case_id
-      )",
-      implode(' OR ', $clauses)
-    );
+    return sprintf(
+      "(
+          CASE
+            %s
+            ELSE 1=1
+          END
 
-    return $case_closed_clause;
+      )",
+      implode(' ', $clauses)
+    );
   }
 
 }

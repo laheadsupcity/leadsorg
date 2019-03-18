@@ -185,7 +185,7 @@
                     <label><span class="mr-2">From</span><input type="text" class="form-control form-control-sm number numberdate" name="lot_area_sq_ft_min" id="lot_area_sq_ft_min" value=""></label>
                     <label><span class="mr-2">To</span> <input type="text" class="form-control form-control-sm number numberdate" name="lot_area_sq_ft_max" id="lot_area_sq_ft_max"value=""></label>
 
-                    <div class="heading mb-2">Year Build Range</div>
+                    <div class="heading mb-2">Year Built Range</div>
                     <label><span class="mr-2">From</span><input type="text" class="form-control form-control-sm number numberdate" name="year_built_min" id="year_built_min" value=""></label>
                     <label><span class="mr-2">To</span> <input type="text" class="form-control form-control-sm number numberdate" name="year_built_max" id="year_built_max"value=""></label>
                   </div>

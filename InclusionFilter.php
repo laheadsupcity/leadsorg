@@ -118,21 +118,21 @@ class InclusionFilter {
     $date_clause = null;
     if ($this->hasFromDate() && $this->hasToDate()) {
       $date_clause = sprintf(
-        "SUM(CASE WHEN pi.case_type_id = %s AND STR_TO_DATE(pi.date, \"%%m/%%d/%%Y\") >= %s AND STR_TO_DATE(pi.date, \"%%m/%%d/%%Y\") <= %s THEN 1 ELSE 0 END) > 0",
+        "COUNT(IF(pi.case_type_id = %s AND STR_TO_DATE(pi.date, \"%%m/%%d/%%Y\") >= %s AND STR_TO_DATE(pi.date, \"%%m/%%d/%%Y\") <= %s, 1, NULL)) > 0",
         $this->getCaseTypeID(),
         $this->getFromDateAsExpression(),
         $this->getToDateAsExpression()
       );
     } else if ($this->hasFromDate()) {
       $date_clause = sprintf(
-        "SUM(CASE WHEN pi.case_type_id = %s AND STR_TO_DATE(pi.date, \"%%m/%%d/%%Y\") >= %s AND STR_TO_DATE(pi.date, \"%%m/%%d/%%Y\") <= %s THEN 1 ELSE 0 END) > 0",
+        "COUNT(IF(pi.case_type_id = %s AND STR_TO_DATE(pi.date, \"%%m/%%d/%%Y\") >= %s AND STR_TO_DATE(pi.date, \"%%m/%%d/%%Y\") <= %s, 1, NULL)) > 0",
         $this->getCaseTypeID(),
         $this->getFromDateAsExpression(),
         $this->getCurrentDateAsDateObject()
       );
     } else if ($this->hasToDate()) {
       $date_clause = sprintf(
-        "SUM(CASE WHEN pi.case_type_id = %s AND STR_TO_DATE(pi.date, \"%%m/%%d/%%Y\") <= %s THEN 1 ELSE 0 END) > 0",
+        "COUNT(IF(pi.case_type_id = %s AND STR_TO_DATE(pi.date, \"%%m/%%d/%%Y\") <= %s, 1, NULL)) > 0",
         $this->getCaseTypeID(),
         $this->getToDateAsExpression()
       );
@@ -147,6 +147,14 @@ class InclusionFilter {
 
     if (($this->hasFromDate() || $this->hasToDate()) && !$this->hasStatusFilters()) {
       return $this->getCaseTypeDateRangeClause();
+    }
+
+    $case_closed_date_filter = $this->getCaseClosedDateFilter();
+    if (isset($case_closed_date_filter) && count($this->status_filters) == 1) {
+      $inclusion_clauses[] = sprintf(
+        "COUNT(IF(case_type_id=%s, 1, NULL)) > 0",
+        $this->getCaseTypeID()
+      );
     }
 
     $status_exclusions = $this->getStatusExclusions();
@@ -170,14 +178,14 @@ class InclusionFilter {
           );
         } else if ($this->hasFromDate()) {
           $date_clause = sprintf(
-            "SUM(CASE WHEN case_type_id=%s AND STR_TO_DATE(pi.date, \"%%m/%%d/%%Y\") >= %s AND STR_TO_DATE(pi.date, \"%%m/%%d/%%Y\") <= %s THEN 1 ELSE 0 END) > 0",
+            "COUNT(IF(case_type_id=%s AND STR_TO_DATE(pi.date, \"%%m/%%d/%%Y\") >= %s AND STR_TO_DATE(pi.date, \"%%m/%%d/%%Y\") <= %s, 1, NULL)) > 0",
             $this->getCaseTypeID(),
             $this->getFromDateAsExpression(),
             $this->getCurrentDateAsDateObject()
           );
         } else if ($this->hasToDate()) {
           $date_clause = sprintf(
-            "SUM(CASE WHEN case_type_id=%s AND STR_TO_DATE(pi.date, \"%%m/%%d/%%Y\") <= %s THEN 1 ELSE 0 END) > 0",
+            "COUNT(IF(case_type_id=%s AND STR_TO_DATE(pi.date, \"%%m/%%d/%%Y\") <= %s, 1, NULL)) > 0",
             $this->getCaseTypeID(),
             $this->getToDateAsExpression()
           );
@@ -189,7 +197,7 @@ class InclusionFilter {
       }
 
       $exclusion_clauses[] = sprintf(
-        "SUM(CASE WHEN case_type_id=%s AND pi.staus IN (%s) THEN 1 ELSE 0 END) = 0",
+        "COUNT(IF(case_type_id=%s AND pi.staus IN (%s), 1, NULL)) = 0",
         $this->getCaseTypeID(),
         $expr
       );
@@ -198,7 +206,7 @@ class InclusionFilter {
     foreach ($this->getStatusInclusions() as $status_filter) {
       if (!$status_filter->hasFromDate() && !$status_filter->hasToDate()) {
         $having_clause = sprintf(
-          "SUM(CASE WHEN case_type_id=%s AND pi.staus = \"%s\" THEN 1 ELSE 0 END) > 0",
+          "COUNT(IF(case_type_id=%s AND pi.staus = \"%s\", 1, NULL)) > 0",
           $this->getCaseTypeID(),
           $status_filter->getStatus()
         );
@@ -209,7 +217,7 @@ class InclusionFilter {
           $status_filter->getToDateAsExpression()
         );
         $having_clause = sprintf(
-          "SUM(CASE WHEN case_type_id=%s AND pi.staus = \"%s\" AND %s THEN 1 ELSE 0 END) > 0",
+          "COUNT(IF(case_type_id=%s AND pi.staus = \"%s\" AND %s, 1, NULL)) > 0",
           $this->getCaseTypeID(),
           $status_filter->getStatus(),
           $date_clause
@@ -221,7 +229,7 @@ class InclusionFilter {
           $status_filter->getCurrentDateAsDateObject()
         );
         $having_clause = sprintf(
-          "SUM(CASE WHEN case_type_id=%s AND pi.staus = \"%s\" AND %s THEN 1 ELSE 0 END) > 0",
+          "COUNT(IF(case_type_id=%s AND pi.staus = \"%s\" AND %s, 1, NULL)) > 0",
           $this->getCaseTypeID(),
           $status_filter->getStatus(),
           $date_clause
@@ -232,7 +240,7 @@ class InclusionFilter {
           $status_filter->getToDateAsExpression()
         );
         $having_clause = sprintf(
-          "SUM(CASE WHEN case_type_id=%s AND pi.staus = \"%s\" AND %s THEN 1 ELSE 0 END) > 0",
+          "COUNT(IF(case_type_id=%s AND pi.staus = \"%s\" AND %s, 1, NULL)) > 0",
           $this->getCaseTypeID(),
           $status_filter->getStatus(),
           $date_clause

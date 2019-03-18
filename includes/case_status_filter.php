@@ -9,6 +9,35 @@
     </tr>
   </thead>
   <tbody>
+    <tr class="bg-light border-bottom" data-case-type-id="<?php echo $case_type_entry['case_type_id']; ?>" data-case-status-index="case_closed_date">
+      <td class="align-middle">
+        <input type="checkbox" data-include class="form-control" value="case_closed_date">
+      </td>
+      <td class="align-middle">
+        Case Closed Date
+      </td>
+      <td class="align-middle">
+        <input
+          data-case-type-<?php echo $case_type_entry['case_type_id']; ?>-status-case_closed_date-from-date
+          type="text"
+          style="width: 80px"
+          class="case-status-datepicker form-control form-control-sm"
+          value=""
+        />
+      </td>
+      <td class="align-middle">
+        <input
+          data-case-type-<?php echo $case_type_entry['case_type_id']; ?>-status-case_closed_date-to-date
+          type="text"
+          style="width: 80px"
+          class="case-status-datepicker form-control form-control-sm"
+          value=""
+        />
+      </td>
+      <td class="align-middle">
+        <input type="checkbox" data-exclude class="form-control" value="case_closed_date">
+      </td>
+    </tr>
     <?php foreach ($case_status_types[$case_type_entry['case_type_id']] as $index => $case_status_type) { ?>
       <tr data-case-type-id="<?php echo $case_type_entry['case_type_id']; ?>" data-case-status-index="<?php echo $index; ?>" class="border-bottom">
         <td class="align-middle">
