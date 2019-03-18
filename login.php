@@ -14,10 +14,10 @@ require_once('config.php');
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script type="text/javascript" src="js/jquery.min.js"></script>
    <script type="text/javascript" src="js/multiselect.js"></script>
    <script type="text/javascript" src="js/myscr.js"></script>
-  <link rel="stylesheet" href="css/style.css">  
+  <link rel="stylesheet" href="css/style.css">
  </head>
  <body style="background:url(images/login.jpg); background-size:cover;">
 <div class="scr1" style="max-width:700px; width:100%; margin:5% auto; height:500px; border:1px solid #fff; background:#fff; padding:20px 0;">
