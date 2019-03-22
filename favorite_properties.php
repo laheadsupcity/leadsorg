@@ -47,7 +47,10 @@
       <?php } else { ?>
         <h5><?php echo($folder['name']); ?></h5>
 
-        <?php include('includes/properties_table.php') ?>
+        <?php
+          $show_favorites_flag = true;
+          include('includes/properties_table.php');
+        ?>
 
         <div class="mt-3">
           <button type="submit" id="export_properties_csv_button" class="btn btn-primary">Export selected</button>

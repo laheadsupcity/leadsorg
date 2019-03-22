@@ -2,8 +2,7 @@
   <thead class="border-bottom">
     <tr>
       <?php
-      $favorites_enabled = false;
-      if ($favorites_enabled) { ?>
+      if ($show_favorites_flag) { ?>
         <th class="flag-col">
           <i class="far fa-flag"></i>
         </th>
@@ -30,8 +29,7 @@
       foreach ($properties as $property) { ?>
         <tr class="border-bottom">
           <?php
-          $favorites_enabled = false;
-          if ($favorites_enabled) { ?>
+          if ($show_favorites_flag) { ?>
             <td class="flag-col">
               <?php if($property['has_unseen_updates']) { ?>
                 <i class="fas fa-flag text-danger"></i>
