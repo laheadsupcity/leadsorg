@@ -110,7 +110,6 @@ function gatherCaseTypeFilterData() {
 
 function handleFormSubmit(form) {
   var form_object = {
-    searchid: null,
     num_units_min: null,
     num_units_max: null,
     is_owner_occupied: null,

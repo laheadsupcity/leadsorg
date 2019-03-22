@@ -21,90 +21,44 @@
   <meta name="format-detection" content="telephone=no"/>
 </head>
 <body>
-  <div style="width:100%; float:left; margin:0;">
-    <?php
-      include('nav.php');
-      if (isset($_GET['searchid'])) {
-          unset($_SESSION['SearchFormData']);
-          $num_units_min=isset($_GET['num_units_min']) ? $_GET['num_units_min'] : '';
-          $num_units_max=isset($_GET['num_units_max']) ? $_GET['num_units_max'] : '';
+  <?php
+    include('nav.php');
 
-          $zip=isset($_GET['zip_codes']) ? $_GET['zip_codes'] : '';
-          $cities=isset($_GET['cities']) ? $_GET['cities'] : '';
-          $zoning_to=isset($_GET['zoning']) ? $_GET['zoning'] : '';
-          $tax_exemption_codes=isset($_GET['tax_exemption_codes']) ? $_GET['tax_exemption_codes'] : '';
+    $search_params=array(
+      'num_units_min' => $_GET['num_units_min'],
+      'num_units_max' => $_GET['num_units_max'],
+      'zip' => $_GET['zip_codes'],
+      'city' => $_GET['cities'],
+      'zoning' => $_GET['zoning'],
+      'exemption' => $_GET['tax_exemption_codes'],
+      'casetype' => $_GET['case_types'],
+      'num_bedrooms_min' => $_GET['num_bedrooms_min'],
+      'num_bedrooms_max' => $_GET['num_bedrooms_max'],
+      'num_baths_min' => $_GET['num_baths_min'],
+      'num_baths_max' => $_GET['num_baths_max'],
+      'num_stories_min' => $_GET['num_stories_min'],
+      'num_stories_max' => $_GET['num_stories_max'],
+      'cost_per_sq_ft_min' => $_GET['cost_per_sq_ft_min'],
+      'cost_per_sq_ft_max' => $_GET['cost_per_sq_ft_max'],
+      'lot_area_sq_ft_min' => $_GET['lot_area_sq_ft_min'],
+      'lot_area_sq_ft_max' => $_GET['lot_area_sq_ft_max'],
+      'sales_price_min' => $_GET['sales_price_min'],
+      'sales_price_max' => $_GET['sales_price_max'],
+      'is_owner_occupied' => $_GET['is_owner_occupied'],
+      'year_built_min' => $_GET['year_built_min'],
+      'year_built_max' => $_GET['year_built_max'],
+      'sales_date_from' => $_GET['sales_date_from'],
+      'sales_date_to' => $_GET['sales_date_to']
+    );
 
-          $num_bedrooms_min=isset($_GET['num_bedrooms_min']) ? $_GET['num_bedrooms_min'] : '';
-          $num_bedrooms_max=isset($_GET['num_bedrooms_max']) ? $_GET['num_bedrooms_max'] : '';
+    $current_page = isset($_GET["page"]) ? $_GET["page"] : 1;
+    $num_rec_per_page = isset($_REQUEST['num_rec_per_page']) ? $_REQUEST['num_rec_per_page'] : 1000;
 
-          $num_baths_min=isset($_GET['num_baths_min']) ? $_GET['num_baths_min'] : '';
-          $num_baths_max=isset($_GET['num_baths_max']) ? $_GET['num_baths_max'] : '';
-
-          $num_stories_min=isset($_GET['num_stories_min']) ? $_GET['num_stories_min'] : '';
-          $num_stories_max=isset($_GET['num_stories_max']) ? $_GET['num_stories_max'] : '';
-
-          $cost_per_sq_ft_min=isset($_GET['cost_per_sq_ft_min']) ? $_GET['cost_per_sq_ft_min'] : '';
-          $cost_per_sq_ft_max=isset($_GET['cost_per_sq_ft_max']) ? $_GET['cost_per_sq_ft_max'] : '';
-
-          $lot_area_sq_ft_min=isset($_GET['lot_area_sq_ft_min']) ? $_GET['lot_area_sq_ft_min'] : '';
-          $lot_area_sq_ft_max=isset($_GET['lot_area_sq_ft_max']) ? $_GET['lot_area_sq_ft_max'] : '';
-
-          $sales_price_min=isset($_GET['sales_price_min']) ? $_GET['sales_price_min'] : '';
-          $sales_price_max=isset($_GET['sales_price_max']) ? $_GET['sales_price_max'] : '';
-
-          $year_built_min=isset($_GET['year_built_min']) ? $_GET['year_built_min'] : '';
-          $year_built_max=isset($_GET['year_built_max']) ? $_GET['year_built_max'] : '';
-
-          $sales_date_from=isset($_GET['sales_date_from']) ? $_GET['sales_date_from'] : '';
-          $sales_date_to=isset($_GET['sales_date_to']) ? $_GET['sales_date_to'] : '';
-
-          $is_owner_occupied=isset($_GET['is_owner_occupied']) ? $_GET['is_owner_occupied'] : '';
-
-          $case_types = isset($_GET['case_types']) ? $_GET['case_types'] : '';
-
-          $search_params=array(
-            'num_units_min'=>$num_units_min,
-            'num_units_max'=>$num_units_max,
-            'zip'=>$zip,
-            'city'=>$cities,
-            'zoning'=>$zoning_to,
-            'exemption'=>$tax_exemption_codes,
-            'casetype'=>$case_types,
-            'num_bedrooms_min'=>$num_bedrooms_min,
-            'num_bedrooms_max'=>$num_bedrooms_max,
-            'num_baths_min'=>$num_baths_min,
-            'num_baths_max'=>$num_baths_max,
-            'num_stories_min'=>$num_stories_min,
-            'num_stories_max'=>$num_stories_max,
-            'cost_per_sq_ft_min'=>$cost_per_sq_ft_min,
-            'cost_per_sq_ft_max'=>$cost_per_sq_ft_max,
-            'lot_area_sq_ft_min'=>$lot_area_sq_ft_min,
-            'lot_area_sq_ft_max'=>$lot_area_sq_ft_max,
-            'sales_price_min'=>$sales_price_min,
-            'is_owner_occupied'=>$is_owner_occupied,
-            'sales_price_max'=>$sales_price_max,
-            'year_built_min'=>$year_built_min,
-            'year_built_max'=>$year_built_max,
-            'sales_date_from'=>$sales_date_from,
-            'sales_date_to'=>$sales_date_to
-          );
-
-          $_SESSION['SearchFormData']  = $search_params;
-      } elseif (isset($_SESSION['SearchFormData'])) {
-          $search_params = $_SESSION['SearchFormData'];
-      } else {
-          header("LOCATION:lead_customdatabase_search.php");
-      }
-
-      $current_page = isset($_GET["page"]) ? $_GET["page"] : 1;
-      $num_rec_per_page = isset($_REQUEST['num_rec_per_page']) ? $_REQUEST['num_rec_per_page'] : 1000;
-
-      $searcher = new CustomDatabaseSearch($search_params);
-      $properties = $searcher->getResults($num_rec_per_page, $current_page);
-      $matching_cases = $searcher->getMatchingCasesForProperties();
-      $total_records = $searcher->getResultCount();
-    ?>
-  </div>
+    $searcher = new CustomDatabaseSearch($search_params);
+    $properties = $searcher->getResults($num_rec_per_page, $current_page);
+    $matching_cases = $searcher->getMatchingCasesForProperties();
+    $total_records = $searcher->getResultCount();
+  ?>
 
   <div class="main-content mx-auto">
     <?php if (!empty($properties)) { ?>
