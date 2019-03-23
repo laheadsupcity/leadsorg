@@ -128,7 +128,7 @@ $exemption=getexemptionlist();
 
           <div class="col-sm-4">
             <p class="heading2">Notes</p>
-            <textarea class="form-control" id="notes" name="notes" rows="12"></textarea>
+            <textarea class="form-control" id="notes" name="notes" rows="12"><?php echo $propertdata['notes']; ?></textarea>
           </div>
 
           <div class="col-sm-12">

@@ -160,10 +160,16 @@ class CustomDatabaseSearch {
         p.bedrooms,
         p.bathrooms,
         p.lot_area_sqft,
+        p.building_area,
         p.cost_per_sq_ft,
         p.year_built,
         p.sales_date,
         p.sales_price,
+        p.notes,
+        p.phone1,
+        p.phone2,
+        p.email1,
+        p.email2,
         p.id
         FROM `property` AS p WHERE p.parcel_number IN (
           \"%s\"

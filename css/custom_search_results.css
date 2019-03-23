@@ -1,39 +1,46 @@
-.flag-col,
-.checkbox-col {
-  width: 2.8%;
+.property-list-group .property-item:nth-child(even) {
+  background-color: #fff;
 }
 
-.apn-col {
-  width: 11.2%;
+.property-list-group .property-item:nth-child(odd) {
+  background-color: rgba(0, 0, 0, .05);
 }
 
-.address-col {
-  width: 16.7%;
+.property-item-header, .property-item {
+  padding: 8px 8px 8px 16px;
 }
 
-.owner-col {
-  width: 20.2%;
+.property-list {
+  height: 1000px;
+  overflow-y: scroll;
 }
 
-.units-col,
-.beds-col,
-.baths-col {
-  width: 5%;
+.actions-header {
+  width: 21px;
 }
 
-.lot-sqft-col,
-.year-built-col {
-  width: 5.8%;
+.sm-property-info-column {
+  margin-left: 12px;
+  width: 40px;
+  text-align: center;
 }
 
-.sale-date-col {
-  width: 10%;
+.md-property-info-column {
+  margin-left: 16px;
+  width: 70px;
+  text-align: center;
 }
 
-.sale-price-col {
-  width: 7.3%;
+.lg-property-info-column {
+  width: 90px;
+  margin-left: 16px;
+  text-align: center;
 }
 
-.options-col {
- width: 3.5%;
+.xlg-property-info-column {
+  width: 160px;
+}
+
+.parcel-number {
+  width: 134px;
 }

@@ -10,7 +10,6 @@
       <th class="checkbox-col">
         <input type="checkbox" id="checkAll" name="all">
       </th>
-      <th class="apn-col">Parcel #</th>
       <th class="address-col">Address</th>
       <th class="owner-col">Owner Name</th>
       <th class="units-col">Units</th>
@@ -20,6 +19,9 @@
       <th class="year-built-col">Year Built</th>
       <th class="sale-date-col">Sale Date</th>
       <th class="sale-price-col">Sale Price</th>
+      <!-- <th class="phone-col">Phone</th>
+      <th class="email-col">Email</th>
+      <th class="notes-col">Notes</th> -->
       <th class="options-col"></th>
     </tr>
   </thead>
@@ -37,9 +39,17 @@
             </td>
           <?php } ?>
           <td class="checkbox-col"><input type="checkbox" data-property-checkbox value="<?php echo $property['parcel_number']; ?>" /></td>
-          <td class="apn-col"><?php echo $property['parcel_number']; ?></td>
-          <td class="address-col"><?php echo $property['street_number'].' '.$property['street_name'].'<br/> '.$property['site_address_city_state'].',
- '.$property['site_address_zip']; ?></td>
+          <td class="address-col">
+            <div>
+              <?php echo $property['street_number']; ?> <?php echo $property['street_name'] ?>
+            </div>
+            <div>
+              <?php echo $property['site_address_city_state']; ?>, <?php echo $property['site_address_zip']; ?>
+            </div>
+            <div class="font-weight-light">
+              Parcel number: <?php echo $property['parcel_number']; ?>
+            </div>
+          </td>
           <td class="owner-col"><?php echo $property['owner_name2']; ?></td>
           <td class="units-col"><?php echo $property['number_of_units']; ?></td>
           <td class="beds-col"><?php echo $property['bedrooms']; ?></td>
@@ -56,6 +66,9 @@
               } ?>
           </td>
           <td class="sale-price-col"><?php echo $property['sales_price']; ?></td>
+          <!-- <td class="phone-col">Phone</td>
+          <td class="email-col">Email</td>
+          <td class="notes-col">Notes</td> -->
           <td class="options-col">
             <div>
               <a target="_blank" class="br-1 pr-1 mr-1" href="lead_property_detail.php?apn=<?php echo $property['parcel_number']; ?>&matching_cases=<?php echo implode(",", $matching_cases[$property['parcel_number']]);?>"><i class="text-secondary fas fa-chevron-circle-right"></i></a>

@@ -67,23 +67,41 @@
           <span class="font-weight-bold pr-1">Total Records:</span> <?php echo $total_records; ?>
         </div>
         <div>
-          <span class="font-weight-bold pr-1">No. of Records Per Page:</span>
-          <select id='num_rec_per_page' name="num_rec_per_page">
-            <option <?php echo ($num_rec_per_page==10)?"selected='selected'":''; ?> value='10'>10</option>
-            <option <?php echo ($num_rec_per_page==25)?"selected='selected'":''; ?> value='25'>25</option>
-            <option <?php echo ($num_rec_per_page==50)?"selected='selected'":''; ?> value='50'>50</option>
-            <option <?php echo ($num_rec_per_page==100)?"selected='selected'":''; ?> value='100'>100</option>
-            <option <?php echo ($num_rec_per_page==250)?"selected='selected'":''; ?> value='250'>250</option>
-            <option <?php echo ($num_rec_per_page==500)?"selected='selected'":''; ?> value='500'>500</option>
-            <option <?php echo ($num_rec_per_page==1000)?"selected='selected'":''; ?> value='1000'>1000</option>
-            <option <?php echo ($num_rec_per_page==5000)?"selected='selected'":''; ?> value='5000'>5000</option>
-          </select>
+          <div>
+            <span class="font-weight-bold pr-1">No. of Records Per Page:</span>
+            <select id='num_rec_per_page' name="num_rec_per_page">
+              <option <?php echo ($num_rec_per_page==10)?"selected='selected'":''; ?> value='10'>10</option>
+              <option <?php echo ($num_rec_per_page==25)?"selected='selected'":''; ?> value='25'>25</option>
+              <option <?php echo ($num_rec_per_page==50)?"selected='selected'":''; ?> value='50'>50</option>
+              <option <?php echo ($num_rec_per_page==100)?"selected='selected'":''; ?> value='100'>100</option>
+              <option <?php echo ($num_rec_per_page==250)?"selected='selected'":''; ?> value='250'>250</option>
+              <option <?php echo ($num_rec_per_page==500)?"selected='selected'":''; ?> value='500'>500</option>
+              <option <?php echo ($num_rec_per_page==1000)?"selected='selected'":''; ?> value='1000'>1000</option>
+              <option <?php echo ($num_rec_per_page==5000)?"selected='selected'":''; ?> value='5000'>5000</option>
+            </select>
+          </div>
+          <div class="mt-2" hidden>
+            <span class="font-weight-bold pr-1">Sort Order:</span>
+            <select id='sort_order'>
+              <option value='parcel_number'>Parcel number</option>
+              <option value='num_units_asc'>Number of units &#8593;</option>
+              <option value='num_units_desc'>Number of units &#8595;</option>
+              <option value='building_area_asc'>Building area &#8593;</option>
+              <option value='building_area_desc'>Building area &#8595;</option>
+              <option value='lot_area_sqft_asc'>Lot area sqft &#8593;</option>
+              <option value='lot_area_sqft_desc'>Lot area sqft &#8595;</option>
+              <option value='year_built_asc'>Year built &#8593;</option>
+              <option value='year_built_desc'>Year built &#8595;</option>
+              <option value='sale_date_asc'>Sale date &#8593;</option>
+              <option value='sale_date_desc'>Sale date &#8595;</option>
+            </select>
+          </div>
         </div>
       </div>
 
       <?php
         $show_favorites_flag = false;
-        include('includes/properties_table.php');
+        include('includes/properties_list.php');
       ?>
 
       <?php require('includes/search_results/pagination.php'); ?>
