@@ -44,7 +44,7 @@
       <?php include('nav.php'); ?>
     </div>
 
-    <div class="main-content content-border h-100 mx-auto">
+    <div class="main-content main-content-fixed-width content-border h-100 mx-auto">
       <form action="lead_get_property.php" id="cdsearchform" method="post" >
         <div class="container pt-3">
           <div class="row">

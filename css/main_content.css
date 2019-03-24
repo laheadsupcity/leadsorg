@@ -5,8 +5,11 @@ html, body {
 .main-content {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   border: 1px solid #ffffff;
-  max-width: 1200px;
   overflow: hidden;
+}
+
+.main-content.main-content-fixed-width {
+  max-width: 1200px;
 }
 
 .content-border {

@@ -11,36 +11,109 @@
 }
 
 .property-list {
-  height: 1000px;
-  overflow-y: scroll;
+  max-height: 1000px;
+  overflow: scroll;
 }
 
 .actions-header {
   width: 21px;
 }
 
-.sm-property-info-column {
-  margin-left: 12px;
-  width: 40px;
+.property-info-column {
+  margin-left: 10px;
+}
+
+.num-units {
   text-align: center;
 }
 
+.num-units.sortable-column {
+  width: 63px;
+}
+.year-built.sortable-column {
+  width: 59px;
+}
+
+.building-size.sortable-column {
+  width: 59px;
+}
+
+.lot-size.sortable-column {
+  width: 60px;
+}
+
+.sm-property-info-column {
+  width: 40px;
+}
+
 .md-property-info-column {
-  margin-left: 16px;
   width: 70px;
-  text-align: center;
 }
 
 .lg-property-info-column {
   width: 90px;
-  margin-left: 16px;
-  text-align: center;
 }
 
 .xlg-property-info-column {
-  width: 160px;
+  width: 154px;
+}
+
+.owner-column {
+  width: 200px;
 }
 
 .parcel-number {
   width: 134px;
+}
+
+.property-item-header .sortable-column {
+  position: relative;
+  cursor: pointer;
+}
+
+.property-item-header .sortable-column.num-units {
+  right: -1.1em;
+}
+
+.property-item-header .sortable-column.building-size {
+  right: -.8em;
+}
+
+.property-item-header .sortable-column.lot-size {
+  right: -.8em;
+}
+
+.property-item-header .sortable-column.sold-date {
+  right: -.8em;
+}
+
+.property-item-header .sortable-column.year-built {
+  right: -.8em;
+}
+
+.sortable-column .sorting-arrows {
+  color: #B1B4B8;
+  font-size: 16px;
+  margin-left: 4px;
+  position: relative;
+}
+
+.sorting-arrows-desc {
+  position: relative;
+  right: .6em;
+}
+
+.sortable-column-desc .sorting-arrows-desc,
+.sortable-column-asc .sorting-arrows-asc {
+  color: #3277C2;
+}
+
+.editable-field:hover {
+  cursor: pointer;
+  background: #ffffcc;
+}
+
+.owner-contact-label {
+  width: 54px;
+  text-align: right;
 }

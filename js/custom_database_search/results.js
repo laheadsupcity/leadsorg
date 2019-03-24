@@ -1,76 +1,111 @@
-function indicateSortByField(indicatorPrefix) {
-  if (false) {
-    $('.sort-by-indicator').removeClass('sort-by-field');
-    $('.' + indicatorPrefix + '-sort-by-indicator').addClass('sort-by-field');
-  }
+const SORT_TYPE_ASC = "ASC";
+const SORT_TYPE_DESC = "DESC";
+const SORT_TYPE_NEITHER = "NEITHER";
+
+const SORT_COLUMN_UNITS = "num_units";
+const SORT_COLUMN_BUILDING_AREA = "building_area";
+const SORT_COLUMN_LOT_AREA_SQFT = "lot_area_sqft";
+const SORT_COLUMN_YEAR_BUILT = "year_built";
+const SORT_COLUMN_SALE_DATE = "sale_date";
+
+const sortSettings = {};
+sortSettings[SORT_COLUMN_UNITS] = SORT_TYPE_DESC;
+sortSettings[SORT_COLUMN_BUILDING_AREA] = SORT_TYPE_DESC;
+sortSettings[SORT_COLUMN_LOT_AREA_SQFT] = SORT_TYPE_DESC;
+sortSettings[SORT_COLUMN_YEAR_BUILT] = SORT_TYPE_DESC;
+sortSettings[SORT_COLUMN_SALE_DATE] = SORT_TYPE_DESC;
+
+function handleSortToggle(event, column) {
+  var target = $(event.currentTarget);
+
+  toggleSortDirection(target, column);
 }
 
-function sortProperties(dataAttributeToSortBy, isAscending, isDate = false) {
+function toggleSortDirection(column_header, column, direction) {
+  if (direction) {
+    switch (direction) {
+      case SORT_TYPE_ASC:
+        column_header.removeClass('sortable-column-desc').addClass('sortable-column-asc');
+        break;
+      case SORT_TYPE_DESC:
+        column_header.removeClass('sortable-column-asc').addClass('sortable-column-desc');
+        break;
+    }
+  } else if (column_header.hasClass('sortable-column-asc')) {
+    direction = SORT_TYPE_NEITHER;
+    column_header.removeClass('sortable-column-asc');
+  } else if (column_header.hasClass('sortable-column-desc')) {
+    direction = SORT_TYPE_ASC;
+    column_header.removeClass('sortable-column-desc').addClass('sortable-column-asc');
+  } else {
+    direction = SORT_TYPE_DESC;
+    column_header.removeClass('sortable-column-asc').addClass('sortable-column-desc');
+  }
+
+  sortSettings[column] = direction;
+  sortProperties();
+}
+
+function setupSortableColumns() {
+  Object.keys(sortSettings).forEach(function(column) {
+    var direction = sortSettings[column];
+    var column_header = $('[data-sortable-column="' + column + '"]');
+
+    column_header.addClass('sortable-column');
+
+    column_header.append(
+      "<span class=\"sorting-arrows\"><i class=\"fas fa-sort-up sorting-arrows-asc\"></i><i class=\"fas fa-sort-down sorting-arrows-desc\"></i></span>"
+    );
+
+    toggleSortDirection(column_header, column, direction);
+
+    column_header.click(function(event) {
+      handleSortToggle(event, column, direction);
+    });
+  });
+}
+
+function sortProperties() {
   $('.property-item').sort(function(propertyA, propertyB) {
-    var sortPropA = $(propertyA).data(dataAttributeToSortBy);
-    var sortPropB = $(propertyB).data(dataAttributeToSortBy);
+    let result;
+    for (column in sortSettings) {
+      if (result) {
+        return result;
+      }
 
-    var sortPropAInt = parseInt(sortPropA, 10);
-    var sortPropBInt = parseInt(sortPropB, 10);
+      let sortPropA = $(propertyA).data(column);
+      let sortPropB = $(propertyB).data(column);
+      let sortDirection = sortSettings[column];
 
-    if (isDate) {
-      return isAscending ? new Date(sortPropA) - new Date(sortPropB) :  new Date(sortPropB) - new Date(sortPropA);
-    } else if (!isNaN(sortPropAInt) && !isNaN(sortPropBInt)) {
-      sortPropA = sortPropAInt;
-      sortPropB = sortPropBInt;
+      switch (column) {
+        case SORT_COLUMN_UNITS:
+        case SORT_COLUMN_BUILDING_AREA:
+        case SORT_COLUMN_LOT_AREA_SQFT:
+        case SORT_COLUMN_YEAR_BUILT:
+          sortPropA = parseInt(sortPropA, 10);
+          sortPropB = parseInt(sortPropB, 10);
+
+          if (sortPropA == sortPropB) {
+            continue;
+          } else if (sortPropA > sortPropB) {
+            result = sortDirection == SORT_TYPE_ASC ? 1 : -1;
+          } else if (sortPropA < sortPropB) {
+            result = sortDirection == SORT_TYPE_ASC ? -1 : 1;
+          }
+        case SORT_COLUMN_SALE_DATE:
+          sortPropA = new Date(sortPropA);
+          sortPropB = new Date(sortPropB);
+
+          if (sortPropA == sortPropB) {
+            continue;
+          } else {
+            result = sortDirection == SORT_TYPE_ASC ? sortPropA - sortPropB : sortPropB - sortPropA;
+          }
+      }
     }
 
-    return (sortPropA > sortPropB) ? (isAscending ? 1 : -1) : (sortPropA < sortPropB) ? (isAscending ? -1 : 1) : 0;
+    return 0;
   }).appendTo('.property-list');
-}
-
-function handleSortOrderChange(sort_order) {
-  switch (sort_order) {
-    case "parcel_number":
-      sortProperties('parcel-number', true);
-      indicateSortByField('parcel-number');
-      break;
-    case "num_units_asc":
-      sortProperties('num-units', true);
-      indicateSortByField('num-units');
-      break;
-    case "num_units_desc":
-      sortProperties('num-units', false);
-      indicateSortByField('num-units');
-      break;
-    case "building_area_asc":
-      sortProperties('building-area', true);
-      indicateSortByField('building-area');
-      break;
-    case "building_area_desc":
-      sortProperties('building-area', false);
-      indicateSortByField('building-area');
-      break;
-    case "lot_area_sqft_asc":
-      sortProperties('lot-area-sqft', true);
-      indicateSortByField('lot-area-sqft');
-      break;
-    case "lot_area_sqft_desc":
-      sortProperties('lot-area-sqft', false);
-      indicateSortByField('lot-area-sqft');
-      break;
-    case "year_built_asc":
-      sortProperties('year-built', true);
-      indicateSortByField('year-built');
-      break;
-    case "year_built_desc":
-      sortProperties('year-built', false);
-      indicateSortByField('year-built');
-      break;
-    case "sale_date_asc":
-      sortProperties('sale-date', true, true);
-      indicateSortByField('sale-date');
-      break;
-    case "sale_date_desc":
-      sortProperties('sale-date', false, true);
-      indicateSortByField('sale-date');
-      break;
-  }
 }
 
 function navigateToPage(page) {
@@ -116,7 +151,7 @@ function resizePropertyList() {
 
 $(document).ready(function() {
 
-  handleSortOrderChange($('#sort_order').val());
+  setupSortableColumns();
 
   $('.results-pagination a').click(function(event) {
     handlePagination(event);
@@ -130,10 +165,6 @@ $(document).ready(function() {
 
   $(window).resize(function(event) {
     resizePropertyList();
-  });
-
-  $('#sort_order').change(function(event) {
-    handleSortOrderChange($(event.target).val());
   });
 
 });

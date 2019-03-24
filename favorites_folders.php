@@ -30,7 +30,7 @@
     </div>
     <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap.min.css" />
 
-    <div class="main-content mx-auto">
+    <div class="main-content main-content-fixed-width mx-auto">
       <div class="d-flex flex-wrap justify-content-center">
         <div class="w-100 m-3">
           <?php if (empty($favorites_folders)) { ?>

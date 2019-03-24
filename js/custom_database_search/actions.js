@@ -104,7 +104,6 @@ $(document).ready(function() {
           'check': checked_properties
         },
         success: function(response) {
-          // console.log(response);
           var type = 'application/csv';
           var blob = new Blob([response], {
             type: type

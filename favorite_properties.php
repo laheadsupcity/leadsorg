@@ -26,7 +26,7 @@
       ?>
     </div>
 
-    <div class="main-content mx-auto">
+    <div class="main-content main-content-fixed-width mx-auto">
       <?php
         $folder_id = $_GET['folder_id'];
 

@@ -14,6 +14,7 @@
   <script type="text/javascript" src="js/jquery.min.js"></script>
   <script type="text/javascript" src="js/bootstrap.min.js"></script>
   <script type="text/javascript" src="js/custom_database_search/results.js"></script>
+  <script type="text/javascript" src="js/custom_database_search/editable_fields.js"></script>
   <script type="text/javascript" src="js/custom_database_search/actions.js"></script>
   <style>
     .active1{background:#337ab7!important;}
@@ -60,7 +61,7 @@
     $total_records = $searcher->getResultCount();
   ?>
 
-  <div class="main-content mx-auto">
+  <div class="main-content ml-5 mr-5">
     <?php if (!empty($properties)) { ?>
       <div class="d-flex justify-content-between p-2">
         <div>
