@@ -8,6 +8,7 @@ class CustomDatabaseSearch {
   private $search_params;
   private $results_count;
   private $apns_to_cases_map;
+  private $result_apns;
   private $case_type_filter_builder;
 
   function __construct($search_param_data) {
@@ -15,10 +16,12 @@ class CustomDatabaseSearch {
     $this->search_params = new SearchParameters($search_param_data);
 
     $case_type_filters = $this->search_params->getCaseTypeFilters();
+
     $this->case_type_filter_builder = new CaseTypeFilters($case_type_filters);
   }
 
-  private function getStatusInclusionClauses() {
+  private function getStatusInclusionClauses()
+  {
     $inclusion_filters = $this->case_type_filter_builder->getInclusionFilters();
 
     if (empty($inclusion_filters)) {
@@ -170,6 +173,7 @@ class CustomDatabaseSearch {
         p.phone2,
         p.email1,
         p.email2,
+        p.full_mail_address,
         p.id
         FROM `property` AS p WHERE p.parcel_number IN (
           \"%s\"
@@ -177,14 +181,51 @@ class CustomDatabaseSearch {
         implode('","', $apns_to_search)
       );
 
+      // ADD THIS BACK IN WHEN QUERY IS MORE PERFORMANT
       // $this->db->query("SELECT FOUND_ROWS();");
 
       $this->db->query($property_query);
+
       $results = $this->db->result_array();
+
+      $this->result_apns = $apns_to_search;
       $this->results_count = count($results); // $this->db->result_array()[0]["FOUND_ROWS()"];
       $this->matching_cases_map = $apns_to_cases_map;
 
       return $results;
+  }
+
+  public function getRelatedPropertiesMap() {
+    if (!isset($this->result_apns)) {
+      return [];
+    }
+
+    $query = sprintf(
+      "
+      SELECT parcel_number, full_mail_address FROM `property`
+      WHERE parcel_number IN (%s)
+      ORDER BY full_mail_address
+      ",
+      implode(',', $this->result_apns)
+    );
+
+    $this->db->query($query);
+
+    $results = $this->db->result_array();
+
+    $owner_address_to_apn_map = [];
+    foreach ($results as $result) {
+      $address =  $result['full_mail_address'];
+      $parcel_number =  $result['parcel_number'];
+
+      if (empty($address)) {
+        continue;
+      }
+
+      $owner_address_to_apn_map[$address][] = $parcel_number;
+    }
+
+    return $owner_address_to_apn_map;
   }
 
   public function getResultCount() {

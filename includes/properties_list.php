@@ -15,6 +15,9 @@
       <div class="owner-column property-info-column">
         Owner Information
       </div>
+      <div data-sortable-column="related_properties" class="sm-property-info-column related-properties property-info-column sortable-column text-center">
+        Related
+      </div>
       <div data-sortable-column="num_units" class="sm-property-info-column property-info-column d-flex align-items-end num-units">
         Units
       </div>
@@ -45,10 +48,11 @@
     </div>
   </div>
   <div class="property-list">
-    <?php
-    foreach ($properties as $property) { ?>
-      <?php include('includes/properties_list_single_property.php'); ?>
-    <?php }  ?>
+    <div class="properties-scroll">
+      <?php foreach ($properties as $property) { ?>
+        <?php include('includes/properties_list_single_property.php'); ?>
+      <?php } ?>
+    </div>
   </div>
 </div>
 

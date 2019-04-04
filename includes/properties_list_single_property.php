@@ -1,3 +1,8 @@
+<?php
+  $related_properties_for_owner = $related_properties[$property['full_mail_address']];
+  $has_related_properties = count($related_properties_for_owner) > 1;
+?>
+
 <div
   data-parcel_number="<?php echo $property['parcel_number']; ?>"
   data-num_units="<?php echo $property['number_of_units']; ?>"
@@ -6,7 +11,8 @@
   data-year_built="<?php echo $property['year_built']; ?>"
   data-sale_date="<?php echo $property['sales_date']; ?>"
   data-owner_name="<?php echo $property['owner_name2']; ?>"
-  class="property-item border-bottom d-flex justify-content-between align-items-center">
+  data-related_properties="<?php echo count($related_properties_for_owner); ?>"
+  class="property-item border-bottom w-100 d-flex justify-content-between align-items-center">
   <div class="mr-2">
     <input type="checkbox" data-property-checkbox value="<?php echo $property['parcel_number']; ?>" />
   </div>
@@ -50,6 +56,12 @@
     </div>
 
     <div class="d-flex align-items-center">
+      <div class="sm-property-info-column related-properties property-info-column sortable-column font-weight-bold text-center">
+        <?php if ($has_related_properties) {
+          echo count($related_properties_for_owner);
+        } ?>
+      </div>
+
       <div class="sm-property-info-column property-info-column sortable-column num-units">
         <div><span class="font-weight-bold"><?php echo $property['number_of_units']; ?></span><br /> units</div>
       </div>
@@ -101,7 +113,7 @@
       </div>
     </div>
   </div>
-  <div class="ml-2">
+  <div class="ml-3 mr-1">
     <div>
       <a target="_blank" class="br-1 pr-1 mr-1" href="lead_property_detail.php?apn=<?php echo $property['parcel_number']; ?>&matching_cases=<?php echo implode(",", $matching_cases[$property['parcel_number']]);?>"><i class="text-secondary fas fa-chevron-circle-right"></i></a>
     </div>

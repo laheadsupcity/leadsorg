@@ -7,6 +7,7 @@ const SORT_COLUMN_BUILDING_AREA = "building_area";
 const SORT_COLUMN_LOT_AREA_SQFT = "lot_area_sqft";
 const SORT_COLUMN_YEAR_BUILT = "year_built";
 const SORT_COLUMN_SALE_DATE = "sale_date";
+const SORT_COLUMN_RELATED_PROPERTIES = "related_properties";
 
 const sortSettings = {};
 sortSettings[SORT_COLUMN_UNITS] = SORT_TYPE_DESC;
@@ -14,6 +15,7 @@ sortSettings[SORT_COLUMN_BUILDING_AREA] = SORT_TYPE_DESC;
 sortSettings[SORT_COLUMN_LOT_AREA_SQFT] = SORT_TYPE_DESC;
 sortSettings[SORT_COLUMN_YEAR_BUILT] = SORT_TYPE_DESC;
 sortSettings[SORT_COLUMN_SALE_DATE] = SORT_TYPE_DESC;
+sortSettings[SORT_COLUMN_RELATED_PROPERTIES] = SORT_TYPE_DESC;
 
 function handleSortToggle(event, column) {
   var target = $(event.currentTarget);
@@ -82,6 +84,7 @@ function sortProperties() {
         case SORT_COLUMN_BUILDING_AREA:
         case SORT_COLUMN_LOT_AREA_SQFT:
         case SORT_COLUMN_YEAR_BUILT:
+        case SORT_COLUMN_RELATED_PROPERTIES:
           sortPropA = parseInt(sortPropA, 10);
           sortPropB = parseInt(sortPropB, 10);
 
@@ -105,7 +108,7 @@ function sortProperties() {
     }
 
     return 0;
-  }).appendTo('.property-list');
+  }).appendTo('.properties-scroll');
 }
 
 function navigateToPage(page) {
