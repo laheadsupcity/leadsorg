@@ -108,17 +108,29 @@ function handlePageSizeChange(event) {
   window.location.href = url.toString();
 }
 
+function resizePropertyList() {
+  var window_height = $(window).height();
+
+  $('.property-list').height(window_height - 300);
+}
+
 $(document).ready(function() {
 
   handleSortOrderChange($('#sort_order').val());
 
   $('.results-pagination a').click(function(event) {
     handlePagination(event);
-  })
+  });
 
   $('#num_rec_per_page').change(function(event) {
     handlePageSizeChange(event);
-  })
+  });
+
+  resizePropertyList();
+
+  $(window).resize(function(event) {
+    resizePropertyList();
+  });
 
   $('#sort_order').change(function(event) {
     handleSortOrderChange($(event.target).val());
