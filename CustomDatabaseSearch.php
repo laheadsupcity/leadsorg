@@ -11,7 +11,8 @@ class CustomDatabaseSearch {
   private $result_apns;
   private $case_type_filter_builder;
 
-  function __construct($search_param_data) {
+  function __construct($search_param_data)
+  {
     $this->db = Database::instance();
     $this->search_params = new SearchParameters($search_param_data);
 
@@ -174,6 +175,7 @@ class CustomDatabaseSearch {
         p.email1,
         p.email2,
         p.full_mail_address,
+        p.mail_address_zip,
         p.id
         FROM `property` AS p WHERE p.parcel_number IN (
           \"%s\"
@@ -195,37 +197,40 @@ class CustomDatabaseSearch {
       return $results;
   }
 
-  public function getRelatedPropertiesMap() {
+  public function getRelatedPropertiesCounts() {
     if (!isset($this->result_apns)) {
       return [];
     }
 
-    $query = sprintf(
+    $addresses_query = sprintf(
       "
-      SELECT parcel_number, full_mail_address FROM `property`
-      WHERE parcel_number IN (%s)
-      ORDER BY full_mail_address
+      SELECT count(concat(full_mail_address, ' ', mail_address_zip)) as `related_properties_count`, concat(full_mail_address, ' ', mail_address_zip) as owner_address
+      FROM `property`
+      WHERE concat(full_mail_address, ' ', mail_address_zip) IN (
+        SELECT
+          distinct concat(full_mail_address, ' ', mail_address_zip) as owner_address
+        FROM `property`
+        WHERE parcel_number IN (
+          %s
+        ) AND full_mail_address <> \"\" AND mail_address_zip <> \"\"
+      ) GROUP BY owner_address;
       ",
       implode(',', $this->result_apns)
     );
 
-    $this->db->query($query);
+    $this->db->query($addresses_query);
 
     $results = $this->db->result_array();
 
-    $owner_address_to_apn_map = [];
+    $related_count_map = [];
     foreach ($results as $result) {
-      $address =  $result['full_mail_address'];
-      $parcel_number =  $result['parcel_number'];
+      $address =  $result['owner_address'];
+      $related_properties_count =  $result['related_properties_count'];
 
-      if (empty($address)) {
-        continue;
-      }
-
-      $owner_address_to_apn_map[$address][] = $parcel_number;
+      $related_count_map[$address] = $related_properties_count;
     }
 
-    return $owner_address_to_apn_map;
+    return $related_count_map;
   }
 
   public function getResultCount() {

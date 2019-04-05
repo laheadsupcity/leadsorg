@@ -47,6 +47,10 @@
   text-align: center;
 }
 
+.edit-related {
+  width: 52px;
+}
+
 .num-units.sortable-column {
   width: 63px;
 }

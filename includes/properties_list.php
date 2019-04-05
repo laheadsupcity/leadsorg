@@ -5,18 +5,21 @@
     if ($show_favorites_flag) { ?>
       <i class="far fa-flag"></i>
     <?php } ?>
-    <div class="mr-2">
+    <div class="mr-4">
       <input type="checkbox" id="checkAll" name="all">
     </div>
+    <div class="mr-2 edit-related text-center">
+      Edit All<br />Related
+    </div>
     <div class="d-flex flex-fill align-items-end">
+      <div data-sortable-column="related_properties" class="sm-property-info-column related-properties property-info-column sortable-column text-center">
+        Related
+      </div>
       <div class="xlg-property-info-column property-info-column">
         Address & APN
       </div>
       <div class="owner-column property-info-column">
         Owner Information
-      </div>
-      <div data-sortable-column="related_properties" class="sm-property-info-column related-properties property-info-column sortable-column text-center">
-        Related
       </div>
       <div data-sortable-column="num_units" class="sm-property-info-column property-info-column d-flex align-items-end num-units">
         Units

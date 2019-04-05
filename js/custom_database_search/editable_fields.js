@@ -19,16 +19,42 @@ function getOwnerName(editable_field) {
   return editable_field.parents('.property-item').data('owner_name');
 }
 
+function shouldEditRelated(parcel_number) {
+  var property_row = $('[data-parcel_number=' + parcel_number + ']'),
+      edit_related_checkbox = property_row.find('[data-edit-related-checkbox]');
+
+  return edit_related_checkbox.prop('checked');
+}
+
+function confirmContactInfoEdit(edited_field_data) {
+  var related_properties_copy = $('#editContactInfoModal [data-related-properties]');
+
+  var edit_related = shouldEditRelated(edited_field_data.parcel_number);
+  var related_count = 0;
+  if (edit_related) {
+    related_count = $('#' + edited_field_data.id).parents('.property-item').data('related_properties');
+    related_properties_copy.find('[data-count]').html(related_count);
+  }
+  related_properties_copy.prop('hidden', !(edit_related && related_count > 0));
+
+  $('#editContactInfoModal [data-owner-name]').html(edited_field_data.owner_name.trim());
+  $('#editContactInfoModal [data-new-contact-info]').html(
+    edited_field_data.new_value == "" ? unknownFieldMarkup : edited_field_data.new_value
+  );
+
+  $('#editContactInfoModal').modal('show');
+}
+
+function confirmNotesEdit(edited_field_data) {
+  $('#editNotesModal [data-new-notes]').html(edited_field_data.new_value);
+  $('#editNotesModal').modal('show');
+}
+
 function confirmEdit(edited_field_data) {
   if (edited_field_data.type == TYPE_CONTACT_INFO) {
-    $('#editContactInfoModal [data-owner-name]').html(edited_field_data.owner_name.trim());
-    $('#editContactInfoModal [data-new-contact-info]').html(
-      edited_field_data.new_value == "" ? unknownFieldMarkup : edited_field_data.new_value
-    );
-    $('#editContactInfoModal').modal('show');
+    confirmContactInfoEdit(edited_field_data);
   } else if (edited_field_data.type == TYPE_NOTES) {
-    $('#editNotesModal [data-new-notes]').html(edited_field_data.new_value);
-    $('#editNotesModal').modal('show');
+    confirmNotesEdit(edited_field_data);
   }
 }
 
@@ -81,6 +107,7 @@ function setupEditableContactInfoFields() {
 
     var id = 'editable-contact-info-field-' + index,
         parcel_number = getParcelNumber(editable_field),
+        edit_related = true,
         owner_name = getOwnerName(editable_field),
         current_value = editable_field.html(),
         content = current_value == "" ? unknownFieldMarkup : current_value;
@@ -88,6 +115,7 @@ function setupEditableContactInfoFields() {
     editable_fields[id] = {
       id: id,
       type: TYPE_CONTACT_INFO,
+      edit_related: edit_related,
       is_editing: false,
       parcel_number: parcel_number,
       owner_name: owner_name,
@@ -118,16 +146,29 @@ function setupEditableContactInfoFields() {
   });
 
   $('#editContactInfoModal [data-action=confirm_edit]').click(function() {
-    let edited_field_data = Object.values(editable_fields).filter(field => field.is_editing)[0];
+    var edited_field_data = Object.values(editable_fields).filter(field => field.is_editing)[0];
 
     $.post(
       "edit_owner_contact_information.php",
       {
         parcel_number: edited_field_data.parcel_number,
         field: edited_field_data.field,
-        value: edited_field_data.new_value
+        value: edited_field_data.new_value,
+        edit_related: edited_field_data.edit_related
       },
       function(data) {
+        var edited_apns = data.split(',');
+
+        // var fields_to_update = Object.values(editable_fields).filter(function(data) {
+        //   return data.type == TYPE_CONTACT_INFO &&
+        //     data.field == edited_field_data.field &&
+        //     edited_apns.includes(String(data.parcel_number));
+        // });
+        //
+        // for (var data in fields_to_update) {
+        //   editable_fields[data.id].current_value = edited_field_data.value;
+        // }
+
         editable_fields[edited_field_data.id].current_value = editable_fields[edited_field_data.id].new_value;
         editable_fields[edited_field_data.id].new_value = null;
         toggleEdit(edited_field_data.id);
@@ -202,7 +243,23 @@ function setupEditableNotes() {
   });
 }
 
+function handleEditRelatedCheckboxChange(event) {
+  var checkbox = $(event.target);
+
+  var values_to_update = Object.values(editable_fields).filter(function(data) {
+    return data.parcel_number == checkbox.val() && data.type == TYPE_CONTACT_INFO;
+  });
+
+  for (var i in values_to_update) {
+    editable_fields[values_to_update[i].id].edit_related = checkbox.prop('checked');
+  }
+}
+
 $(document).ready(function() {
+
+  $('[data-edit-related-checkbox]').change(function(event) {
+    handleEditRelatedCheckboxChange(event);
+  });
 
   setupEditableContactInfoFields();
 

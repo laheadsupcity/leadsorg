@@ -33,7 +33,7 @@ $(document).ready(function() {
   resetLeadBatchModal();
 
   $("#checkAll").click(function() {
-    $('input:checkbox').not(this).prop('checked', this.checked);
+    $('[data-property-checkbox]').not(this).prop('checked', this.checked);
   });
 
   // reset create lead batch modal

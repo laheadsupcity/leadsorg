@@ -1,6 +1,7 @@
 <?php
-  $related_properties_for_owner = $related_properties[$property['full_mail_address']];
-  $has_related_properties = count($related_properties_for_owner) > 1;
+  $owner_address = $property['full_mail_address'] . ' ' . $property['mail_address_zip'];
+  $related_properties_for_owner_count = $related_properties_counts[$owner_address] - 1;
+  $has_related_properties = $related_properties_for_owner_count > 0;
 ?>
 
 <div
@@ -11,12 +12,24 @@
   data-year_built="<?php echo $property['year_built']; ?>"
   data-sale_date="<?php echo $property['sales_date']; ?>"
   data-owner_name="<?php echo $property['owner_name2']; ?>"
-  data-related_properties="<?php echo count($related_properties_for_owner); ?>"
+  data-related_properties="<?php echo $related_properties_for_owner_count; ?>"
   class="property-item border-bottom w-100 d-flex justify-content-between align-items-center">
-  <div class="mr-2">
+  <div class="mr-4">
     <input type="checkbox" data-property-checkbox value="<?php echo $property['parcel_number']; ?>" />
   </div>
+  <div class="mr-2 edit-related text-center">
+    <input type="checkbox" data-edit-related-checkbox name="all" value="<?php echo $property['parcel_number']; ?>" checked>
+  </div>
+
   <div class="d-flex flex-fill">
+    <div class="sm-property-info-column related-properties property-info-column sortable-column text-center d-flex align-items-center justify-content-center font-weight-bold">
+      <?php if ($has_related_properties) {
+        echo "<span class='text-primary'>" . $related_properties_for_owner_count . "</span>";
+      } else {
+        echo "<span class=\"font-italic font-weight-light\">none</span>";
+      }?>
+    </div>
+
     <div class="xlg-property-info-column property-info-column">
       <div class="parcel-number border-bottom mb-2 pb-1">
         Parcel # <span class="font-weight-light"><?php echo $property['parcel_number']; ?></span>
@@ -56,12 +69,6 @@
     </div>
 
     <div class="d-flex align-items-center">
-      <div class="sm-property-info-column related-properties property-info-column sortable-column font-weight-bold text-center">
-        <?php if ($has_related_properties) {
-          echo count($related_properties_for_owner);
-        } ?>
-      </div>
-
       <div class="sm-property-info-column property-info-column sortable-column num-units">
         <div><span class="font-weight-bold"><?php echo $property['number_of_units']; ?></span><br /> units</div>
       </div>
