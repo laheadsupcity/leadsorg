@@ -10,12 +10,34 @@ const SORT_COLUMN_SALE_DATE = "sale_date";
 const SORT_COLUMN_RELATED_PROPERTIES = "related_properties";
 
 const sortSettings = {};
-sortSettings[SORT_COLUMN_UNITS] = SORT_TYPE_DESC;
-sortSettings[SORT_COLUMN_BUILDING_AREA] = SORT_TYPE_DESC;
-sortSettings[SORT_COLUMN_LOT_AREA_SQFT] = SORT_TYPE_DESC;
-sortSettings[SORT_COLUMN_YEAR_BUILT] = SORT_TYPE_DESC;
-sortSettings[SORT_COLUMN_SALE_DATE] = SORT_TYPE_DESC;
-sortSettings[SORT_COLUMN_RELATED_PROPERTIES] = SORT_TYPE_DESC;
+
+function getOrderedSortSettings() {
+  let sorted = Object.values(sortSettings).sort(function(sortColumnA, sortColumnB) {
+    return sortColumnA.order < sortColumnB.order ? -1 : 1;
+  });
+
+  return sorted.map(function(column) {
+    return column.column;
+  });
+}
+
+function initDefaultSortSettings() {
+  let index = 0;
+  changeSortSetting(SORT_COLUMN_UNITS, SORT_TYPE_DESC, index++);
+  changeSortSetting(SORT_COLUMN_BUILDING_AREA, SORT_TYPE_DESC, index++);
+  changeSortSetting(SORT_COLUMN_LOT_AREA_SQFT, SORT_TYPE_DESC, index++);
+  changeSortSetting(SORT_COLUMN_YEAR_BUILT, SORT_TYPE_DESC, index++);
+  changeSortSetting(SORT_COLUMN_SALE_DATE, SORT_TYPE_DESC, index++);
+  changeSortSetting(SORT_COLUMN_RELATED_PROPERTIES, SORT_TYPE_DESC, index++);
+}
+
+function changeSortSetting(column, direction, order) {
+  sortSettings[column] = {
+    column: column,
+    direction: direction,
+    order: order
+  };
+}
 
 function handleSortToggle(event, column) {
   var target = $(event.currentTarget);
@@ -23,7 +45,7 @@ function handleSortToggle(event, column) {
   toggleSortDirection(target, column);
 }
 
-function toggleSortDirection(column_header, column, direction) {
+function toggleSortDirection(column_header, column, direction = null, reorder_sort_columns = true) {
   if (direction) {
     switch (direction) {
       case SORT_TYPE_ASC:
@@ -44,13 +66,30 @@ function toggleSortDirection(column_header, column, direction) {
     column_header.removeClass('sortable-column-asc').addClass('sortable-column-desc');
   }
 
-  sortSettings[column] = direction;
+  // change direction
+  sortSettings[column].direction = direction;
+
+  if (reorder_sort_columns && direction != SORT_TYPE_NEITHER) {
+    // make this sort filter the most important
+    let previous_order = sortSettings[column].order;
+    Object.keys(sortSettings).forEach(function(setting) {
+      if (sortSettings[setting].column == column) {
+        sortSettings[column].order = 0;
+      } else if (sortSettings[setting].order < previous_order) {
+        sortSettings[setting].order = sortSettings[setting].order + 1;
+      }
+    });
+  }
+
   sortProperties();
 }
 
 function setupSortableColumns() {
-  Object.keys(sortSettings).forEach(function(column) {
-    var direction = sortSettings[column];
+
+  initDefaultSortSettings();
+
+  getOrderedSortSettings().forEach(function(column) {
+    var direction = sortSettings[column].direction;
     var column_header = $('[data-sortable-column="' + column + '"]');
 
     column_header.addClass('sortable-column');
@@ -59,27 +98,35 @@ function setupSortableColumns() {
       "<span class=\"sorting-arrows\"><i class=\"fas fa-sort-up sorting-arrows-asc\"></i><i class=\"fas fa-sort-down sorting-arrows-desc\"></i></span>"
     );
 
-    toggleSortDirection(column_header, column, direction);
+    toggleSortDirection(column_header, column, direction, false);
 
     column_header.click(function(event) {
-      handleSortToggle(event, column, direction);
+      handleSortToggle(event, column);
     });
   });
 }
 
 function sortProperties() {
   $('.property-item').sort(function(propertyA, propertyB) {
-    let result;
-    for (column in sortSettings) {
+    let result,
+        ordered_sort_settings = getOrderedSortSettings();
+
+    for (var index in ordered_sort_settings) {
+      var setting = sortSettings[ordered_sort_settings[index]];
+
       if (result) {
         return result;
       }
 
-      let sortPropA = $(propertyA).data(column);
-      let sortPropB = $(propertyB).data(column);
-      let sortDirection = sortSettings[column];
+      let sortPropA = $(propertyA).data(setting.column);
+      let sortPropB = $(propertyB).data(setting.column);
+      let sortDirection = setting.direction;
 
-      switch (column) {
+      if (sortDirection == SORT_TYPE_NEITHER) {
+        continue;
+      }
+
+      switch (setting.column) {
         case SORT_COLUMN_UNITS:
         case SORT_COLUMN_BUILDING_AREA:
         case SORT_COLUMN_LOT_AREA_SQFT:
