@@ -75,6 +75,10 @@
   width: 134px;
 }
 
+.notes-column {
+  margin-left: 20px;
+}
+
 .property-item-header .sortable-column {
   position: relative;
   cursor: pointer;

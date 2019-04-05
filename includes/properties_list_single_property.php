@@ -103,13 +103,13 @@
         <div><span class="font-weight-bold"><?php echo $property['year_built']; ?></span></div>
       </div>
       <div class="sm-property-info-column property-info-column sortable-column building-size text-center">
-        <span class="font-weight-bold"><?php echo number_format(intval($property['building_area']), 0, ",", ","); ?><br /> </span>sqft.
+        <span class="font-weight-bold"><?php echo number_format(intval($property['building_area']), 0, ",", ","); ?><br /> </span>sqft.<br />building
       </div>
       <div class="sm-property-info-column property-info-column sortable-column lot-size text-center">
-        <span class="font-weight-bold"><?php echo number_format(intval($property['lot_area_sqft']), 0, ",", ","); ?><br /> </span>sqft.
+        <span class="font-weight-bold"><?php echo number_format(intval($property['lot_area_sqft']), 0, ",", ","); ?><br /> </span>sqft.<br />lot
       </div>
-      <div class="xlg-property-info-column property-info-column">
-        <textarea class="form-control" id="notes" name="notes" rows="3"><?php echo $property['notes']; ?></textarea>
+      <div class="xlg-property-info-column property-info-column notes-column editable-field font-weight-light">
+        <?php echo $property['notes']; ?>
       </div>
     </div>
   </div>

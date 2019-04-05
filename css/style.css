@@ -577,9 +577,6 @@ body {
   .scr1 .heading1 {
     font-size: 12px;
   }
-  .form-control {
-    font-size: 11px;
-  }
   .scr1 .number, .scr1 .numberdate {
     width: 18px;
     height: 18px;
@@ -592,9 +589,6 @@ body {
   }
   .scr1 .heading1 {
     font-size: 11px;
-  }
-  .form-control {
-    font-size: 10px;
   }
   .scr1 .number, .scr1 .numberdate {
     width: 18px;
@@ -613,9 +607,6 @@ body {
   .scr1 .heading1 {
     font-size: 11px;
   }
-  .form-control {
-    font-size: 10px;
-  }
   .scr1 .number, .scr1 .numberdate {
     width: 18px;
     height: 18px;
@@ -633,9 +624,6 @@ body {
   }
   .scr1 .heading1 {
     font-size: 11px;
-  }
-  .form-control {
-    font-size: 10px;
   }
   .scr1 .number, .scr1 .numberdate {
     width: 18px;
