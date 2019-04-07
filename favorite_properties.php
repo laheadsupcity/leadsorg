@@ -49,7 +49,7 @@
 
         <?php
           $show_favorites_flag = true;
-          include('includes/properties_table.php');
+          include('includes/properties_list.php');
         ?>
 
         <div class="mt-3">

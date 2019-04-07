@@ -77,6 +77,12 @@ function toggleEdit(id) {
       input_element = editable_field.find('[data-edit-input]')
       is_edit_mode = !editable_fields[id].is_editing;
 
+    if (editable_fields[id].is_editing) {
+      editable_field.removeClass('is-editing').addClass('is-not-editing');
+    } else {
+      editable_field.removeClass('is-not-editing').addClass('is-editing');
+    }
+
     editable_fields[id].is_editing = is_edit_mode;
 
     value_element.prop('hidden', is_edit_mode);
@@ -125,6 +131,7 @@ function setupEditableContactInfoFields() {
     };
 
     editable_field
+      .addClass('is-not-editing')
       .attr('id', id)
       .html("<span data-field-value>" + content + "</span>")
       .append(editableFieldInput);
@@ -139,6 +146,7 @@ function setupEditableContactInfoFields() {
     });
 
     editable_field.find('.form-control').on('focusout keyup', function(event) {
+      event.preventDefault();
       if((event.keyCode && event.keyCode == 13) || event.type == "focusout") {
         makeEdit(id);
       }
@@ -200,6 +208,7 @@ function setupEditableNotes() {
     };
 
     editable_field
+      .addClass('is-not-editing')
       .attr('id', id)
       .html("<span data-field-value>" + content + "</span>")
       .append(editableNotesTextArea);
@@ -214,6 +223,7 @@ function setupEditableNotes() {
     });
 
     editable_field.find('.form-control').on('focusout keyup', function(event) {
+      event.preventDefault();
       if((event.keyCode && event.keyCode == 13) || event.type == "focusout") {
         makeEdit(id);
       }

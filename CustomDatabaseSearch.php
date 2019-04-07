@@ -96,7 +96,9 @@ class CustomDatabaseSearch {
       $query = sprintf(
         "SELECT
           p.parcel_number,
-          cases.pcid
+          cases.pcid,
+          cases.case_type,
+          cases.case_id
         FROM (
           SELECT APN, property_case_detail_id FROM property_inspection AS pi
           %s
@@ -135,12 +137,18 @@ class CustomDatabaseSearch {
       foreach ($apns_and_cases as $entry) {
         $apn = $entry['parcel_number'];
         $pcid = $entry['pcid'];
+        $case_type = $entry['case_type'];
+        $case_number = $entry['case_id'];
 
         if ($limit_reached && $last_apn != $apn) {
           break;
         }
 
-        $apns_to_cases_map[$apn][] = $pcid;
+        $apns_to_cases_map[$apn][] = [
+          'type' => $case_type,
+          'pcid' => $pcid,
+          'case_number' => $case_number
+        ];
 
         $last_apn = $apn;
 

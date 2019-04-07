@@ -217,4 +217,6 @@ $(document).ready(function() {
     resizePropertyList();
   });
 
+  $('.main-content').width($('.properties-scroll').width() + 20);
+
 });

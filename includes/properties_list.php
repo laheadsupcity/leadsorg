@@ -45,7 +45,8 @@
       <div data-sortable-column="lot_area_sqft" class="sm-property-info-column property-info-column d-flex justify-content-center align-items-end lot-size">
         Lot<br /> Size
       </div>
-      <div class="xlg-property-info-column property-info-column"></div>
+      <div class="matching-cases property-info-column">Matching cases</div>
+      <div class="xlg-property-info-column property-info-column">Notes</div>
     </div>
     <div class="actions-header ml-2">
     </div>
