@@ -41,7 +41,7 @@ $(document).ready(function() {
     resetLeadBatchModal();
   });
 
-  $('[data-target="#createLeadBatchModal"],[data-target="#addToFavoritesModal"]').click(function(event) {
+  $('[data-target="#createLeadBatchModal"],[data-target="#addToFavoritesFolderModal"]').click(function(event) {
     event.stopPropagation();
 
     var checked_properties = getCheckedProperties();

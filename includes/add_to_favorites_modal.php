@@ -6,7 +6,7 @@
 
 ?>
 
-<div class="modal fade" id="addToFavoritesModal" tabindex="-1" role="dialog" aria-labelledby="addToFavoritesModalTitle" aria-hidden="true">
+<div class="modal fade" id="addToFavoritesFolderModal" tabindex="-1" role="dialog" aria-labelledby="addToFavoritesFolderModalTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -26,8 +26,8 @@
         <?php } ?>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+        <button type="button" data-action="cancel" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" data-action="add" class="btn btn-primary">Add to folder</button>
       </div>
     </div>
   </div>

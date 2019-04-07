@@ -3,13 +3,15 @@
   $related_properties_for_owner_count = $related_properties_counts[$owner_address] - 1;
   $has_related_properties = $related_properties_for_owner_count > 0;
 
-  $matching_case_ids_search_param = implode(
-    ',',
-    array_map(
-      create_function('$case_data', 'return $case_data["pcid"];'),
-      $matching_cases[$property['parcel_number']]
-    )
-  );
+  if ($show_matching_cases) {
+    $matching_case_ids_search_param = implode(
+      ',',
+      array_map(
+        create_function('$case_data', 'return $case_data["pcid"];'),
+        $matching_cases[$property['parcel_number']]
+      )
+    );
+  }
 ?>
 
 <div
@@ -24,6 +26,13 @@
   class="property-item border-bottom w-100 d-flex justify-content-between align-items-center">
 
   <div class="d-flex flex-fill">
+    <?php if ($show_favorites_flag) { ?>
+      <div class="mr-3" style="width: 15px;">
+        <?php if($property['has_unseen_updates']) { ?>
+          <i class="fas fa-flag text-danger"></i>
+        <?php } ?>
+      </div>
+    <?php } ?>
     <div class="mr-4">
       <input type="checkbox" data-property-checkbox value="<?php echo $property['parcel_number']; ?>" />
     </div>
@@ -122,9 +131,13 @@
     <div class="sm-property-info-column property-info-column sortable-column lot-size text-center">
       <span class="font-weight-bold"><?php echo number_format(intval($property['lot_area_sqft']), 0, ",", ","); ?><br /> </span>sqft.<br />lot
     </div>
-    <div class="matching-cases property-info-column">
-      <?php include('includes/search_results/matching_cases.php'); ?>
-    </div>
+
+    <?php if ($show_matching_cases) { ?>
+      <div class="matching-cases property-info-column">
+        <?php include('includes/search_results/matching_cases.php'); ?>
+      </div>
+    <?php } ?>
+
     <div class="xlg-property-info-column property-info-column notes-column editable-field font-weight-light">
       <?php echo $property['notes']; ?>
     </div>

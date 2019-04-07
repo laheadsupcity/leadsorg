@@ -1,9 +1,10 @@
 <div
   class="border property-list-group mb-4">
   <div class="property-item-header border-bottom bg-light font-weight-bold d-flex justify-content-between align-items-end">
-    <?php
-    if ($show_favorites_flag) { ?>
-      <i class="far fa-flag"></i>
+    <?php if ($show_favorites_flag) { ?>
+      <div class="mr-3">
+        <i class="far fa-flag"></i>
+      </div>
     <?php } ?>
     <div class="mr-4">
       <input type="checkbox" id="checkAll" name="all">
@@ -45,7 +46,9 @@
       <div data-sortable-column="lot_area_sqft" class="sm-property-info-column property-info-column d-flex justify-content-center align-items-end lot-size">
         Lot<br /> Size
       </div>
-      <div class="matching-cases property-info-column">Matching cases</div>
+      <?php if ($show_matching_cases) { ?>
+        <div class="matching-cases property-info-column">Matching cases</div>
+      <?php } ?>
       <div class="xlg-property-info-column property-info-column">Notes</div>
     </div>
     <div class="actions-header ml-2">

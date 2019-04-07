@@ -7,12 +7,14 @@
 <html lang="en" style="font-size: 14px;">
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script type="text/javascript" src="js/jquery.min.js"></script>
-    <script type="text/javascript" src="js/custom_database_search/results.js"></script>
     <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="css/fontawesome/all.min.css" />
     <link rel="stylesheet" type="text/css" href="css/main_content.css"/>
     <link rel="stylesheet" type="text/css" href="css/custom_search_results.css"/>
+
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/custom_database_search/results.js"></script>
+    <script type="text/javascript" src="js/custom_database_search/editable_fields.js"></script>
     <style>
       .active1 {
         background: #337ab7!important;
@@ -26,7 +28,7 @@
       ?>
     </div>
 
-    <div class="main-content main-content-fixed-width mx-auto">
+    <div class="main-content mx-auto pl-2 pr-2">
       <?php
         $folder_id = $_GET['folder_id'];
 
@@ -49,6 +51,7 @@
 
         <?php
           $show_favorites_flag = true;
+          $show_matching_cases = false;
           include('includes/properties_list.php');
         ?>
 

@@ -16,6 +16,7 @@
   <script type="text/javascript" src="js/custom_database_search/results.js"></script>
   <script type="text/javascript" src="js/custom_database_search/editable_fields.js"></script>
   <script type="text/javascript" src="js/custom_database_search/actions.js"></script>
+  <script type="text/javascript" src="js/add_favorite_properties.js"></script>
   <style>
     .active1{background:#337ab7!important;}
   </style>
@@ -62,7 +63,7 @@
     $total_records = $searcher->getResultCount();
   ?>
 
-  <div class="main-content mx-auto">
+  <div class="main-content mx-auto pl-2 pr-2">
     <?php if (!empty($properties)) { ?>
       <div class="d-flex justify-content-between p-2">
         <div>
@@ -112,7 +113,7 @@
         <div>
           <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#createLeadBatchModal">Create Lead Batch</button>
           <button type="submit" id="export_properties_csv_button" class="btn btn-primary">Export Selected</button>
-          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addToFavoritesModal">Add to Favorites</button>
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addToFavoritesFolderModal">Add to Favorites</button>
         </div>
       </div>
 
