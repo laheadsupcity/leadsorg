@@ -25,12 +25,18 @@ class FavoriteProperties {
 
   public function getAllFoldersForUser($user_id) {
     $query = sprintf(
-      "SELECT folder.folder_id, folder.name, count(fav_property.parcel_number) AS property_count FROM favorite_properties_folders AS folder
-      JOIN favorite_properties AS fav_property ON (
+      "SELECT
+        folder.folder_id,
+        folder.name,
+        count(fav_property.parcel_number) AS property_count
+      FROM favorite_properties_folders AS folder
+      LEFT JOIN favorite_properties AS fav_property ON (
         fav_property.folder_id = folder.folder_id
       )
+      WHERE folder.user_id = %s
       GROUP BY folder.folder_id, folder.name
-      "
+      ",
+      $user_id
     );
 
     $this->db->query($query);

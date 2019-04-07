@@ -8,6 +8,7 @@ const SORT_COLUMN_LOT_AREA_SQFT = "lot_area_sqft";
 const SORT_COLUMN_YEAR_BUILT = "year_built";
 const SORT_COLUMN_SALE_DATE = "sale_date";
 const SORT_COLUMN_RELATED_PROPERTIES = "related_properties";
+const SORT_COLUMN_FAVORITES_FOLDERS = "favorites_folders";
 
 const sortSettings = {};
 
@@ -29,6 +30,7 @@ function initDefaultSortSettings() {
   changeSortSetting(SORT_COLUMN_YEAR_BUILT, SORT_TYPE_DESC, index++);
   changeSortSetting(SORT_COLUMN_SALE_DATE, SORT_TYPE_DESC, index++);
   changeSortSetting(SORT_COLUMN_RELATED_PROPERTIES, SORT_TYPE_DESC, index++);
+  changeSortSetting(SORT_COLUMN_FAVORITES_FOLDERS, SORT_TYPE_ASC, index++);
 }
 
 function changeSortSetting(column, direction, order) {
@@ -142,6 +144,7 @@ function sortProperties() {
           } else if (sortPropA < sortPropB) {
             result = sortDirection == SORT_TYPE_ASC ? -1 : 1;
           }
+          break;
         case SORT_COLUMN_SALE_DATE:
           sortPropA = new Date(sortPropA);
           sortPropB = new Date(sortPropB);
@@ -151,6 +154,10 @@ function sortProperties() {
           } else {
             result = sortDirection == SORT_TYPE_ASC ? sortPropA - sortPropB : sortPropB - sortPropA;
           }
+          break;
+        case SORT_COLUMN_FAVORITES_FOLDERS:
+
+          break;
       }
     }
 
@@ -217,6 +224,6 @@ $(document).ready(function() {
     resizePropertyList();
   });
 
-  $('.main-content').width($('.properties-scroll').width() + 20);
+  $('.main-content').width($('.properties-scroll').width() + 13);
 
 });

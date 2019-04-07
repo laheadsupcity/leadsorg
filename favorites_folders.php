@@ -9,6 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script type="text/javascript" src="js/jquery.min.js"></script>
     <script type="text/javascript" src="js/favorite_properties.js"></script>
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
 
     <link rel="stylesheet" type="text/css" href="css/fontawesome/all.min.css" />
     <link rel="stylesheet" type="text/css" href="css/main_content.css"/>
@@ -25,7 +26,7 @@
         include('nav.php');
 
         $favorites = new FavoriteProperties();
-        $favorites_folders = $favorites->getAllFoldersForUser($_SESSION['userdetail']['id']);
+        $favorites_folders = $favorites->getAllFoldersForUser(1);
       ?>
     </div>
     <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap.min.css" />
@@ -63,8 +64,10 @@
       </div>
 
       <div class="mr-3 ml-3">
-        <button type="submit" data-action="create_new_folder" class="btn btn-primary float-right"><i class="fas fa-plus"></i> Folder</button>
+        <button type="submit" data-toggle="modal" data-target="#createNewFolder" class="btn btn-primary float-right"><i class="fas fa-plus"></i> Folder</button>
       </div>
+
+      <?php include('includes/favorites_folders/create_new_folder_modal.php'); ?>
     </div>
   </body>
 </html>
