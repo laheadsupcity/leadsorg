@@ -16,12 +16,10 @@ $owner_address = $db->select(
 );
 
 $owner_address = $db->result_array()[0]['full_mail_address'];
-$owner_zip = $db->result_array()[0]['mail_address_zip'];
 
-$where_clause = $edit_related ?
+$where_clause = $edit_related && !empty($owner_address)?
   array(
-    'full_mail_address' => $owner_address,
-    'mail_address_zip' => $owner_zip
+    'full_mail_address' => $owner_address
   ) :
   array('parcel_number' => $parcel_number);
 
