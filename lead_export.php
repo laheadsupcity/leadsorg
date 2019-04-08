@@ -1,31 +1,37 @@
 <?php
 require_once('config.php');
+
 $check=isset($_POST['check']) ? $_POST['check'] : '';
-if(!empty($check)){
-    $array=explode(",",$check);
-    $filename = "toy_csv.csv";
-    $fp = fopen('php://output', 'w');
-    $table=array();
-    $objmerged=array();
-    foreach($array as $key=>$val){  
-        $data=getexportdatabyid($val);
-        $objmerged[] =  array_merge((array) $data, (array) $table); 
-    }
-    foreach ($objmerged as $k=>$v){
-        $header[] = array_keys($objmerged[0]); 
-    }
-    header('Content-type: application/csv');
-    header('Content-Disposition: attachment; filename='.$filename);
-    fputcsv($fp, $header[0]);
-    foreach ($objmerged as $k=>$v){
-        fputcsv($fp, $v);
-    }
-    exit;
+
+if (!empty($check)) {
+  $array = explode(",", $check);
+  $filename = "toy_csv.csv";
+  $fp = fopen('php://output', 'w');
+  $table = array();
+  $objmerged = array();
+
+  foreach ($array as $key => $val) {
+    $data = getCSVExportData($val);
+    $objmerged[] = array_merge((array) $data, (array) $table);
+  }
+
+  foreach ($objmerged as $k=>$v) {
+    $header[] = array_keys($objmerged[0]);
+  }
+
+  header('Content-type: application/csv');
+  header('Content-Disposition: attachment; filename='.$filename);
+  fputcsv($fp, $header[0]);
+
+  foreach ($objmerged as $k=>$v) {
+    fputcsv($fp, $v);
+  }
+  exit;
 }
-function getexportdatabyid($id){
-    $db = Database::instance();
-	$db->getexpotresult($id);
-    $result=$db->result_array();
-    return $result[0];
+function getCSVExportData($id)
+{
+  $db = Database::instance();
+  $db->getCSVExportDataForProperty($id);
+  $result=$db->result_array();
+  return $result[0];
 }
-?>

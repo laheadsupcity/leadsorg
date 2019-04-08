@@ -880,9 +880,73 @@ class Database
         return $this->query($query);
     }
 
-    public function getexpotresult($id)
+    public function getCSVExportDataForProperty($id)
     {
-        $query ='SELECT T1.parcel_number, T1.owner_name2, T1.owner1_first_name, T1.owner1_middle_name, T1.owner1_last_name, T1.owner1_spouse_first_name, T1.owner2_first_name, T1.owner2_middle_name, T1.owner2_last_name, T1.owner2_spouse_first_name, T1.site_address_street_prefix, T1.street_number, T1.street_name, T1.site_address_zip, T1.site_address_city_state, T1.full_mail_address, T1.mail_address_city_state, T1.mail_address_zip, T1.site_address_unit_number, T1.use_code, T1.use_code_descrition, T1.building_area, T1.bedrooms, T1.bathrooms, T1.tract, T1.lot_area_sqft, T1.lot_area_acres, T1.year_built, T1.pool, T1.year_built, T1.garage_type, T1.sales_date, T1.sales_price, T1.sales_price_code, T1.sales_document_number, T1.tax_exemption_code, T1.fireplace, T1.number_of_units, T1.number_of_stories, T1.owner_occupied, T1.zoning, T1.mail_flag, T1.cost_per_sq_ft, T1.total_assessed_value, T1.total_market_value, T1.assessed_improvement_value, T1.assessed_land_value,T1.assessed_improve_percent, T2.census_tract, T2.address, T2.rent_registration_number, T2.exemption, T2.rentoffice, T2.coderegionalaea, T2.council_district FROM property as T1 JOIN property_detail as T2 ON T1.parcel_number = T2.apn WHERE T1.parcel_number = '.$id.'';
+        $query = '
+          SELECT
+            T1.parcel_number,
+            T1.notes,
+            T1.owner_name2,
+            T1.phone1,
+            T1.phone2,
+            T1.email1,
+            T1.email2,
+            T1.owner1_first_name,
+            T1.owner1_middle_name,
+            T1.owner1_last_name,
+            T1.owner1_spouse_first_name,
+            T1.owner2_first_name,
+            T1.owner2_middle_name,
+            T1.owner2_last_name,
+            T1.owner2_spouse_first_name,
+            T1.site_address_street_prefix,
+            T1.street_number,
+            T1.street_name,
+            T1.site_address_zip,
+            T1.site_address_city_state,
+            T1.full_mail_address,
+            T1.mail_address_city_state,
+            T1.mail_address_zip,
+            T1.site_address_unit_number,
+            T1.use_code,
+            T1.use_code_descrition,
+            T1.building_area,
+            T1.bedrooms,
+            T1.bathrooms,
+            T1.tract,
+            T1.lot_area_sqft,
+            T1.lot_area_acres,
+            T1.building_area,
+            T1.year_built,
+            T1.pool,
+            T1.year_built,
+            T1.garage_type,
+            T1.sales_date,
+            T1.sales_price,
+            T1.sales_price_code,
+            T1.sales_document_number,
+            T1.tax_exemption_code,
+            T1.fireplace,
+            T1.number_of_units,
+            T1.number_of_stories,
+            T1.owner_occupied,
+            T1.zoning,
+            T1.mail_flag,
+            T1.cost_per_sq_ft,
+            T1.total_assessed_value,
+            T1.total_market_value,
+            T1.assessed_improvement_value,
+            T1.assessed_land_value,
+            T1.assessed_improve_percent,
+            T2.census_tract,
+            T2.address,
+            T2.rent_registration_number,
+            T2.exemption,
+            T2.rentoffice,
+            T2.coderegionalaea,
+            T2.council_district
+            FROM property as T1 JOIN property_detail as T2 ON T1.parcel_number = T2.apn WHERE T1.parcel_number = '.$id.'
+        ';
 
         return $this->query($query);
     }

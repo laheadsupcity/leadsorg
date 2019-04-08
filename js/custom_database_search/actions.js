@@ -93,13 +93,13 @@ $(document).ready(function() {
 
   $("#export_properties_csv_button").click(function() {
 
-    var checked_properties = getCheckedProperties();
-    filename = "customsearch.csv"
+    var checked_properties = getCheckedProperties(),
+        filename = "customsearch.csv";
+
     if (checked_properties) {
       jQuery.ajax({
         type: "POST",
         url: "lead_export.php",
-
         data: {
           'check': checked_properties
         },
