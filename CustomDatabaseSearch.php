@@ -212,15 +212,15 @@ class CustomDatabaseSearch {
 
     $addresses_query = sprintf(
       "
-      SELECT count(concat(full_mail_address, ' ', mail_address_zip)) as `related_properties_count`, concat(full_mail_address, ' ', mail_address_zip) as owner_address
+      SELECT count(full_mail_address) as `related_properties_count`, full_mail_address as owner_address
       FROM `property`
-      WHERE concat(full_mail_address, ' ', mail_address_zip) IN (
+      WHERE full_mail_address IN (
         SELECT
-          distinct concat(full_mail_address, ' ', mail_address_zip) as owner_address
+          distinct full_mail_address as owner_address
         FROM `property`
         WHERE parcel_number IN (
           %s
-        ) AND full_mail_address <> \"\" AND mail_address_zip <> \"\"
+        ) AND full_mail_address <> \"\"
       ) GROUP BY owner_address;
       ",
       implode(',', $this->result_apns)

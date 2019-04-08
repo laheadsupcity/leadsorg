@@ -1,5 +1,5 @@
 <?php
-  $owner_address = $property['full_mail_address'] . ' ' . $property['mail_address_zip'];
+  $owner_address = $property['full_mail_address'];
   $related_properties_for_owner_count = $related_properties_counts[$owner_address] - 1;
   $has_related_properties = $related_properties_for_owner_count > 0;
 
