@@ -104,6 +104,7 @@
 
       <?php
         $show_favorites_flag = false;
+        $show_matching_cases = true;
         include('includes/properties_list.php');
       ?>
 
