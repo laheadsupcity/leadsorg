@@ -209,20 +209,8 @@
           </div>
         </div>
 
-        <div class="scr4 pb-3 mt-5" style="text-align:center;float:none;overflow:hidden;width:100%;">
-          <div class="scr4lead">
-            <div class="heading mb-2">Select saved Filter</div>
-            <input class="form-control mb-2 w-100 p-2" type="text" list="datalistname" autocomplete="off" placeholder="Save & Name this Filter" name="filtername" id="filtername" />
-            <datalist id="datalistname">
-              <?php foreach ($searchlist as $sekey=>$seacrval) { ?>
-                <option value="<?php echo $seacrval; ?>" ><?php echo $seacrval; ?></option>
-              <?php } ?>
-            </datalist>
-            <input type="hidden" id="searchid" value="" name="searchid" />
-            <input type="submit" id="savesubmit" class="btn btn-block" onclick="return savefilter();" value="Save & Name this Filter" />
-
-            <button type="submit" id="search" class="btn btn-block">Search</button>
-          </div>
+        <div class="text-center mt-3 mb-3">
+          <button type="submit" id="search" class="btn btn-primary">Search</button>
         </div>
       </form>
     </div>
