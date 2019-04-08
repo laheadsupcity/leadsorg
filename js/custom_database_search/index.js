@@ -376,7 +376,7 @@ $(document).ready(function() {
     handleExcludeCaseStatusTypeChange(event);
   });
 
-  $('#cdsearchform').on('submit', function(event) {
+  $('[data-action="perform-search"]').on('submit', function(event) {
     event.preventDefault();
     var form = $(event.target);
     handleFormSubmit(form);

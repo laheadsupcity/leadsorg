@@ -3,6 +3,8 @@ require_once('config.php');
 
 $pid= isset($_POST['pid']) ? $_POST['pid'] : '';
 
+$edit_related_properties_contact_info = $_POST['editRelated'] == 'true';
+
 $array = array(
   "parcel_number"=>$_POST['apn'],
   "owner_name2"=>$_POST['ownername'],
@@ -46,15 +48,33 @@ $array = array(
   "notes" => $_POST['notes']
 );
 
+$full_mail_address = $_POST['fmaddress'];
+
+if ($edit_related_properties_contact_info && !empty($full_mail_address)) {
+  $db->update(
+  	'property',
+  	array(
+      "phone1" => $_POST['phone1'],
+      "phone2" => $_POST['phone2'],
+      "email1" => $_POST['email1'],
+      "email2" => $_POST['email2']
+    ),
+  	array('full_mail_address' => $full_mail_address)
+  );
+}
+
 $db->update(
 	'property',
 	$array,
-	array(
-		'id' => $pid
-	)
+	array('id' => $pid)
 );
 
-$val=array("msg"=>"success");
-echo json_encode($val)
+$response = array(
+  'message' => 'success',
+  'related' => $edit_related_properties_contact_info,
+  'address' => $full_mail_address
+);
+
+echo json_encode($response)
 
 ?>

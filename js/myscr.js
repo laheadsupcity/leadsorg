@@ -752,39 +752,6 @@ function deleteschedule(id) {
 }
 
 /*  for delete batches*/
-
-
-function updatepfilter() {
-
-  if (confirm("Are you sure you want to update this?")) {
-    var m_data = $('#cdsearchform').serialize();
-    jQuery.ajax({
-      type: "POST",
-      url: "lead_updateproperty.php",
-      dataType: 'json',
-      data: m_data,
-      success: function(data) {
-        if (data.msg = "success") {
-
-          alert("Data updated successfully");
-        }
-
-      }
-
-
-    });
-    return false;
-  } else {
-
-    return false;
-  }
-
-
-}
-
-
-
-
 function cdeletebatch(id) {
   if (confirm("Are you sure you want to delete this?")) {
     jQuery.ajax({

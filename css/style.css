@@ -369,22 +369,6 @@ body {
   text-decoration: none;
 }
 
-.editform label {
-  padding: 0px;
-  font-size: 12px;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-weight: 600;
-  color: #000;
-}
-
-.editform label span {
-  top: 3px;
-}
-
-.editform p {
-  margin: 0 0 15px;
-}
-
 .heading2 {
   color: #337ab7;
   font-size: 16px;
@@ -402,13 +386,6 @@ body {
 
 .edittext3 {
   padding: 4px 0;
-}
-
-.editform .btn-block {
-  display: inline !important;
-  width: 100%;
-  background: #337ab7;
-  color: #fff;
 }
 
 .mrt {

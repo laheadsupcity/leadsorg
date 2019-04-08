@@ -45,7 +45,7 @@
     </div>
 
     <div class="main-content main-content-fixed-width content-border h-100 mx-auto">
-      <form action="lead_get_property.php" id="cdsearchform" method="post" >
+      <form action="lead_get_property.php" data-action="perform-search" method="post" >
         <div class="container pt-3">
           <div class="row">
             <div class="col-4">
