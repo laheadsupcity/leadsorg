@@ -98,7 +98,7 @@
 	</table>
 </div>
 
-<div style="width:100%; overflow:hidden;">
+<div class="d-flex">
 	<div class="col-sm-7 caselist" style="padding:0;">
 		<table cellspacing="5" style="width:100%; margin:0 auto; border:1px solid #337ab7; font-size:12px;">
 			<tr style="color:White;background-color:#3399FF;font-weight:bold;height:30px;">

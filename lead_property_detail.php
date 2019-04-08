@@ -62,14 +62,15 @@
   }
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="font-size: 14px;">
 <head>
   <title>PROPERTY INFORMATION</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/jquery.min.js"></script>
     <script src="js/myscr.js"></script>
     <style>
   .active5{background:#337ab7!important;}
@@ -159,10 +160,8 @@
 
   ?>
 
-  <div class="scr1" style="border:1px solid #fff; height:auto;">
-    <h4>PROPERTY INFORMATION</h4>
-                <?php if ($totalcount >0) {
-      ?>
+  <div class="scr1 d-flex flex-wrap" style="border:1px solid #fff; height:auto;">
+    <?php if ($totalcount > 0) { ?>
     <div class="col-sm-4" style="padding:0px 30px 0 0;">
         <div style="border:1px solid #337ab7; margin:10px 0 0;">
           <h4 style="text-transform:initial;">Property Address</h4>
@@ -256,6 +255,7 @@
               </tr>
             </table>
         </div>
+        <a class="btn btn-primary mt-2 mb-4" href="lead_update_customtask.php?editid=<?php echo $property['id']; ?>" target="_blank">Edit Property</a>
     </div>
 
     <div class="col-sm-4">
@@ -394,34 +394,36 @@
         </div>
      <?php } ?>
     </div>
-    <div style="width:100%; float:left; margin:15px 0 0;">
+    <div class="w-100">
       <h4>PROPERTY CASE</h4>
       <p style="margin:15px 0; color:#333;">Please click on a Case Number to view&nbsp;"Property Activity Report"</p>
-        <div class="col-sm-5 caselist" style="padding:0 20px 0 0;">
-          <table cellpadding="10" style="width:100%; margin:0 auto; border:1px solid #337ab7; font-size:12px;">
-            <tr style="background: #337ab7; color:#fff;">
-            <td style='padding:3px 5px; border-right:1px solid #fff;'>Case Type</td>
-            <td style='padding:3px 5px; border-right:1px solid #fff;'>Case Number</td>
-            <td style='padding:3px 5px;'>Date Closed</td>
-            </tr>
-            <?php
-            foreach ($cases as $row) {
-                $caseid=getcasetypeid($row['pcid'], $row['case_id']);
-                $case_start_date = date_create($row['date_modified']);
-            ?>
-              <tr style='color:#333; <?php if (in_array($row["pcid"], $matching_cases)) { ?>background-color: #fcf8e3;<?php } ?>'>
-                <td style='border-bottom:1px solid #337ab7; border-right:1px solid #337ab7; padding:3px 5px;'><?php echo $row['case_type']; ?></td>
-                <td style='border-bottom:1px solid #337ab7; border-right:1px solid #337ab7; padding:3px 5px;'>
-                  <a href='#' onclick='return opencasedetail(<?php echo $parcel_number; ?>,<?php echo $row['case_id']; ?>,<?php echo $caseid['id']; ?>);'  style='color: DarkBlue;'><?php echo $row['case_id']; ?></a>
-                </td>
-                <td style='padding:3px 5px; border-bottom:1px solid #337ab7;'><?php echo $row['case_date']; ?></td>
+        <div class="d-flex">
+          <div class="col-sm-5 caselist" style="padding:0 20px 0 0;">
+            <table cellpadding="10" style="width:100%; margin:0 auto; border:1px solid #337ab7; font-size:12px;">
+              <tr style="background: #337ab7; color:#fff;">
+              <td style='padding:3px 5px; border-right:1px solid #fff;'>Case Type</td>
+              <td style='padding:3px 5px; border-right:1px solid #fff;'>Case Number</td>
+              <td style='padding:3px 5px;'>Date Closed</td>
               </tr>
-            <?php } ?>
-          </table>
-        </div>
+              <?php
+              foreach ($cases as $row) {
+                  $caseid=getcasetypeid($row['pcid'], $row['case_id']);
+                  $case_start_date = date_create($row['date_modified']);
+              ?>
+                <tr style='color:#333; <?php if (in_array($row["pcid"], $matching_cases)) { ?>background-color: #fcf8e3;<?php } ?>'>
+                  <td style='border-bottom:1px solid #337ab7; border-right:1px solid #337ab7; padding:3px 5px;'><?php echo $row['case_type']; ?></td>
+                  <td style='border-bottom:1px solid #337ab7; border-right:1px solid #337ab7; padding:3px 5px;'>
+                    <a href='#' onclick='return opencasedetail(<?php echo $parcel_number; ?>,<?php echo $row['case_id']; ?>,<?php echo $caseid['id']; ?>);'  style='color: DarkBlue;'><?php echo $row['case_id']; ?></a>
+                  </td>
+                  <td style='padding:3px 5px; border-bottom:1px solid #337ab7;'><?php echo $row['case_date']; ?></td>
+                </tr>
+              <?php } ?>
+            </table>
+          </div>
 
-        <div class="col-sm-7 casedata">
-          <!-- Insert case data-->
+          <div class="col-sm-7 casedata">
+            <!-- Insert case data-->
+          </div>
         </div>
                          <?php
   } else {

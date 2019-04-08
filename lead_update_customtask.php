@@ -31,7 +31,7 @@ $exemption=getexemptionlist();
   </head>
  <body>
   <div style="width:100%; float:left; margin:0;"><?php  include('nav.php'); ?></div>
-    <div class="main-content m-5">
+    <div class="main-content main-content-fixed-width mx-auto">
       <form id="update-property-form" method="post" >
         <div class="mt-3 mb-3 d-flex flex-wrap">
           <div class="col-sm-4">
@@ -153,7 +153,7 @@ $exemption=getexemptionlist();
                 <td style="width: 34%;"><p><label><span>Assessed Land Value</span></label><br/> <input type="text" style="width: 46%;" class="edittext" name="alv" id="alv" value="<?php echo  isset($property_data['assessed_land_value']) ? $property_data['assessed_land_value'] : '' ?>"><input type="hidden" name="pid" value="<?php echo  isset($_REQUEST['editid']) ? $_REQUEST['editid'] : '' ?>"/></p></td>
               </tr>
             </table>
-            <button data-action="update" class="btn btn-primary">Update</button>
+            <button data-action="update" class="btn btn-primary mb-5">Update</button>
           </div>
         </div>
       </form>
