@@ -16,8 +16,11 @@
       <div data-sortable-column="related_properties" class="sm-property-info-column related-properties property-info-column sortable-column text-center">
         Related
       </div>
+      <div class="lg-property-info-column property-info-column">
+        Parcel #
+      </div>
       <div class="xlg-property-info-column property-info-column">
-        Address & APN
+        Address
       </div>
       <div class="owner-column property-info-column">
         Owner Information

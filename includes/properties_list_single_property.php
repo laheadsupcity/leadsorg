@@ -47,10 +47,10 @@
       }?>
     </div>
 
+    <div class="lg-property-info-column property-info-column">
+      <span class="font-weight-light"><?php echo $property['parcel_number']; ?></span>
+    </div>
     <div class="xlg-property-info-column property-info-column">
-      <div class="parcel-number border-bottom mb-2 pb-1">
-        Parcel # <span class="font-weight-light"><?php echo $property['parcel_number']; ?></span>
-      </div>
       <div class="">
         <div>
           <?php echo $property['street_number']; ?> <?php echo $property['street_name'] ?>
