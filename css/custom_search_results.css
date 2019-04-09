@@ -87,10 +87,6 @@
   width: 60px;
 }
 
-.owner-column {
-  width: 200px;
-}
-
 .parcel-number {
   width: 134px;
 }
@@ -149,9 +145,4 @@
 .editable-field.is-not-editing:hover {
   cursor: pointer;
   background: #ffffcc;
-}
-
-.owner-contact-label {
-  width: 54px;
-  text-align: right;
 }

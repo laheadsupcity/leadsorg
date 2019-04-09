@@ -22,8 +22,20 @@
       <div class="xlg-property-info-column property-info-column">
         Address
       </div>
-      <div class="owner-column property-info-column">
-        Owner Information
+      <div class="xlg-property-info-column property-info-column">
+        Owner
+      </div>
+      <div class="lg-property-info-column property-info-column">
+        Phone 1
+      </div>
+      <div class="lg-property-info-column property-info-column">
+        Phone 2
+      </div>
+      <div class="xlg-property-info-column property-info-column">
+        Email 1
+      </div>
+      <div class="xlg-property-info-column property-info-column">
+        Email 2
       </div>
       <div data-sortable-column="num_units" class="sm-property-info-column property-info-column d-flex align-items-end num-units">
         Units

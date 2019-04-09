@@ -61,28 +61,24 @@
       </div>
     </div>
 
-    <div class="owner-column property-info-column">
-      <div class="owner-name color-primary font-weight-bold text-truncate">
-        <?php echo $property['owner_name2']; ?>
-      </div>
-      <div class="d-flex flex-column font-weight-light">
-          <div class="d-flex mb-1">
-            <div class="owner-contact-label">Phone 1:</div>
-            <div data-field="phone1" class="editable-field ml-1"><?php echo $property['phone1']; ?></div>
-          </div>
-          <div class="d-flex mb-1">
-            <div class="owner-contact-label">Phone 2:</div>
-            <div data-field="phone2" class="editable-field ml-1"><?php echo $property['phone2']; ?></div>
-          </div>
-          <div class="d-flex mb-1">
-            <div class="owner-contact-label">Email 1:</div>
-            <div data-field="email1" class="editable-field ml-1"><?php echo $property['email1']; ?></div>
-          </div>
-          <div class="d-flex">
-            <div class="owner-contact-label">Email 2:</div>
-            <div data-field="email2" class="editable-field ml-1"><?php echo $property['email2']; ?></div>
-          </div>
-      </div>
+    <div class="xlg-property-info-column property-info-column">
+      <?php echo $property['owner_name2']; ?>
+    </div>
+
+    <div class="lg-property-info-column owner-column property-info-column">
+      <div data-field="phone1" class="editable-field"><?php echo $property['phone1']; ?></div>
+    </div>
+
+    <div class="lg-property-info-column owner-column property-info-column">
+      <div data-field="phone2" class="editable-field"><?php echo $property['phone2']; ?></div>
+    </div>
+
+    <div class="xlg-property-info-column owner-column property-info-column">
+      <div data-field="email1" class="editable-field"><?php echo $property['email1']; ?></div>
+    </div>
+
+    <div class="xlg-property-info-column owner-column property-info-column">
+      <div data-field="email2" class="editable-field"><?php echo $property['email2']; ?></div>
     </div>
 
     <div class="sm-property-info-column property-info-column sortable-column num-units">
