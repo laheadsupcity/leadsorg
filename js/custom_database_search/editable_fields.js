@@ -165,21 +165,24 @@ function setupEditableContactInfoFields() {
         edit_related: edited_field_data.edit_related
       },
       function(data) {
-        var edited_apns = data.split(',');
+        data = JSON.parse(data);
+        var edited_apns = data.parcel_numbers.split(','),
+            new_value = data.new_value;
 
-        // var fields_to_update = Object.values(editable_fields).filter(function(data) {
-        //   return data.type == TYPE_CONTACT_INFO &&
-        //     data.field == edited_field_data.field &&
-        //     edited_apns.includes(String(data.parcel_number));
-        // });
-        //
-        // for (var data in fields_to_update) {
-        //   editable_fields[data.id].current_value = edited_field_data.value;
-        // }
+        var fields_to_update = Object.values(editable_fields).filter(function(data) {
+          return data.type == TYPE_CONTACT_INFO &&
+            data.field == edited_field_data.field &&
+            edited_apns.includes(String(data.parcel_number));
+        });
 
-        editable_fields[edited_field_data.id].current_value = editable_fields[edited_field_data.id].new_value;
-        editable_fields[edited_field_data.id].new_value = null;
-        toggleEdit(edited_field_data.id);
+
+        for (var index in fields_to_update) {
+          var data = fields_to_update[index];
+          editable_fields[data.id].current_value = new_value;
+          editable_fields[data.id].is_editing = true;
+          editable_fields[data.id].new_value = null;
+          toggleEdit(data.id);
+        }
       }
     );
   });

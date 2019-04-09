@@ -55,4 +55,7 @@ switch ($field) {
     // no op
 }
 
-echo $parcel_numbers;
+echo json_encode(array(
+  'parcel_numbers' => $parcel_numbers,
+  'new_value' => $value
+));
