@@ -71,6 +71,7 @@
       </div>
 
       <?php include('includes/favorites_folders/create_new_folder_modal.php'); ?>
+      <?php include('includes/favorites_folders/delete_favorites_folder_modal.php'); ?>
     </div>
   </body>
 </html>

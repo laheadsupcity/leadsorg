@@ -53,10 +53,7 @@ class FavoriteProperties {
         SELECT
           DISTINCT `property2`.`parcel_number`,
           IF(
-            (count(`cases`.APN) +
-            count(`case_detail`.APN) +
-            count(`property_detail`.APN) +
-            count(`pi`.APN) > 0) OR
+            (count(`case_detail`.APN) + count(`pi`.APN) > 0) OR
             (`property2`.date_modified > fav.date_last_viewed),
             1 ,
             0
@@ -65,17 +62,10 @@ class FavoriteProperties {
         JOIN `favorite_properties` AS `fav` ON (
           fav.parcel_number = property2.parcel_number
         )
-        LEFT JOIN property_cases AS `cases` ON (
-          cases.APN = fav.parcel_number AND
-          cases.date_modified > fav.date_last_viewed
-        )
+
         LEFT JOIN property_cases_detail AS `case_detail` ON (
           case_detail.apn = fav.parcel_number AND
           case_detail.date_modified > fav.date_last_viewed
-        )
-        LEFT JOIN property_detail AS `property_detail` ON (
-          property_detail.apn = fav.parcel_number AND
-          property_detail.date_modified > fav.date_last_viewed
         )
         LEFT JOIN property_inspection AS `pi` ON (
           pi.APN = fav.parcel_number AND

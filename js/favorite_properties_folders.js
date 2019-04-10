@@ -5,6 +5,10 @@ function getCreateNewFolderModal() {
   return $('#createNewFolder');
 }
 
+function getConfirmDeleteFolderModal() {
+  return $('#confirmDeleteFavoriteFolder');
+}
+
 function getNewFolderNameInput() {
   return getCreateNewFolderModal().find('[data-favorite-folder-name]');
 }
@@ -60,6 +64,9 @@ function handleRenameFolder(folder_id, folder_name) {
 }
 
 function handleDeleteFolder(folder_id) {
+  getConfirmDeleteFolderModal()
+    .data('folder-id', folder_id)
+    .modal('show');
 }
 
 $(document).ready(function() {
@@ -77,6 +84,20 @@ $(document).ready(function() {
     createNewFolder(getNewFolderNameInput().val());
   });
 
+  getConfirmDeleteFolderModal().find('[data-action="delete"]').click(function() {
+    var folder_id = getConfirmDeleteFolderModal().data('folder-id');
+
+    $.post(
+      'delete_favorites_folder.php',
+      {
+        folder_id: folder_id
+      },
+      function (data) {
+        getConfirmDeleteFolderModal().modal('hide');
+        window.location = window.location;
+      }
+    );
+  });
 
   createNewFolderModal.find('[data-action="rename"]').click(function(event) {
     renameFolder(
@@ -98,7 +119,7 @@ $(document).ready(function() {
         folder_name = $(event.currentTarget).data('folder-name'),
         action_button = $(event.target).parents('[data-action]');
 
-    if (action_button) {
+    if (action_button.length) {
       switch (action_button.data('action')) {
         case ACTION_RENAME_FOLDER:
           handleRenameFolder(folder_id, folder_name);
