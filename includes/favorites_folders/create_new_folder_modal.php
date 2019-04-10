@@ -2,7 +2,10 @@
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Create new folder</h5>
+        <h5 class="modal-title">
+          <span data-create-copy hidden>Create new folder</span>
+          <span data-rename-copy hidden>Rename folder</span>
+        </h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -17,7 +20,10 @@
       </div>
       <div class="modal-footer">
         <button type="button" data-action="cancel" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-        <button type="button" data-action="create" class="btn btn-primary">Create folder</button>
+        <button type="button" data-action="create" class="btn btn-primary">
+          <span data-create-copy hidden>Create folder</span>
+          <span data-rename-copy hidden>Rename folder</span>
+        </button>
       </div>
     </div>
   </div>

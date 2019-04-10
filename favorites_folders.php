@@ -43,7 +43,10 @@
             </div>
           <?php } else { ?>
             <?php foreach ($favorites_folders as $folder) { ?>
-              <div data-folder-id="<?php echo($folder['folder_id']); ?>" class="favorite-folder-link card mb-2">
+              <div
+                data-folder-id="<?php echo($folder['folder_id']); ?>"
+                data-folder-name="<?php echo($folder['name'])?>"
+                class="favorite-folder-link card mb-2">
                 <div class="card-body d-flex justify-content-between align-items-center">
                   <div data-folder-name-and-count>
                     <span class="mr-2"><?php echo($folder['name']); ?></span>
@@ -64,7 +67,7 @@
       </div>
 
       <div class="mr-3 ml-3">
-        <button type="submit" data-toggle="modal" data-target="#createNewFolder" class="btn btn-primary float-right"><i class="fas fa-plus"></i> Folder</button>
+        <button type="submit" data-action="create-new-folder" class="btn btn-primary float-right"><i class="fas fa-plus"></i> Folder</button>
       </div>
 
       <?php include('includes/favorites_folders/create_new_folder_modal.php'); ?>

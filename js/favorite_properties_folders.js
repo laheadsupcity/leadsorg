@@ -1,3 +1,6 @@
+const ACTION_RENAME_FOLDER = "rename-folder";
+const ACTION_DELETE_FOLDER = "delete-folder";
+
 function getCreateNewFolderModal() {
   return $('#createNewFolder');
 }
@@ -27,8 +30,16 @@ function createNewFolder(folder_name) {
   }
 }
 
-function handleRenameFolder(folder_id) {
+function handleRenameFolder(folder_id, folder_name) {
+  getNewFolderNameInput().val(folder_name)
 
+  var modal = getCreateNewFolderModal();
+  modal.find('[data-create-copy]').prop('hidden', true);
+  modal.find('[data-rename-copy]').prop('hidden', false);
+  modal.modal('show');
+}
+
+function handleDeleteFolder(folder_id) {
 }
 
 $(document).ready(function() {
@@ -46,15 +57,31 @@ $(document).ready(function() {
     createNewFolder(getNewFolderNameInput().val());
   });
 
-  $('[data-folder-id]').click(function(event) {
-    var folder_id = $(event.currentTarget).data('folder-id');
-    window.location = "favorite_properties.php?folder_id=" + folder_id;
+  $('[data-action="create-new-folder"]').click(function() {
+    var modal = getCreateNewFolderModal();
+
+    modal.find('[data-create-copy]').prop('hidden', false);
+    modal.find('[data-rename-copy]').prop('hidden', true)
+    modal.modal('show');
   });
 
-  $('[data-action="rename-folder"]').click(function(event) {
-    var folder = $(event.currentTarget).parents('[data-folder-id]');
+  $('[data-folder-id]').click(function(event) {
+    var folder_id = $(event.currentTarget).data('folder-id'),
+        folder_name = $(event.currentTarget).data('folder-name'),
+        action_button = $(event.target).parents('[data-action]');
 
-    handleRenameFolder(folder.data('folder-id'));
+    if (action_button) {
+      switch (action_button.data('action')) {
+        case ACTION_RENAME_FOLDER:
+          handleRenameFolder(folder_id, folder_name);
+          break;
+        case ACTION_DELETE_FOLDER:
+          handleDeleteFolder(folder_id);
+          break;
+      }
+    } else {
+      window.location = "favorite_properties.php?folder_id=" + folder_id;
+    }
   });
 
 });
