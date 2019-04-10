@@ -1,18 +1,20 @@
 <?php
 require_once('config.php');
 
-$check=isset($_POST['check']) ? $_POST['check'] : '';
+$selected_property_data = $_POST['selected_property_data'];
 
-if (!empty($check)) {
-  $array = explode(",", $check);
+if (!empty($selected_property_data)) {
   $filename = "toy_csv.csv";
   $fp = fopen('php://output', 'w');
   $table = array();
   $objmerged = array();
 
-  foreach ($array as $key => $val) {
-    $data = getCSVExportData($val);
-    $objmerged[] = array_merge((array) $data, (array) $table);
+  foreach ($selected_property_data as $index => $data) {
+    $parcel_number = $data['parcel_number'];
+    $csv_data = getCSVExportData($parcel_number);
+    $csv_data['matching_cases'] = $data['matching_cases'];
+
+    $objmerged[] = array_merge((array) $csv_data, (array) $table);
   }
 
   foreach ($objmerged as $k=>$v) {

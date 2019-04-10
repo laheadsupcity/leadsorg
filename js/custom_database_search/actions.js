@@ -1,3 +1,20 @@
+function getSelectedProperties() {
+  var selected_property_data = [];
+
+  $("[data-property-checkbox]:checked").each(function() {
+    var parcel_number = $(this).val(),
+        property_element = $('[data-parcel_number=' + parcel_number + ']')
+        matching_cases = property_element.data('matching-cases-string');
+
+    selected_property_data.push({
+      parcel_number: parcel_number,
+      matching_cases: matching_cases
+    });
+  });
+
+  return selected_property_data;
+}
+
 function getCheckedProperties() {
   var checkedProperties = [];
 
@@ -93,15 +110,15 @@ $(document).ready(function() {
 
   $("#export_properties_csv_button").click(function() {
 
-    var checked_properties = getCheckedProperties(),
+    var selected_property_data = getSelectedProperties(),
         filename = "customsearch.csv";
 
-    if (checked_properties) {
+    if (selected_property_data) {
       jQuery.ajax({
         type: "POST",
         url: "lead_export.php",
         data: {
-          'check': checked_properties
+          'selected_property_data': selected_property_data
         },
         success: function(response) {
           var type = 'application/csv';

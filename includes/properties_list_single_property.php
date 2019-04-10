@@ -4,11 +4,26 @@
   $has_related_properties = $related_properties_for_owner_count > 0;
 
   if ($show_matching_cases) {
+    $matching_cases_for_property = $matching_cases[$property['parcel_number']];
+
+    $matching_cases_for_property_string = implode(', ',
+      array_map(
+        function($matching_case) {
+          return sprintf(
+            "%s (%s)",
+            $matching_case['type'],
+            $matching_case['case_number']
+          );
+        },
+        $matching_cases_for_property
+      )
+    );
+
     $matching_case_ids_search_param = implode(
       ',',
       array_map(
         create_function('$case_data', 'return $case_data["pcid"];'),
-        $matching_cases[$property['parcel_number']]
+        $matching_cases_for_property
       )
     );
   }
@@ -23,6 +38,7 @@
   data-sale_date="<?php echo $property['sales_date']; ?>"
   data-owner_name="<?php echo $property['owner_name2']; ?>"
   data-related_properties="<?php echo $related_properties_for_owner_count; ?>"
+  data-matching-cases-string="<?php echo $matching_cases_for_property_string; ?>"
   class="property-item border-bottom w-100 d-flex justify-content-between align-items-center">
 
   <div class="d-flex flex-fill">

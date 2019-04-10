@@ -1,6 +1,6 @@
 <div class="d-flex flex-column">
   <?php
-  $matching_cases_for_property = $matching_cases[$property['parcel_number']];
+
 
   foreach ($matching_cases_for_property as $matching_case) { ?>
     <div class="d-flex">
