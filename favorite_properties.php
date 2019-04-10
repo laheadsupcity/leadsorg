@@ -39,7 +39,7 @@
         $properties = $favorites->getPropertiesForFolder($folder_id);
       ?>
 
-      <?php if (empty($properties)) { ?>
+      <?php if (empty($folder)) { ?>
         <div class="jumbotron jumbotron-fluid">
           <div class="container">
             <h1 class="display-4">Favorites folder does not exist...</h1>
@@ -47,20 +47,31 @@
           </div>
         </div>
       <?php } else { ?>
-        <h5><?php echo($folder['name']); ?></h5>
+        <?php if (empty($properties)) { ?>
+          <div class="jumbotron jumbotron-fluid">
+            <div class="container">
+              <h1 class="display-4">Favorites folder is currently empty!</h1>
+              <p class="lead">Perform a search and save some properties of interest.</p>
+            </div>
+          </div>
+        <?php } else { ?>
+          <h5><?php echo($folder['name']); ?></h5>
 
-        <?php
-          $show_favorites_flag = true;
-          $show_matching_cases = false;
-          include('includes/properties_list.php');
-        ?>
+          <?php
+            $show_favorites_flag = true;
+            $show_matching_cases = false;
+            include('includes/properties_list.php');
+          ?>
 
-        <div class="mt-3">
-          <button type="submit" id="export_properties_csv_button" class="btn btn-primary">Export selected</button>
-          <button type="submit" data-action="remove_from_folder" class="btn btn-warning">Remove selected</button>
-          <button type="submit" data-action="remove_from_folder" class="btn btn-danger float-right">Delete folder</button>
-        </div>
-      <?php } ?>
+          <div class="mt-3">
+            <button type="submit" id="export_properties_csv_button" class="btn btn-primary">Export selected</button>
+            <button type="submit" data-action="remove_from_folder" class="btn btn-warning">Remove selected</button>
+            <button type="submit" data-action="remove_from_folder" class="btn btn-danger float-right">Delete folder</button>
+          </div>
+        <?php } ?>
+      <?php }?>
+
+
     </div>
   </body>
 </html>
