@@ -160,240 +160,246 @@
 
   ?>
 
-  <div class="scr1 d-flex flex-wrap" style="border:1px solid #fff; height:auto;">
+  <div class="scr1" style="border:1px solid #fff; height:auto;">
     <?php if ($totalcount > 0) { ?>
-    <div class="col-sm-4" style="padding:0px 30px 0 0;">
-        <div style="border:1px solid #337ab7; margin:10px 0 0;">
-          <h4 style="text-transform:initial;">Property Address</h4>
+      <div class="d-flex">
+        <div class="col-sm-4" style="padding:0px 30px 0 0;">
+            <div style="border:1px solid #337ab7; margin:10px 0 0;">
+              <h4 style="text-transform:initial;">Property Address</h4>
+                <table cellspacing="5" style="width:100%; margin:0 auto;">
+                  <tr>
+                  <td class="field1">Assessor Parcel Number:</td>
+                  <td class="field1data"><?php echo $property['parcel_number']; ?></td>
+                  </tr>
+                  <tr>
+                  <td class="field1">Official Address:</td>
+                  <td class="field1data"><?php echo $det['address']; ?></td>
+                  </tr>
+                  <tr>
+                  <td class="field1">Council District:</td>
+                  <td class="field1data"><?php echo $det['council_district']; ?></td>
+                  </tr>
+                </table>
+            </div>
+
+            <div style="border:1px solid #337ab7; margin:10px 0 0;">
+              <h4 style="text-transform:initial;">Property Details </h4>
+              <table cellspacing="5" style="width:100%; margin:0 auto;">
+                  <tr>
+                  <td class="field1">Total Units:</td>
+                  <td class="field1data"><?php echo $det['number_of_units']; ?></td>
+                  </tr>
+                  <tr>
+                  <td class="field1">Total Exemption Units:</td>
+                  <td class="field1data"><?php echo $det['exemption']; ?></td>
+                  </tr>
+                  <tr>
+                  <td class="field1">Bedrooms:</td>
+                  <td class="field1data spdata"><?php echo $property['bedrooms']; ?></td>
+                  </tr>
+                  <tr>
+                  <td class="field1">Bathrooms</td>
+                  <td class="field1data spdata"><?php echo $property['bathrooms']; ?></td>
+                  </tr>
+                  <td class="field1">Number of Stories:</td>
+                  <td class="field1data spdata"><?php echo $property['number_of_stories']; ?></td>
+                  </tr>
+                  <tr>
+                  <td class="field1">Lot Area Sqft:</td>
+                  <td class="field1data spdata"><?php echo $property['lot_area_sqft']; ?></td>
+                  </tr>
+                  <tr>
+                  <td class="field1">Pool:</td>
+                  <td class="field1data spdata"><?php echo $property['pool']; ?></td>
+                  </tr>
+                  <tr>
+                  <td class="field1">Year Built:</td>
+                  <td class="field1data"><?php echo isset($property['year_built']) ? $property['year_built']:''; ?></td>
+                  </tr>
+                  <tr>
+                  <td class="field1">Zoning:</td>
+                  <td class="field1data spdata"><?php echo $property['zoning']; ?></td>
+                  </tr>
+                </table>
+            </div>
+
+            <div style="border:1px solid #337ab7; margin:10px 0 0;">
+              <h4 style="text-transform:initial;">Other Details</h4>
+              <table cellspacing="5" style="width:100%; margin:0 auto;">
+                  <tr>
+                  <td class="field1">Use Code:</td>
+                  <td class="field1data spdata"><?php echo $property['use_code']; ?></td>
+                  </tr>
+                  <tr>
+                  <td class="field1">Use Code Description:</td>
+                  <td class="field1data spdata"><?php echo $property['use_code_descrition']; ?></td>
+                  </tr>
+                  <tr>
+                  <td class="field1">Building Area:</td>
+                  <td class="field1data spdata"><?php echo $property['building_area']; ?></td>
+                  </tr>
+                  <tr>
+                  <td class="field1">Code Regional Area:</td>
+                  <td class="field1data"><?php echo $det['coderegionalaea']; ?></td>
+                  </tr>
+                  <tr>
+                  <td class="field1">Rent Office ID:</td>
+                  <td class="field1data"><?php echo $det['rentoffice']; ?></td>
+                  </tr>
+                  <tr>
+                  <td class="field1">Rent Registration Number:</td>
+                  <td class="field1data"><?php echo $det['rent_registration_number']; ?></td>
+                  </tr>
+                  <tr>
+                  <td class="field1">Census Tract:</td>
+                  <td class="field1data"><?php echo $det['census_tract']; ?></td>
+                  </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="col-sm-4">
+          <div style="border:1px solid #337ab7; margin:10px 0 0;">
+            <h4 style="text-transform:initial;">Owners Info</h4>
             <table cellspacing="5" style="width:100%; margin:0 auto;">
               <tr>
-              <td class="field1">Assessor Parcel Number:</td>
-              <td class="field1data"><?php echo $property['parcel_number']; ?></td>
+                <td class="field1">Owners Name:</td>
+                <td class="field1data spdata"><?php echo $property['owner_name2']; ?></td>
               </tr>
               <tr>
-              <td class="field1">Official Address:</td>
-              <td class="field1data"><?php echo $det['address']; ?></td>
+                <td class="field1">Phone 1:</td>
+                <td class="field1data"><?php echo $property['phone1']; ?></td>
               </tr>
               <tr>
-              <td class="field1">Council District:</td>
-              <td class="field1data"><?php echo $det['council_district']; ?></td>
+                <td class="field1">Phone 2:</td>
+                <td class="field1data spdata"><?php echo $property['phone2']; ?></td>
+              </tr>
+              <tr>
+                <td class="field1">Email 1:</td>
+                <td class="field1data"><?php echo $property['email1']; ?></td>
+              </tr>
+              <tr>
+                <td class="field1">Email 2:</td>
+                <td class="field1data spdata"><?php echo $property['email2']; ?></td>
               </tr>
             </table>
-        </div>
+          </div>
 
-        <div style="border:1px solid #337ab7; margin:10px 0 0;">
-          <h4 style="text-transform:initial;">Property Details </h4>
-          <table cellspacing="5" style="width:100%; margin:0 auto;">
-              <tr>
-              <td class="field1">Total Units:</td>
-              <td class="field1data"><?php echo $det['number_of_units']; ?></td>
-              </tr>
-              <tr>
-              <td class="field1">Total Exemption Units:</td>
-              <td class="field1data"><?php echo $det['exemption']; ?></td>
-              </tr>
-              <tr>
-              <td class="field1">Bedrooms:</td>
-              <td class="field1data spdata"><?php echo $property['bedrooms']; ?></td>
-              </tr>
-              <tr>
-              <td class="field1">Bathrooms</td>
-              <td class="field1data spdata"><?php echo $property['bathrooms']; ?></td>
-              </tr>
-              <td class="field1">Number of Stories:</td>
-              <td class="field1data spdata"><?php echo $property['number_of_stories']; ?></td>
-              </tr>
-              <tr>
-              <td class="field1">Lot Area Sqft:</td>
-              <td class="field1data spdata"><?php echo $property['lot_area_sqft']; ?></td>
-              </tr>
-              <tr>
-              <td class="field1">Pool:</td>
-              <td class="field1data spdata"><?php echo $property['pool']; ?></td>
-              </tr>
-              <tr>
-              <td class="field1">Year Built:</td>
-              <td class="field1data"><?php echo isset($property['year_built']) ? $property['year_built']:''; ?></td>
-              </tr>
-              <tr>
-              <td class="field1">Zoning:</td>
-              <td class="field1data spdata"><?php echo $property['zoning']; ?></td>
-              </tr>
-            </table>
-        </div>
-
-        <div style="border:1px solid #337ab7; margin:10px 0 0;">
-          <h4 style="text-transform:initial;">Other Details</h4>
-          <table cellspacing="5" style="width:100%; margin:0 auto;">
-              <tr>
-              <td class="field1">Use Code:</td>
-              <td class="field1data spdata"><?php echo $property['use_code']; ?></td>
-              </tr>
-              <tr>
-              <td class="field1">Use Code Description:</td>
-              <td class="field1data spdata"><?php echo $property['use_code_descrition']; ?></td>
-              </tr>
-              <tr>
-              <td class="field1">Building Area:</td>
-              <td class="field1data spdata"><?php echo $property['building_area']; ?></td>
-              </tr>
-              <tr>
-              <td class="field1">Code Regional Area:</td>
-              <td class="field1data"><?php echo $det['coderegionalaea']; ?></td>
-              </tr>
-              <tr>
-              <td class="field1">Rent Office ID:</td>
-              <td class="field1data"><?php echo $det['rentoffice']; ?></td>
-              </tr>
-              <tr>
-              <td class="field1">Rent Registration Number:</td>
-              <td class="field1data"><?php echo $det['rent_registration_number']; ?></td>
-              </tr>
-              <tr>
-              <td class="field1">Census Tract:</td>
-              <td class="field1data"><?php echo $det['census_tract']; ?></td>
-              </tr>
-            </table>
-        </div>
-        <a class="btn btn-primary mt-2 mb-4" href="lead_update_customtask.php?editid=<?php echo $property['id']; ?>" target="_blank">Edit Property</a>
-    </div>
-
-    <div class="col-sm-4">
-      <div style="border:1px solid #337ab7; margin:10px 0 0;">
-        <h4 style="text-transform:initial;">Owners Info</h4>
-        <table cellspacing="5" style="width:100%; margin:0 auto;">
-          <tr>
-            <td class="field1">Owners Name:</td>
-            <td class="field1data spdata"><?php echo $property['owner_name2']; ?></td>
-          </tr>
-          <tr>
-            <td class="field1">Phone 1:</td>
-            <td class="field1data"><?php echo $property['phone1']; ?></td>
-          </tr>
-          <tr>
-            <td class="field1">Phone 2:</td>
-            <td class="field1data spdata"><?php echo $property['phone2']; ?></td>
-          </tr>
-          <tr>
-            <td class="field1">Email 1:</td>
-            <td class="field1data"><?php echo $property['email1']; ?></td>
-          </tr>
-          <tr>
-            <td class="field1">Email 2:</td>
-            <td class="field1data spdata"><?php echo $property['email2']; ?></td>
-          </tr>
-        </table>
-      </div>
-
-        <div style="border:1px solid #337ab7; margin:10px 0 0;">
-          <h4 style="text-transform:initial;">Photos</h4>
-            <div class="slideshow-container">
-              <?php
-              $defaultimage="images/No_Image.jpg";
-      if (count($imgurl) > 0) {
-          foreach ($imgurl as $key) {
-              $cimge= getimgurl($key['imageurl']); ?>
-                <div class="mySlides">
-                 <img src="<?php echo isset($cimge) ? '//'.$cimge : $defaultimage ?>" style="width:100%;">
-                </div>
-              <?php
-          }
-      } else {
-          ?>
-
-              <div class="mySlides">
-                 <img src="<?php  echo $defaultimage; ?>" style="width:100%;">
-                </div>
-              <?php
-      } ?>
-              <a class="prev" onclick="plusSlides(-1)"><img src="images/leftarrow.png"></a>
-              <a class="next" onclick="plusSlides(1)"> <img src="images/rightarrow.png"></a>
-            </div>
-
-            <div style="text-align:center; display:none;">
-              <?php
+            <div style="border:1px solid #337ab7; margin:10px 0 0;">
+              <h4 style="text-transform:initial;">Photos</h4>
+                <div class="slideshow-container">
+                  <?php
+                  $defaultimage="images/No_Image.jpg";
+          if (count($imgurl) > 0) {
               foreach ($imgurl as $key) {
                   $cimge= getimgurl($key['imageurl']); ?>
-                  <span class="dot" onclick="currentSlide()"></span>
-              <?php
-              } ?>
+                    <div class="mySlides">
+                     <img src="<?php echo isset($cimge) ? '//'.$cimge : $defaultimage ?>" style="width:100%;">
+                    </div>
+                  <?php
+              }
+          } else {
+              ?>
+
+                  <div class="mySlides">
+                     <img src="<?php  echo $defaultimage; ?>" style="width:100%;">
+                    </div>
+                  <?php
+          } ?>
+                  <a class="prev" onclick="plusSlides(-1)"><img src="images/leftarrow.png"></a>
+                  <a class="next" onclick="plusSlides(1)"> <img src="images/rightarrow.png"></a>
+                </div>
+
+                <div style="text-align:center; display:none;">
+                  <?php
+                  foreach ($imgurl as $key) {
+                      $cimge= getimgurl($key['imageurl']); ?>
+                      <span class="dot" onclick="currentSlide()"></span>
+                  <?php
+                  } ?>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="col-sm-4" style="padding:0px 0px 0 30px;">
-        <div style="border:1px solid #337ab7; margin:10px 0 0; min-height:50px;">
-          <h4 style="text-transform:initial;">Owners Mailing Address </h4>
-          <table cellspacing="5" style="width:100%; margin:0 auto;">
-              <tr>
-              <td class="field1">Address:</td>
-              <td class="field1data spdata">
-              <?php echo $property['full_mail_address'];
-      echo "<br/>";
-      echo $property['mail_address_city_state'];
-      echo "<br/>" ;
-      echo $property['mail_address_zip']; ?>
-              </td>
+        <div class="col-sm-4" style="padding:0px 0px 0 30px;">
+            <div style="border:1px solid #337ab7; margin:10px 0 0; min-height:50px;">
+              <h4 style="text-transform:initial;">Owners Mailing Address </h4>
+              <table cellspacing="5" style="width:100%; margin:0 auto;">
+                  <tr>
+                  <td class="field1">Address:</td>
+                  <td class="field1data spdata">
+                  <?php echo $property['full_mail_address'];
+          echo "<br/>";
+          echo $property['mail_address_city_state'];
+          echo "<br/>" ;
+          echo $property['mail_address_zip']; ?>
+                  </td>
+                  </tr>
+                </table>
+            </div>
+
+            <div style="border:1px solid #337ab7; margin:10px 0 0;">
+              <h4 style="text-transform:initial;">Sales History</h4>
+              <table cellspacing="5" style="width:100%; margin:0 auto;">
+                  <tr>
+                  <td class="field1">Last sale date:</td>
+                  <td class="field1data spdata"><?php  echo isset($property['sales_date']) ? date('m/d/Y', strtotime($property['sales_date'])): ''; ?></td>
+                  </tr>
+                  <tr>
+                  <td class="field1">Sales Price:</td>
+                  <td class="field1data spdata"><?php echo $property['sales_price']; ?></td>
+                  </tr>
+                  <tr>
+                  <td class="field1">Cost per Sqft:</td>
+                  <td class="field1data spdata"><?php echo $property['cost_per_sq_ft']; ?></td>
+                  </tr>
+                </table>
+            </div>
+
+            <div style="border:1px solid #337ab7; margin:10px 0 0;">
+              <h4 style="text-transform:initial;">Value</h4>
+              <table cellspacing="5" style="width:100%; margin:0 auto;">
+                  <tr>
+                  <td class="field1">Total Assessed Value:</td>
+                  <td class="field1data spdata"><?php echo $property['total_assessed_value']; ?></td>
+                  </tr>
+                  <tr>
+                  <td class="field1">Assessed Land Value:</td>
+                  <td class="field1data spdata"><?php echo $property['assessed_land_value']; ?></td>
+                  </tr>
+                  <tr>
+                  <td class="field1">Assessed improvement Value:</td>
+                  <td class="field1data spdata"><?php echo $property['assessed_improvement_value']; ?></td>
+                  </tr>
+                </table>
+            </div>
+                                   <?php
+               $upstatus=isset($det['update_status']) ? $det['update_status'] : '';
+          if ($upstatus >0) {
+              ?>
+            <div style="border:1px solid #337ab7; margin:10px 0 0;">
+            <h4 style="text-transform:initial;">Date</h4>
+            <table cellspacing="5" style="width:100%; margin:0 auto;">
+                <tr>
+              <td class="field1">Recent Update Date:</td>
+              <td class="field1data spdata"><?php echo date('m/d/Y H:i A', strtotime($det['date_modified'])); ?></td>
               </tr>
             </table>
+            </div>
+            <div style="border:1px solid #337ab7; margin:10px 0 0;">
+              <h4 style="text-transform:initial;">Notes</h4>
+              <div class="field1data spdata" style="width:100%; height: 118px; overflow-y: scroll;">
+                <?php echo $property['notes']; ?>
+              </div>
+            </div>
+         <?php } ?>
         </div>
+      </div>
 
-        <div style="border:1px solid #337ab7; margin:10px 0 0;">
-          <h4 style="text-transform:initial;">Sales History</h4>
-          <table cellspacing="5" style="width:100%; margin:0 auto;">
-              <tr>
-              <td class="field1">Last sale date:</td>
-              <td class="field1data spdata"><?php  echo isset($property['sales_date']) ? date('m/d/Y', strtotime($property['sales_date'])): ''; ?></td>
-              </tr>
-              <tr>
-              <td class="field1">Sales Price:</td>
-              <td class="field1data spdata"><?php echo $property['sales_price']; ?></td>
-              </tr>
-              <tr>
-              <td class="field1">Cost per Sqft:</td>
-              <td class="field1data spdata"><?php echo $property['cost_per_sq_ft']; ?></td>
-              </tr>
-            </table>
-        </div>
+      <div class="text-center">
+        <a class="btn btn-primary mt-2 mb-4" href="lead_update_customtask.php?editid=<?php echo $property['id']; ?>" target="_blank">Edit Property</a>
+      </div>
 
-        <div style="border:1px solid #337ab7; margin:10px 0 0;">
-          <h4 style="text-transform:initial;">Value</h4>
-          <table cellspacing="5" style="width:100%; margin:0 auto;">
-              <tr>
-              <td class="field1">Total Assessed Value:</td>
-              <td class="field1data spdata"><?php echo $property['total_assessed_value']; ?></td>
-              </tr>
-              <tr>
-              <td class="field1">Assessed Land Value:</td>
-              <td class="field1data spdata"><?php echo $property['assessed_land_value']; ?></td>
-              </tr>
-              <tr>
-              <td class="field1">Assessed improvement Value:</td>
-              <td class="field1data spdata"><?php echo $property['assessed_improvement_value']; ?></td>
-              </tr>
-            </table>
-        </div>
-                               <?php
-           $upstatus=isset($det['update_status']) ? $det['update_status'] : '';
-      if ($upstatus >0) {
-          ?>
-        <div style="border:1px solid #337ab7; margin:10px 0 0;">
-        <h4 style="text-transform:initial;">Date</h4>
-        <table cellspacing="5" style="width:100%; margin:0 auto;">
-            <tr>
-          <td class="field1">Recent Update Date:</td>
-          <td class="field1data spdata"><?php echo date('m/d/Y H:i A', strtotime($det['date_modified'])); ?></td>
-          </tr>
-        </table>
-        </div>
-        <div style="border:1px solid #337ab7; margin:10px 0 0;">
-          <h4 style="text-transform:initial;">Notes</h4>
-          <div class="field1data spdata" style="width:100%; height: 118px; overflow-y: scroll;">
-            <?php echo $property['notes']; ?>
-          </div>
-        </div>
-     <?php } ?>
-    </div>
     <div class="w-100">
       <h4>PROPERTY CASE</h4>
       <p style="margin:15px 0; color:#333;">Please click on a Case Number to view&nbsp;"Property Activity Report"</p>
