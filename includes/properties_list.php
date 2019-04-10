@@ -25,16 +25,16 @@
       <div class="xlg-property-info-column property-info-column">
         Owner
       </div>
-      <div class="lg-property-info-column property-info-column">
+      <div class="phone-number text-truncate property-info-column">
         Phone 1
       </div>
-      <div class="lg-property-info-column property-info-column">
+      <div class="phone-number text-truncate property-info-column">
         Phone 2
       </div>
-      <div class="xlg-property-info-column property-info-column">
+      <div class="email-address text-truncate property-info-column">
         Email 1
       </div>
-      <div class="xlg-property-info-column property-info-column">
+      <div class="email-address text-truncate property-info-column">
         Email 2
       </div>
       <div data-sortable-column="num_units" class="sm-property-info-column property-info-column d-flex align-items-end num-units">

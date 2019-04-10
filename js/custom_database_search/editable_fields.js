@@ -3,7 +3,7 @@ const TYPE_NOTES = "notes";
 
 const editableNotesTextArea = "<div data-edit-input class=\"input-group\" hidden><textarea class=\"form-control\" rows=\"3\"></textarea></div>";
 
-const editableFieldInput = "<div data-edit-input class=\"input-group input-group-sm\" style=\"width: 105px\" hidden><input type=\"text\" class=\"form-control\"></div>";
+const editableFieldInput = "<div data-edit-input class=\"input-group\" hidden><input type=\"text\" class=\"form-control\"></div>";
 
 const unknownFieldMarkup = "<span class='font-italic'>unknown</span>";
 

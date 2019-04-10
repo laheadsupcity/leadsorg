@@ -11,7 +11,8 @@
 }
 
 .property-list {
-  overflow: scroll;
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
 
 .properties-scroll {
@@ -41,6 +42,14 @@
 
 .xlg-property-info-column {
   width: 154px;
+}
+
+.phone-number {
+  width: 110px;
+}
+
+.email-address {
+  width: 170px;
 }
 
 .num-units {

@@ -65,20 +65,20 @@
       <?php echo $property['owner_name2']; ?>
     </div>
 
-    <div class="lg-property-info-column owner-column property-info-column">
-      <div data-field="phone1" class="editable-field"><?php echo $property['phone1']; ?></div>
+    <div class="phone-number owner-column property-info-column">
+      <div data-field="phone1" class="editable-field text-truncate"><?php echo $property['phone1']; ?></div>
     </div>
 
-    <div class="lg-property-info-column owner-column property-info-column">
-      <div data-field="phone2" class="editable-field"><?php echo $property['phone2']; ?></div>
+    <div class="phone-number owner-column property-info-column">
+      <div data-field="phone2" class="editable-field text-truncate"><?php echo $property['phone2']; ?></div>
     </div>
 
-    <div class="xlg-property-info-column owner-column property-info-column">
-      <div data-field="email1" class="editable-field"><?php echo $property['email1']; ?></div>
+    <div class="email-address owner-column property-info-column">
+      <div data-field="email1" class="editable-field text-truncate"><?php echo $property['email1']; ?></div>
     </div>
 
-    <div class="xlg-property-info-column owner-column property-info-column">
-      <div data-field="email2" class="editable-field"><?php echo $property['email2']; ?></div>
+    <div class="email-address owner-column property-info-column">
+      <div data-field="email2" class="editable-field text-truncate"><?php echo $property['email2']; ?></div>
     </div>
 
     <div class="sm-property-info-column property-info-column sortable-column num-units">
