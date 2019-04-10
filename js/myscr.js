@@ -303,7 +303,6 @@ $(document).ready(function() {
     return false;
   });
 
-
   $(".taskcloseimg").click(function() {
     $("#overlay").hide();
     $("#batchform").hide();
@@ -320,71 +319,6 @@ $(document).ready(function() {
     $(".msg").html();
     location.reload();
   });
-
-
-  $("#expcsvbtn").click(function() {
-
-    var check = $("#ckeckvall").val();
-    filename = "customsearch.csv"
-    if (check) {
-
-      jQuery.ajax({
-        type: "POST",
-        url: "lead_export.php",
-
-        data: {
-          'check': check
-        },
-        success: function(response) {
-          // console.log(response);
-          var type = 'application/csv';
-          var blob = new Blob([response], {
-            type: type
-          });
-
-          if (typeof window.navigator.msSaveBlob !== 'undefined') {
-            // IE workaround for "HTML7007: One or more blob URLs were revoked by closing the blob for which they were created. These URLs will no longer resolve as the data backing the URL has been freed."
-            window.navigator.msSaveBlob(blob, filename);
-          } else {
-            var URL = window.URL || window.webkitURL;
-            var downloadUrl = URL.createObjectURL(blob);
-
-            if (filename) {
-              // use HTML5 a[download] attribute to specify filename
-              var a = document.createElement("a");
-              // safari doesn't support this yet
-              if (typeof a.download === 'undefined') {
-                window.location = downloadUrl;
-              } else {
-                a.href = downloadUrl;
-                a.download = filename;
-                document.body.appendChild(a);
-                a.click();
-              }
-            } else {
-              window.location = downloadUrl;
-            }
-
-            setTimeout(function() {
-              URL.revokeObjectURL(downloadUrl);
-            }, 100); // cleanup
-          }
-
-          /* var uri = 'data:application/csv;charset=UTF-8,' + encodeURIComponent(data);
-           window.open(uri, 'test.csv');*/
-
-        }
-      });
-
-
-    } else {
-
-      alert("Please select at least one check box");
-      return false;
-    }
-
-  });
-
 
   /* For schedule page export csv*/
 
