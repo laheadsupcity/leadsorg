@@ -13,6 +13,8 @@
     <link rel="stylesheet" type="text/css" href="css/custom_search_results.css"/>
 
     <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/custom_database_search/actions.js"></script>
     <script type="text/javascript" src="js/custom_database_search/results.js"></script>
     <script type="text/javascript" src="js/custom_database_search/editable_fields.js"></script>
     <style>

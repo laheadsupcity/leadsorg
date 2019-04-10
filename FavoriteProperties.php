@@ -48,7 +48,21 @@ class FavoriteProperties {
 
   public function getPropertiesForFolder($folder_id) {
     $query = sprintf(
-      "SELECT `property1`.*, `properties_with_updates_info`.`has_unseen_updates` FROM `property` AS `property1`
+      "SELECT
+        `property1`.*,
+        `properties_with_updates_info`.`has_unseen_updates`,
+        `related_properties`.`count` AS `related_properties_count`
+      FROM (
+        SELECT
+          `full_mail_address`,
+          count(`full_mail_address`)-1 AS `count`
+        FROM `property`
+        WHERE `full_mail_address` <> \"\"
+        GROUP BY `full_mail_address`
+      ) AS `related_properties`
+      RIGHT JOIN `property` AS `property1` ON (
+        `property1`.`full_mail_address` = `related_properties`.`full_mail_address`
+      )
       JOIN (
         SELECT
           DISTINCT `property2`.`parcel_number`,
@@ -85,9 +99,9 @@ class FavoriteProperties {
 
     $this->db->query($query);
 
-    $folders = $this->db->result_array();
+    $properties = $this->db->result_array();
 
-    return $folders;
+    return $properties;
   }
 
   public function markPropertyAsSeen($user_id, $parcel_number) {

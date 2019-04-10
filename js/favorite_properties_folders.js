@@ -117,7 +117,7 @@ $(document).ready(function() {
   $('[data-folder-id]').click(function(event) {
     var folder_id = $(event.currentTarget).data('folder-id'),
         folder_name = $(event.currentTarget).data('folder-name'),
-        action_button = $(event.target).parents('[data-action]');
+        action_button = $(event.target).closest('[data-action]');
 
     if (action_button.length) {
       switch (action_button.data('action')) {

@@ -46,16 +46,56 @@ $(document).ready(function() {
     $('#selectPropertiesWarning').removeClass('d-block').addClass('d-none');
   });
 
-  $('#batchNameExists').alert();
-  resetLeadBatchModal();
+  var create_batch_button = $('[data-target="#createLeadBatchModal"]');
+  if (create_batch_button.length > 0) {
+    $('#batchNameExists').alert();
+    resetLeadBatchModal();
+
+    // reset create lead batch modal
+    $('#createLeadBatchModal').on('hide.bs.modal', function() {
+      resetLeadBatchModal();
+    });
+
+    $("[data-action=batch_submit]").click(function(event) {
+      var checked_properties = getCheckedProperties(),
+          name_input = $("#batchName");
+
+      var name = name_input.val();
+
+      if (name == "") {
+        name_input.addClass('is-invalid');
+        return;
+      } else {
+        resetLeadBatchModalErrors();
+
+        jQuery.ajax({
+          type: "POST",
+          url: "lead_batch.php",
+          dataType: 'json',
+          data: {
+            'check': checked_properties,
+            'name': name
+          },
+          success: function(data) {
+            if (data.msg == 'Add') {
+              $('#batchNameExists').hide();
+              $("#batchSuccess").show();
+              setTimeout(function() {
+                $('#createLeadBatchModal').modal('hide')
+              }, 2000);
+            } else {
+              $('#batchNameExists').show();
+            }
+          }
+        });
+      }
+
+      return false;
+    });
+  }
 
   $("#checkAll").click(function() {
     $('[data-property-checkbox]').not(this).prop('checked', this.checked);
-  });
-
-  // reset create lead batch modal
-  $('#createLeadBatchModal').on('hide.bs.modal', function() {
-    resetLeadBatchModal();
   });
 
   $('[data-target="#createLeadBatchModal"],[data-target="#addToFavoritesFolderModal"]').click(function(event) {
@@ -69,43 +109,6 @@ $(document).ready(function() {
       var target_modal = $(event.target).data('target');
       $(target_modal).modal('show');
     }
-  });
-
-  $("[data-action=batch_submit]").click(function(event) {
-    var checked_properties = getCheckedProperties(),
-        name_input = $("#batchName");
-
-    var name = name_input.val();
-
-    if (name == "") {
-      name_input.addClass('is-invalid');
-      return;
-    } else {
-      resetLeadBatchModalErrors();
-
-      jQuery.ajax({
-        type: "POST",
-        url: "lead_batch.php",
-        dataType: 'json',
-        data: {
-          'check': checked_properties,
-          'name': name
-        },
-        success: function(data) {
-          if (data.msg == 'Add') {
-            $('#batchNameExists').hide();
-            $("#batchSuccess").show();
-            setTimeout(function() {
-              $('#createLeadBatchModal').modal('hide')
-            }, 2000);
-          } else {
-            $('#batchNameExists').show();
-          }
-        }
-      });
-    }
-
-    return false;
   });
 
   $("#export_properties_csv_button").click(function() {
