@@ -16,6 +16,7 @@
     <script type="text/javascript" src="js/bootstrap.min.js"></script>
     <script type="text/javascript" src="js/custom_database_search/actions.js"></script>
     <script type="text/javascript" src="js/custom_database_search/results.js"></script>
+    <script type="text/javascript" src="js/favorites/actions.js"></script>
     <script type="text/javascript" src="js/custom_database_search/editable_fields.js"></script>
     <style>
       .active1 {
@@ -68,11 +69,12 @@
           <div class="mt-3">
             <button type="submit" id="export_properties_csv_button" class="btn btn-primary">Export selected</button>
             <button type="submit" data-action="remove_from_folder" class="btn btn-warning">Remove selected</button>
-            <button type="submit" data-action="remove_from_folder" class="btn btn-danger float-right">Delete folder</button>
+            <button type="submit" data-action="delete_folder" class="btn btn-danger float-right">Delete folder</button>
           </div>
         <?php } ?>
       <?php }?>
 
+      <?php include('includes/favorites_folders/remove_from_folder_modal.php'); ?>
 
     </div>
   </body>
