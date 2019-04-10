@@ -20,9 +20,11 @@
       </div>
       <div class="modal-footer">
         <button type="button" data-action="cancel" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-        <button type="button" data-action="create" class="btn btn-primary">
-          <span data-create-copy hidden>Create folder</span>
-          <span data-rename-copy hidden>Rename folder</span>
+        <button data-rename-copy type="button" data-action="rename" class="btn btn-primary">
+          Rename folder
+        </button>
+        <button data-create-copy type="button" data-action="create" class="btn btn-primary">
+          Create folder
         </button>
       </div>
     </div>

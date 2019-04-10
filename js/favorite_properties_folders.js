@@ -18,8 +18,26 @@ function createNewFolder(folder_name) {
     getCreateNewFolderModal().modal('hide')
   } else {
     $.post(
-      'create_new_folder.php',
+      'create_new_favorites_folder.php',
       {
+        folder_name: folder_name
+      },
+      function (data) {
+        getCreateNewFolderModal().modal('hide');
+        window.location = window.location;
+      }
+    );
+  }
+}
+
+function renameFolder(folder_id, folder_name) {
+  if (folder_name == "") {
+    getCreateNewFolderModal().modal('hide')
+  } else {
+    $.post(
+      'rename_favorites_folder.php',
+      {
+        folder_id: folder_id,
         folder_name: folder_name
       },
       function (data) {
@@ -34,8 +52,10 @@ function handleRenameFolder(folder_id, folder_name) {
   getNewFolderNameInput().val(folder_name)
 
   var modal = getCreateNewFolderModal();
+
   modal.find('[data-create-copy]').prop('hidden', true);
   modal.find('[data-rename-copy]').prop('hidden', false);
+  modal.data('folder-id', folder_id);
   modal.modal('show');
 }
 
@@ -55,6 +75,14 @@ $(document).ready(function() {
 
   createNewFolderModal.find('[data-action="create"]').click(function() {
     createNewFolder(getNewFolderNameInput().val());
+  });
+
+
+  createNewFolderModal.find('[data-action="rename"]').click(function(event) {
+    renameFolder(
+      createNewFolderModal.data('folder-id'),
+      getNewFolderNameInput().val()
+    );
   });
 
   $('[data-action="create-new-folder"]').click(function() {
