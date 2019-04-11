@@ -51,11 +51,11 @@
                   <div data-folder-name-and-count>
                     <span class="mr-2"><?php echo($folder->name); ?></span>
                     <span class="badge badge-primary badge-pill"><?php echo($folder->property_count); ?></span>
-                    <span class="ml-2" style="width: 15px;">
-                      <?php if($folder->has_unseen_updates) { ?>
-                        <i class="fas fa-flag text-danger"></i>
-                      <?php } ?>
-                    </span>
+                    <?php if($folder->has_unseen_updates) { ?>
+                      <span class="ml-2" style="width: 15px;">
+                          <i class="fas fa-flag text-danger"></i>
+                      </span>
+                    <?php } ?>
                   </div>
 
                   <div data-folder-name-input class='d-none'>
