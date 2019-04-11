@@ -44,14 +44,20 @@
           <?php } else { ?>
             <?php foreach ($favorites_folders as $folder) { ?>
               <div
-                data-folder-id="<?php echo($folder['folder_id']); ?>"
-                data-folder-name="<?php echo($folder['name'])?>"
+                data-folder-id="<?php echo($folder->folder_id); ?>"
+                data-folder-name="<?php echo($folder->name)?>"
                 class="favorite-folder-link card mb-2">
                 <div class="card-body d-flex justify-content-between align-items-center">
                   <div data-folder-name-and-count>
-                    <span class="mr-2"><?php echo($folder['name']); ?></span>
-                    <span class="badge badge-primary badge-pill"><?php echo($folder['property_count']); ?></span>
+                    <span class="mr-2"><?php echo($folder->name); ?></span>
+                    <span class="badge badge-primary badge-pill"><?php echo($folder->property_count); ?></span>
+                    <span class="ml-2" style="width: 15px;">
+                      <?php if($folder->has_unseen_updates) { ?>
+                        <i class="fas fa-flag text-danger"></i>
+                      <?php } ?>
+                    </span>
                   </div>
+
                   <div data-folder-name-input class='d-none'>
                     <input class="form-control" type="text" placeholder="New folder name">
                   </div>

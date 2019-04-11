@@ -18,9 +18,9 @@
       <div class="modal-body">
         <?php foreach ($favorites_folders as $folder) {?>
           <div class="form-check mb-2">
-            <input class="form-check-input" type="radio" name="favoriteFolder" id="folder<?php echo($folder['folder_id']); ?>" value="<?php echo($folder['folder_id']); ?>" checked>
+            <input class="form-check-input" type="radio" name="favoriteFolder" id="folder<?php echo($folder->folder_id); ?>" value="<?php echo($folder->folder_id); ?>" checked>
             <label class="form-check-label" for="favoriteFolder">
-              <?php echo($folder['name']); ?>
+              <?php echo($folder->name); ?>
             </label>
           </div>
         <?php } ?>

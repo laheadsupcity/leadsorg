@@ -24,6 +24,7 @@ class FavoriteProperties {
   }
 
   public function getAllFoldersForUser($user_id) {
+
     $query = sprintf(
       "SELECT
         folder.folder_id,
@@ -41,7 +42,23 @@ class FavoriteProperties {
 
     $this->db->query($query);
 
-    $folders = $this->db->result_array();
+    $folders = $this->db->result();
+
+    $results = [];
+    foreach ($folders as $folder) {
+      $has_unseen_updates = false;
+
+      $properties = $this->getPropertiesForFolder($folder->folder_id);
+
+      foreach ($properties as $property) {
+        if ($property['has_unseen_updates']) {
+          $has_unseen_updates = true;
+          break;
+        }
+      }
+
+      $folder->has_unseen_updates = $has_unseen_updates;
+    }
 
     return $folders;
   }
@@ -76,7 +93,6 @@ class FavoriteProperties {
         JOIN `favorite_properties` AS `fav` ON (
           fav.parcel_number = property2.parcel_number
         )
-
         LEFT JOIN property_cases_detail AS `case_detail` ON (
           case_detail.apn = fav.parcel_number AND
           case_detail.date_modified > fav.date_last_viewed
