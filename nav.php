@@ -22,6 +22,22 @@ else{
 // restore the original error handler
 restore_error_handler();
 ?>
+
+<?php
+
+  $favorites = new FavoriteProperties();
+  $favorites_folders = $favorites->getAllFoldersForUser(1);
+
+  $has_unseen_favorites_updates = false;
+  foreach ($favorites_folders as $folder) {
+    if ($folder->has_unseen_updates) {
+      $has_unseen_favorites_updates = true;
+      break;
+    }
+  }
+
+?>
+
 <div class="topmenu">
     <link rel="stylesheet" href="css/style.css">
     <div class="welcome">
@@ -50,7 +66,7 @@ restore_error_handler();
                         <li><a href="lead_customdatabase_search.php">Custom Database Search</a></li>
                         <li><a href="lead_custombatch.php">Lead Batches</a></li>
                         <li>
-                          <a href="favorites_folders.php"><span class="ml-2">Favorites</span></a>
+                          <a href="favorites_folders.php"><span class="ml-2">Favorites <span class="ml-1" <?php if (!$has_unseen_favorites_updates) { ?> hidden <?php } ?>><i class="fas fa-flag text-danger"></i></span></span></a>
                         </li>
                     </ul>
                 </li>
