@@ -63,7 +63,7 @@
     $total_records = $searcher->getResultCount();
   ?>
 
-  <div class="main-content mx-auto pl-2 pr-2">
+  <div class="main-content mx-auto pl-4 pr-4">
     <?php if (!empty($properties)) { ?>
       <div class="d-flex justify-content-between p-2">
         <div>

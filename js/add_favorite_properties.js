@@ -2,8 +2,15 @@ function getAddToFolderModal() {
   return $('#addToFavoritesFolderModal');
 }
 
-function getSelectedFavoritesFolderID() {
-  return getAddToFolderModal().find("input[name='favoriteFolder']:checked").val();
+function getSelectedFavoritesFolderIDs() {
+  var selected_folders =
+    getAddToFolderModal()
+      .find("input[name='favoriteFolder']:checked")
+      .map(function(index, checkbox) {
+        return checkbox.value;
+      });
+
+  return selected_folders.toArray();
 }
 
 function getSelectedParcelNumbers() {
@@ -15,18 +22,18 @@ function getSelectedParcelNumbers() {
 }
 
 function handleAddToFavoritesFolder() {
-  var folder_id = getSelectedFavoritesFolderID(),
+  var folder_ids = getSelectedFavoritesFolderIDs(),
       selected_apns = getSelectedParcelNumbers();
 
   $.post(
     'add_to_favorites_folder.php',
     {
-      folder_id: folder_id,
+      folder_ids: folder_ids,
       parcel_numbers: selected_apns
     },
     function (data) {
+      getAddToFolderModal().find('input').prop('checked', false);
       getAddToFolderModal().modal('hide');
-      window.location = "favorite_properties.php?folder_id=" + folder_id;
     }
   );
 

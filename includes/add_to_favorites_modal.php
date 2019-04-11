@@ -17,11 +17,24 @@
       </div>
       <div class="modal-body">
         <?php foreach ($favorites_folders as $folder) {?>
-          <div class="form-check mb-2">
-            <input class="form-check-input" type="radio" name="favoriteFolder" id="folder<?php echo($folder->folder_id); ?>" value="<?php echo($folder->folder_id); ?>" checked>
-            <label class="form-check-label" for="favoriteFolder">
-              <?php echo($folder->name); ?>
-            </label>
+          <div class="mb-2 w-100 d-flex align-items-center">
+            <input type="checkbox" name="favoriteFolder" id="folder<?php echo($folder->folder_id); ?>" value="<?php echo($folder->folder_id); ?>">
+            <div
+              data-folder-id="<?php echo($folder->folder_id); ?>"
+              data-folder-name="<?php echo($folder->name)?>"
+              class="favorite-folder-link card ml-2 w-100">
+              <div class="card-body d-flex justify-content-between align-items-center">
+                <div data-folder-name-and-count>
+                  <span class="mr-2"><?php echo($folder->name); ?></span>
+                  <span class="badge badge-primary badge-pill"><?php echo($folder->property_count); ?></span>
+                  <?php if($folder->has_unseen_updates) { ?>
+                    <span class="ml-2" style="width: 15px;">
+                        <i class="fas fa-flag text-danger"></i>
+                    </span>
+                  <?php } ?>
+                </div>
+              </div>
+            </div>
           </div>
         <?php } ?>
       </div>

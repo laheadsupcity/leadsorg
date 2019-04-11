@@ -206,7 +206,7 @@ class CustomDatabaseSearch {
   }
 
   public function getRelatedPropertiesCounts() {
-    if (!isset($this->result_apns)) {
+    if (empty($this->result_apns)) {
       return [];
     }
 
