@@ -31,17 +31,17 @@
       ?>
     </div>
 
-    <div class="main-content mx-auto pl-2 pr-2">
-      <?php
-        $folder_id = $_GET['folder_id'];
+    <?php
+      $folder_id = $_GET['folder_id'];
 
-        $favorites = new FavoriteProperties();
+      $favorites = new FavoriteProperties();
 
-        $folder = $favorites->getFolderFromID($folder_id);
+      $folder = $favorites->getFolderFromID($folder_id);
 
-        $properties = $favorites->getPropertiesForFolder($folder_id);
-      ?>
+      $properties = $favorites->getPropertiesForFolder($folder_id);
+    ?>
 
+    <div data-folder-id="<?php echo $folder_id; ?>" class="main-content mx-auto pl-2 pr-2">
       <?php if (empty($folder)) { ?>
         <div class="jumbotron jumbotron-fluid">
           <div class="container">
@@ -57,6 +57,9 @@
               <p class="lead">Perform a search and save some properties of interest.</p>
             </div>
           </div>
+          <div class="mt-3">
+            <button type="submit" data-toggle="modal" data-target="#confirmDeleteFavoriteFolder" class="btn btn-danger float-right">Delete folder</button>
+          </div>
         <?php } else { ?>
           <h5><?php echo($folder['name']); ?></h5>
 
@@ -69,12 +72,13 @@
           <div class="mt-3">
             <button type="submit" id="export_properties_csv_button" class="btn btn-primary">Export selected</button>
             <button type="submit" data-action="remove_from_folder" class="btn btn-warning">Remove selected</button>
-            <button type="submit" data-action="delete_folder" class="btn btn-danger float-right">Delete folder</button>
+            <button type="submit" data-toggle="modal" data-target="#confirmDeleteFavoriteFolder" class="btn btn-danger float-right">Delete folder</button>
           </div>
         <?php } ?>
       <?php }?>
 
       <?php include('includes/favorites_folders/remove_from_folder_modal.php'); ?>
+      <?php include('includes/favorites_folders/delete_favorites_folder_modal.php'); ?>
 
     </div>
   </body>
