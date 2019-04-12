@@ -1,6 +1,11 @@
 const ACTION_RENAME_FOLDER = "rename-folder";
 const ACTION_DELETE_FOLDER = "delete-folder";
 
+function getUserID() {
+  // TO DO: This is temporary hack until user sessions are handled properly
+  return $('[data-user-id]').data('user-id');
+}
+
 function getCreateNewFolderModal() {
   return $('#createNewFolder');
 }
@@ -17,13 +22,14 @@ function resetCreateNewFolderModal() {
   getNewFolderNameInput().val("");
 }
 
-function createNewFolder(folder_name) {
+function createNewFolder(user_id, folder_name) {
   if (folder_name == "") {
     getCreateNewFolderModal().modal('hide')
   } else {
     $.post(
       'create_new_favorites_folder.php',
       {
+        user_id: user_id,
         folder_name: folder_name
       },
       function (data) {
@@ -81,7 +87,10 @@ $(document).ready(function() {
   });
 
   createNewFolderModal.find('[data-action="create"]').click(function() {
-    createNewFolder(getNewFolderNameInput().val());
+    createNewFolder(
+      getUserID(),
+      getNewFolderNameInput().val()
+    );
   });
 
   getConfirmDeleteFolderModal().find('[data-action="delete"]').click(function() {

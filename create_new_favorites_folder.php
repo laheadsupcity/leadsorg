@@ -1,8 +1,7 @@
 <?php
 require_once('config.php');
 
-// TODO: When user logins are properly implemented then this will no longer be hardcoded
-$user_id = 1;
+$user_id = $_POST['user_id'];
 $folder_name = $_POST['folder_name'];
 
 $db->insert(

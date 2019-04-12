@@ -1,3 +1,8 @@
+function getUserID() {
+  // TO DO: This is temporary hack until user sessions are handled properly
+  return $('[data-user-id]').data('user-id');
+}
+
 function getAddToFolderModal() {
   return $('#addToFavoritesFolderModal');
 }
@@ -44,7 +49,7 @@ function handleAddToFavoritesFolder() {
   $.post(
     'add_to_favorites_folder.php',
     {
-      user_id: 1,
+      user_id: getUserID(),
       folder_ids: folder_ids,
       parcel_numbers: selected_apns,
       should_move_instead_of_add: isMovePropertiesOptionSelected(),

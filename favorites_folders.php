@@ -25,8 +25,9 @@
       <?php
         include('nav.php');
 
+        $user_id = $_SESSION['userdetail']['id'];
         $favorites = new FavoriteProperties();
-        $favorites_folders = $favorites->getAllFoldersForUser(1);
+        $favorites_folders = $favorites->getAllFoldersForUser($user_id);
       ?>
     </div>
     <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap.min.css" />

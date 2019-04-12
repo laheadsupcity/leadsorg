@@ -13,7 +13,8 @@ set_error_handler(function ($severity, $message, $file, $line) {
 session_start();
 $name="";
 if (isset($_SESSION['userdetail'])) {
-    $name=isset($_SESSION['userdetail']['username']) ? $_SESSION['userdetail']['username'] : '';
+  $user_id = $_SESSION['userdetail']['id'];
+  $name=isset($_SESSION['userdetail']['username']) ? $_SESSION['userdetail']['username'] : '';
 }
 else{
     header("Location: login.php");
@@ -27,7 +28,7 @@ restore_error_handler();
 <?php
 
   $favorites = new FavoriteProperties();
-  $favorites_folders = $favorites->getAllFoldersForUser(1);
+  $favorites_folders = $favorites->getAllFoldersForUser($_SESSION['userdetail']['id']);
 
   $has_unseen_favorites_updates = false;
   foreach ($favorites_folders as $folder) {
@@ -39,7 +40,7 @@ restore_error_handler();
 
 ?>
 
-<div class="topmenu">
+<div class="topmenu" data-user-id="<?php echo $user_id; ?>">
     <link rel="stylesheet" href="css/style.css">
     <div class="welcome">
         <div class="welcome_2">
