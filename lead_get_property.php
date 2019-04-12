@@ -16,7 +16,7 @@
   <script type="text/javascript" src="js/custom_database_search/results.js"></script>
   <script type="text/javascript" src="js/custom_database_search/editable_fields.js"></script>
   <script type="text/javascript" src="js/custom_database_search/actions.js"></script>
-  <script type="text/javascript" src="js/add_favorite_properties.js"></script>
+  <script type="text/javascript" src="js/favorites/add_favorite_properties.js"></script>
   <style>
     .active1{background:#337ab7!important;}
   </style>
@@ -134,6 +134,6 @@
   </div>
 
   <?php include('includes/create_lead_batch_modal.php') ?>
-  <?php include('includes/add_to_favorites_modal.php') ?>
+  <?php include('includes/favorites_folders/add_to_favorites_modal.php') ?>
  </body>
 </html>

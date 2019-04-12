@@ -17,6 +17,7 @@
     <script type="text/javascript" src="js/custom_database_search/actions.js"></script>
     <script type="text/javascript" src="js/custom_database_search/results.js"></script>
     <script type="text/javascript" src="js/favorites/actions.js"></script>
+    <script type="text/javascript" src="js/favorites/add_favorite_properties.js"></script>
     <script type="text/javascript" src="js/custom_database_search/editable_fields.js"></script>
     <style>
       .active1 {
@@ -71,7 +72,9 @@
 
           <div class="mt-3">
             <button type="submit" id="export_properties_csv_button" class="btn btn-primary">Export selected</button>
+            <button type="submit" data-toggle="modal" data-target="#addToFavoritesFolderModal" class="btn btn-primary">Add to folder(s)</button>
             <button type="submit" data-action="remove_from_folder" class="btn btn-warning">Remove selected</button>
+
             <button type="submit" data-toggle="modal" data-target="#confirmDeleteFavoriteFolder" class="btn btn-danger float-right">Delete folder</button>
           </div>
         <?php } ?>
@@ -79,6 +82,10 @@
 
       <?php include('includes/favorites_folders/remove_from_folder_modal.php'); ?>
       <?php include('includes/favorites_folders/delete_favorites_folder_modal.php'); ?>
+      <?php
+        $folder_id_to_exclude = $folder_id;
+        include('includes/favorites_folders/add_to_favorites_modal.php');
+      ?>
 
     </div>
   </body>

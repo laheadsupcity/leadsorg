@@ -38,7 +38,8 @@ function getSelectedParcelNumbers() {
 
 function handleAddToFavoritesFolder() {
   var folder_ids = getSelectedFavoritesFolderIDs(),
-      selected_apns = getSelectedParcelNumbers();
+      selected_apns = getSelectedParcelNumbers(),
+      current_folder = getAddToFolderModal().data('current-folder');
 
   $.post(
     'add_to_favorites_folder.php',
@@ -46,14 +47,18 @@ function handleAddToFavoritesFolder() {
       user_id: 1,
       folder_ids: folder_ids,
       parcel_numbers: selected_apns,
-      should_move_instead_of_add: isMovePropertiesOptionSelected()
+      should_move_instead_of_add: isMovePropertiesOptionSelected(),
+      current_folder_id: current_folder
     },
     function (data) {
       getAddToFolderModal().find('input').prop('checked', false);
       getAddToFolderModal().modal('hide');
+
+      if (current_folder) {
+        window.location = window.location;
+      }
     }
   );
-
 }
 
 $(document).ready(function() {

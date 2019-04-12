@@ -9,23 +9,37 @@ $parcel_numbers = $_POST['parcel_numbers'];
 
 $should_move_instead_of_add = $_POST['should_move_instead_of_add'] == "true";
 
+$current_folder_id = $_POST['current_folder_id'];
+
 if (empty($folder_ids) || empty($parcel_numbers)) {
   return;
 }
 
 if ($should_move_instead_of_add) {
-  $query = sprintf(
-    "
-    DELETE FROM `favorite_properties`
-    WHERE `folder_id` IN (
-      SELECT `folder_id` FROM favorite_properties_folders
-      WHERE `user_id` = %s
-    ) AND
-    `parcel_number` IN (%s)
-    ",
-    $user_id,
-    implode(',', $parcel_numbers)
-  );
+  if (isset($current_folder_id)) {
+    $query = sprintf(
+      "
+      DELETE FROM `favorite_properties`
+      WHERE `folder_id` = %s AND
+      `parcel_number` IN (%s)
+      ",
+      $current_folder_id,
+      implode(',', $parcel_numbers)
+    );
+  } else {
+    $query = sprintf(
+      "
+      DELETE FROM `favorite_properties`
+      WHERE `folder_id` IN (
+        SELECT `folder_id` FROM favorite_properties_folders
+        WHERE `user_id` = %s
+      ) AND
+      `parcel_number` IN (%s)
+      ",
+      $user_id,
+      implode(',', $parcel_numbers)
+    );
+  }
 
   $db->query($query);
 }

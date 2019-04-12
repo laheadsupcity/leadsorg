@@ -6,8 +6,12 @@
 
 ?>
 
-<div class="modal fade" id="addToFavoritesFolderModal" tabindex="-1" role="dialog" aria-labelledby="addToFavoritesFolderModalTitle" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 540px;">
+<div
+  <?php if ($folder_id_to_exclude) { ?>
+    data-current-folder=<?php echo $folder_id_to_exclude; ?>
+  <?php } ?>
+  class="modal fade" id="addToFavoritesFolderModal" tabindex="-1" role="dialog" aria-labelledby="addToFavoritesFolderModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 580px;">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Add to favorites</h5>
@@ -16,7 +20,11 @@
         </button>
       </div>
       <div class="modal-body">
-        <?php foreach ($favorites_folders as $folder) {?>
+        <?php foreach ($favorites_folders as $folder) {
+            if ($folder_id_to_exclude && $folder->folder_id == $folder_id_to_exclude) {
+              continue;
+            }
+        ?>
           <div class="mb-2 w-100 d-flex align-items-center">
             <input type="checkbox" name="favoriteFolder" id="folder<?php echo($folder->folder_id); ?>" value="<?php echo($folder->folder_id); ?>">
             <div
@@ -37,13 +45,18 @@
               </div>
             </div>
           </div>
-        <?php } ?>
+        <?php
+        } ?>
       </div>
       <div class="modal-footer d-flex justify-content-between">
         <div class="form-check">
           <input class="form-check-input" type="checkbox" value="" id="removeFromExistingFolders">
-          <label class="form-check-label" for="removeFromExistingFolders">
-            Move properties out of existing folders
+          <label class="form-check-label text-danger font-weight-bold" for="removeFromExistingFolders">
+            <?php if ($folder_id_to_exclude) { ?>
+              Move selected properties out of current folder
+            <?php } else { ?>
+              Move selected properties out of existing folders
+            <?php } ?>
           </label>
         </div>
         <div>
