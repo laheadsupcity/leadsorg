@@ -27,6 +27,8 @@
       )
     );
   }
+
+  $property_url = "lead_property_detail.php?apn=" . $property['parcel_number'] . "&matching_cases=" . $matching_case_ids_search_param;
 ?>
 
 <div
@@ -39,6 +41,7 @@
   data-owner_name="<?php echo $property['owner_name2']; ?>"
   data-related_properties="<?php echo $related_properties_for_owner_count; ?>"
   data-matching-cases-string="<?php echo $matching_cases_for_property_string; ?>"
+  data-property-url="<?php echo $property_url; ?>"
   class="property-item border-bottom w-100 d-flex justify-content-between align-items-center">
 
   <div class="d-flex flex-fill">
@@ -154,9 +157,9 @@
       <?php echo $property['notes']; ?>
     </div>
   </div>
-  <div class="ml-3 mr-1">
+  <div data-actions class="ml-3 mr-1">
     <div>
-      <a target="_blank" class="br-1 pr-1 mr-1" href="lead_property_detail.php?apn=<?php echo $property['parcel_number']; ?>&matching_cases=<?php echo $matching_case_ids_search_param;?>"><i class="text-secondary fas fa-chevron-circle-right"></i></a>
+      <a target="_blank" class="br-1 pr-1 mr-1" href="<?php echo $property_url;?>"><i class="text-secondary fas fa-chevron-circle-right"></i></a>
     </div>
     <div>
       <a href="lead_update_customtask.php?editid=<?php echo $property['id']; ?>" target="_blank"><i class="text-secondary fas fa-edit"></i></a>

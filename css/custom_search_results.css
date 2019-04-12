@@ -1,9 +1,21 @@
+.property-list-group .property-item {
+  cursor: pointer;
+}
+
 .property-list-group .property-item:nth-child(even) {
-  background-color: #fff;
+  background-color: rgba(255,255,255, 1);
+}
+
+.property-list-group .property-item:nth-child(even):hover {
+  background-color: rgba(51,122,183,.1);
 }
 
 .property-list-group .property-item:nth-child(odd) {
   background-color: rgba(0, 0, 0, .05);
+}
+
+.property-list-group .property-item:nth-child(odd):hover {
+  background-color: rgba(51,122,183,.15);
 }
 
 .property-item-header, .property-item {

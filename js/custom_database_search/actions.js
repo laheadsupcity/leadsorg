@@ -164,4 +164,27 @@ $(document).ready(function() {
     }
   });
 
+  $('[data-parcel_number]').click(function(event) {
+    var target = $(event.target)
+
+    var is_editable_field =
+      target.parents('.editable-field').length > 0 ||
+      target.hasClass('editable-field');
+    if (is_editable_field) {
+      return;
+    }
+
+    var is_input = target.is('input');
+    if (is_input) {
+      return;
+    }
+
+    var is_actions = target.parents('[data-actions]').length > 0;
+    if (is_actions) {
+      return;
+    }
+
+    window.open($(event.currentTarget).data('property-url'));
+  });
+
 });
