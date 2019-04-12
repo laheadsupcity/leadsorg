@@ -7,7 +7,7 @@
 ?>
 
 <div class="modal fade" id="addToFavoritesFolderModal" tabindex="-1" role="dialog" aria-labelledby="addToFavoritesFolderModalTitle" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
+  <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 540px;">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Add to favorites</h5>
@@ -39,9 +39,17 @@
           </div>
         <?php } ?>
       </div>
-      <div class="modal-footer">
-        <button type="button" data-action="cancel" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" data-action="add" class="btn btn-primary">Add to folder</button>
+      <div class="modal-footer d-flex justify-content-between">
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="" id="removeFromExistingFolders">
+          <label class="form-check-label" for="removeFromExistingFolders">
+            Move properties out of existing folders
+          </label>
+        </div>
+        <div>
+          <button type="button" data-action="cancel" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" data-action="add" class="btn btn-primary">Add to folder(s)</button>
+        </div>
       </div>
     </div>
   </div>

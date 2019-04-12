@@ -2,6 +2,21 @@ function getAddToFolderModal() {
   return $('#addToFavoritesFolderModal');
 }
 
+function isMovePropertiesOptionSelected() {
+  var is_move = $('#removeFromExistingFolders').prop('checked');
+  return is_move;
+}
+
+function handleAddMoveOptionChange(checkbox) {
+  var checked = checkbox.prop('checked');
+
+  if (checked) {
+    getAddToFolderModal().find('[data-action="add"]').html("Move to folder(s)");
+  } else {
+    getAddToFolderModal().find('[data-action="add"]').html("Add to folder(s)");
+  }
+}
+
 function getSelectedFavoritesFolderIDs() {
   var selected_folders =
     getAddToFolderModal()
@@ -28,8 +43,10 @@ function handleAddToFavoritesFolder() {
   $.post(
     'add_to_favorites_folder.php',
     {
+      user_id: 1,
       folder_ids: folder_ids,
-      parcel_numbers: selected_apns
+      parcel_numbers: selected_apns,
+      should_move_instead_of_add: isMovePropertiesOptionSelected()
     },
     function (data) {
       getAddToFolderModal().find('input').prop('checked', false);
@@ -71,6 +88,10 @@ $(document).ready(function() {
 
   getAddToFolderModal().find('[data-action="add"]').click(function(event) {
     handleAddToFavoritesFolder();
+  });
+
+  $('#removeFromExistingFolders').change(function(event) {
+    handleAddMoveOptionChange($(event.currentTarget));
   });
 
 });

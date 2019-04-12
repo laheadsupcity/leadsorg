@@ -1,9 +1,34 @@
 <?php
 require_once('config.php');
 
+$user_id = $_POST['user_id'];
+
 $folder_ids = $_POST['folder_ids'];
 
 $parcel_numbers = $_POST['parcel_numbers'];
+
+$should_move_instead_of_add = $_POST['should_move_instead_of_add'] == "true";
+
+if (empty($folder_ids) || empty($parcel_numbers)) {
+  return;
+}
+
+if ($should_move_instead_of_add) {
+  $query = sprintf(
+    "
+    DELETE FROM `favorite_properties`
+    WHERE `folder_id` IN (
+      SELECT `folder_id` FROM favorite_properties_folders
+      WHERE `user_id` = %s
+    ) AND
+    `parcel_number` IN (%s)
+    ",
+    $user_id,
+    implode(',', $parcel_numbers)
+  );
+
+  $db->query($query);
+}
 
 foreach ($folder_ids as $folder_id) {
   $db->select(
