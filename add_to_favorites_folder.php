@@ -3,7 +3,7 @@ require_once('config.php');
 
 $folder_ids = $_POST['folder_ids'];
 
-$parcel_numbers = explode(',', $_POST['parcel_numbers']);
+$parcel_numbers = $_POST['parcel_numbers'];
 
 foreach ($folder_ids as $folder_id) {
   $db->select(

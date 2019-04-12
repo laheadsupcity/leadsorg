@@ -26,7 +26,8 @@
               <div class="card-body d-flex justify-content-between align-items-center">
                 <div data-folder-name-and-count>
                   <span class="mr-2"><?php echo($folder->name); ?></span>
-                  <span class="badge badge-primary badge-pill"><?php echo($folder->property_count); ?></span>
+                  <span data-count-properties-pill class="badge badge-primary badge-pill"><span data-total-count><?php echo($folder->property_count); ?></span> total</span>
+                  <span data-count-properties-pill class="badge badge-warning badge-pill ml-1" hidden><span data-existing-count><?php echo($folder->property_count); ?></span> existing</span>
                   <?php if($folder->has_unseen_updates) { ?>
                     <span class="ml-2" style="width: 15px;">
                         <i class="fas fa-flag text-danger"></i>
