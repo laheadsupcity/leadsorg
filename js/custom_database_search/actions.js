@@ -43,7 +43,7 @@ function resetLeadBatchModal() {
 $(document).ready(function() {
 
   $("[data-property-checkbox],#checkAll").change(function() {
-    $('#selectPropertiesWarning').removeClass('d-block').addClass('d-none');
+    $('#selectPropertiesWarning').prop('hidden', true);
   });
 
   var create_batch_button = $('[data-target="#createLeadBatchModal"]');
@@ -104,7 +104,7 @@ $(document).ready(function() {
     var checked_properties = getCheckedProperties();
 
     if (checked_properties.length == 0) {
-      $('#selectPropertiesWarning').addClass('d-block');
+      $('#selectPropertiesWarning').prop('hidden', false);
     } else {
       var target_modal = $(event.target).data('target');
       $(target_modal).modal('show');

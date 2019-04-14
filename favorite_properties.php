@@ -14,6 +14,7 @@
 
     <script type="text/javascript" src="js/jquery.min.js"></script>
     <script type="text/javascript" src="js/bootstrap.min.js"></script>
+
     <script type="text/javascript" src="js/custom_database_search/actions.js"></script>
     <script type="text/javascript" src="js/custom_database_search/results.js"></script>
     <script type="text/javascript" src="js/favorites/actions.js"></script>
@@ -70,11 +71,13 @@
             include('includes/properties_list.php');
           ?>
 
-          <div class="mt-3">
-            <button type="submit" id="export_properties_csv_button" class="btn btn-primary">Export selected</button>
-            <button type="submit" data-toggle="modal" data-target="#addToFavoritesFolderModal" class="btn btn-primary">Add to folder(s)</button>
-            <button type="submit" data-action="remove_from_folder" class="btn btn-warning">Remove selected</button>
-
+          <div class="mt-3 d-flex justify-content-between">
+            <div class="d-flex" style="height: 44px;">
+              <button type="submit" id="export_properties_csv_button" class="mr-1 btn btn-primary">Export selected</button>
+              <button type="submit" data-toggle="modal" data-target="#addToFavoritesFolderModal" class="mr-1 btn btn-primary">Add to folder(s)</button>
+              <button type="submit" data-action="remove_from_folder" class="mr-3 btn btn-warning">Remove selected</button>
+              <?php include 'includes/select_properties_alert.php'; ?>
+            </div>
             <button type="submit" data-toggle="modal" data-target="#confirmDeleteFavoriteFolder" class="btn btn-danger float-right">Delete folder</button>
           </div>
         <?php } ?>
@@ -84,6 +87,7 @@
       <?php include('includes/favorites_folders/delete_favorites_folder_modal.php'); ?>
       <?php
         $folder_id_to_exclude = $folder_id;
+        $show_unseen_update_flag = true;
         include('includes/favorites_folders/add_to_favorites_modal.php');
       ?>
 

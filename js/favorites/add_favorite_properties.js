@@ -1,3 +1,5 @@
+var favorites_folders = {};
+
 function getUserID() {
   // TO DO: This is temporary hack until user sessions are handled properly
   return $('[data-user-id]').data('user-id');
@@ -5,6 +7,63 @@ function getUserID() {
 
 function getAddToFolderModal() {
   return $('#addToFavoritesFolderModal');
+}
+
+function shouldShowUnseenUpdateFlag() {
+  getAddToFolderModal().data('show-unseen-update-flag');
+}
+
+function createFoldersListFromData(data) {
+  favorites_folders = {};
+
+  var current_folder_id = $('[data-current-folder]').data('current-folder');
+  data.forEach(function(entry) {
+    if (entry.folder_id != current_folder_id) {
+      favorites_folders[entry.folder_id] = entry;
+    }
+  });
+}
+
+function handleAddToFavoritesModalShown() {
+  var show_unseen_update_flag = shouldShowUnseenUpdateFlag(),
+      selected_properties = getSelectedParcelNumbers();
+
+  $.post(
+    'get_properties_in_favorites_folders.php',
+    {
+      user_id: getUserID(),
+      selected_parcel_numbers: selected_properties,
+      show_unseen_update_flag: show_unseen_update_flag
+    },
+    function(response) {
+      var modal = getAddToFolderModal();
+      response = JSON.parse(response);
+      createFoldersListFromData(response);
+
+      modal.find('[data-folders-list]').html("");
+
+      var template = modal.find('[data-folder-row]');
+      Object.values(favorites_folders).forEach(function(folder_data) {
+        var folder = template.clone(),
+            checkbox = folder.find('[data-folder-checkbox]');
+
+        folder.data('folder-id', folder_data.folder_id);
+
+        checkbox.attr('value', folder_data.folder_id);
+
+        folder.find('[data-folder-name]').html(folder_data.name);
+
+        folder.find('[data-total-count]').html(folder_data.total_count);
+
+        folder.find('[data-existing-count]')
+          .html(folder_data.existing_count)
+          .parents('[data-count-properties-pill]')
+          .prop('hidden', false);
+
+        modal.find('[data-folders-list]').append(folder);
+      });
+    }
+  );
 }
 
 function isMovePropertiesOptionSelected() {
@@ -69,31 +128,7 @@ function handleAddToFavoritesFolder() {
 $(document).ready(function() {
 
   getAddToFolderModal().on('show.bs.modal', function(event) {
-    var modal = $(event.currentTarget),
-        selected_properties = getSelectedParcelNumbers();
-
-    $.post(
-      'get_properties_in_favorites_folders.php',
-      {
-        parcel_numbers: selected_properties
-      },
-      function(response) {
-        response = JSON.parse(response);
-
-        var modal = getAddToFolderModal();
-        response.forEach(function(data) {
-          modal
-            .find('[data-folder-id=' + data.folder_id + '] [data-total-count]')
-            .html(data.total_count);
-
-          modal
-            .find('[data-folder-id=' + data.folder_id + '] [data-existing-count]')
-            .html(data.existing_count)
-            .parents('[data-count-properties-pill]')
-            .prop('hidden', false);
-        });
-      }
-    )
+    handleAddToFavoritesModalShown();
   });
 
   getAddToFolderModal().find('[data-action="add"]').click(function(event) {

@@ -64,6 +64,7 @@
   ?>
 
   <div class="main-content mx-auto pl-4 pr-4">
+    <?php include('includes/select_properties_alert.php'); ?>
     <?php if (!empty($properties)) { ?>
       <div class="d-flex justify-content-between p-2">
         <div>
@@ -109,20 +110,12 @@
       ?>
 
       <?php require('includes/search_results/pagination.php'); ?>
-
-      <div class="mt-3">
-        <div>
-          <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#createLeadBatchModal">Create Lead Batch</button>
-          <button type="submit" id="export_properties_csv_button" class="btn btn-primary">Export Selected</button>
-          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addToFavoritesFolderModal">Add to Favorites</button>
-        </div>
+      <div class="mt-3 mb-3 d-flex align-items-center">
+        <button type="submit" class="btn btn-primary mr-1" data-toggle="modal" data-target="#createLeadBatchModal">Create Lead Batch</button>
+        <button type="submit" id="export_properties_csv_button" class="btn btn-primary mr-1">Export Selected</button>
+        <button type="button" class="btn btn-primary mr-1" data-toggle="modal" data-target="#addToFavoritesFolderModal">Add to Favorites</button>
       </div>
 
-      <div class="mt-3">
-        <div id="selectPropertiesWarning" class="alert alert-warning fade show d-none" role="alert">
-          You must select at least one property.
-        </div>
-      </div>
     <?php } else { ?>
       <div class="jumbotron jumbotron-fluid">
         <div class="container">
@@ -134,6 +127,9 @@
   </div>
 
   <?php include('includes/create_lead_batch_modal.php') ?>
-  <?php include('includes/favorites_folders/add_to_favorites_modal.php') ?>
+  <?php
+    $show_unseen_update_flag = false;
+    include('includes/favorites_folders/add_to_favorites_modal.php');
+  ?>
  </body>
 </html>
