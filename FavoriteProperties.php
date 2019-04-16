@@ -138,6 +138,71 @@ class FavoriteProperties {
     $this->db->query($query);
   }
 
+  public function getPropertyCaseUpdatesForFolder($folder_id, $parcel_number) {
+    if (!isset($folder_id)) {
+      return array();
+    }
+
+    $query = sprintf(
+      "
+        SELECT
+          `case_detail`.`id`
+        FROM `favorite_properties` AS `fav`
+        JOIN `favorite_properties_folders` AS `f` ON (
+          `fav`.`folder_id` = `f`.`folder_id`
+        )
+        JOIN property_cases_detail AS `case_detail` ON (
+          case_detail.apn = fav.parcel_number AND
+          case_detail.date_modified > fav.date_last_viewed
+        )
+        WHERE
+          `fav`.`parcel_number` = %s AND
+          `f`.`folder_id` = %s;
+      ",
+      $parcel_number,
+      $folder_id
+    );
+
+    $this->db->query($query);
+
+    return $this->db->result_array();
+  }
+
+  public function getPropertyCaseInspectionUpdatesForFolder($folder_id, $parcel_number) {
+    if (!isset($folder_id)) {
+      return array();
+    }
+
+    $query = sprintf(
+      "
+        SELECT
+          `pi`.`id`
+        FROM `favorite_properties` AS `fav`
+        JOIN `favorite_properties_folders` AS `f` ON (
+          `fav`.`folder_id` = `f`.`folder_id`
+        )
+        JOIN property_inspection AS `pi` ON (
+          pi.APN = fav.parcel_number AND
+          pi.date_modified > fav.date_last_viewed
+        )
+        WHERE
+          `fav`.`parcel_number` = %s AND
+          `f`.`folder_id` = %s;
+      ",
+      $parcel_number,
+      $folder_id
+    );
+
+    $this->db->query($query);
+
+    return array_map(
+      function ($result) {
+        return $result->id;
+      },
+      $this->db->result()
+    );
+  }
+
 }
 
 ?>

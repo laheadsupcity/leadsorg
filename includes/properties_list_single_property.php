@@ -29,6 +29,10 @@
   }
 
   $property_url = "lead_property_detail.php?apn=" . $property['parcel_number'] . "&matching_cases=" . $matching_case_ids_search_param;
+
+  if (isset($folder_id)) {
+    $property_url .= "&folder_id=" . $folder_id;
+  }
 ?>
 
 <div

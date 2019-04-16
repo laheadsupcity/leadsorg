@@ -817,14 +817,16 @@ function reschedulebatch(id) {
 
 }
 
-function opencasedetail(apn, cid, ctyid) {
+function opencasedetail(apn, cid, ctyid, case_inspections_with_updates) {
+  console.log(case_inspections_with_updates);
   jQuery.ajax({
     type: "POST",
     url: "lead_case_detail.php",
     data: {
       'apn': apn,
       'case_id': cid,
-      'case_det_id': ctyid
+      'case_det_id': ctyid,
+      'case_inspections_with_updates': case_inspections_with_updates
     },
     success: function(data) {
       $('.casedata').html(data);

@@ -3,6 +3,8 @@
   require_once('Database.php');
   require_once('FavoriteProperties.php');
 
+  $favorites = new FavoriteProperties();
+
   $parcel_number = isset($_REQUEST['apn']) ? $_REQUEST['apn'] : '';
   $det = getpropertydetail($parcel_number);
   $totalcount = count($det);
@@ -12,6 +14,10 @@
   $property = $property[0];
 
   $matching_cases = isset($_REQUEST['matching_cases']) ? explode(',', $_REQUEST['matching_cases']) : '';
+  $favorites_folder_id = $_REQUEST['folder_id'];
+
+  $cases_with_updates = $favorites->getPropertyCaseUpdatesForFolder($favorites_folder_id, $parcel_number);
+  $case_inspections_with_updates = $favorites->getPropertyCaseInspectionUpdatesForFolder($favorites_folder_id, $parcel_number);
 
   function getimgurl($imgurl)
   {
@@ -151,8 +157,6 @@
 <div style="width:100%; float:left; margin:0;"><?php  include('nav.php'); ?></div>
 
   <?php
-
-    $favorites = new FavoriteProperties();
     $favorites->markPropertyAsSeen(
       $_SESSION['userdetail']['id'],
       $parcel_number
@@ -419,7 +423,7 @@
                 <tr style='color:#333; <?php if (in_array($row["pcid"], $matching_cases)) { ?>background-color: #fcf8e3;<?php } ?>'>
                   <td style='border-bottom:1px solid #337ab7; border-right:1px solid #337ab7; padding:3px 5px;'><?php echo $row['case_type']; ?></td>
                   <td style='border-bottom:1px solid #337ab7; border-right:1px solid #337ab7; padding:3px 5px;'>
-                    <a href='#' onclick='return opencasedetail(<?php echo $parcel_number; ?>,<?php echo $row['case_id']; ?>,<?php echo $caseid['id']; ?>);'  style='color: DarkBlue;'><?php echo $row['case_id']; ?></a>
+                    <a href='#' onclick='return opencasedetail(<?php echo $parcel_number; ?>,<?php echo $row['case_id']; ?>,<?php echo $caseid['id']; ?>,<?php echo json_encode($case_inspections_with_updates); ?>);'  style='color: DarkBlue;'><?php echo $row['case_id']; ?></a>
                   </td>
                   <td style='padding:3px 5px; border-bottom:1px solid #337ab7;'><?php echo $row['case_date']; ?></td>
                 </tr>

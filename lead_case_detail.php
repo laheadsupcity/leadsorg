@@ -4,6 +4,8 @@
     $apn=isset($_POST['apn']) ? $_POST['apn'] : '';
     $case_id=isset($_POST['case_id']) ? $_POST['case_id'] : '';
     $case_det_id=isset($_POST['case_det_id']) ? $_POST['case_det_id'] : '';
+    $case_inspections_with_updates = isset($_POST['case_inspections_with_updates']) ? $_POST['case_inspections_with_updates'] : array();
+
     function getcasedetail($apn, $case_id)
     {
         $db = Database::instance();
@@ -107,10 +109,17 @@
 			</tr>
 			<?php
         foreach ($case_statuses as $case_status) {
-          echo "<tr style='color:Black;background-color:White;'>
-            <td align='left' style='width:40%; border-right:1px solid #337ab7; border-bottom:1px solid #337ab7; padding:3px 5px;'>".$case_status['date']."</td>
-            <td align='left' style='width:60%; border-bottom:1px solid #337ab7; padding:3px 5px;'>".$case_status['staus']."</td>
-          </tr>";
+          if (in_array($case_status['id'], $case_inspections_with_updates)) {
+            echo "<tr style='color:Black;background-color:#f7e5e5;'>
+              <td align='left' style='width:40%; border-right:1px solid #337ab7; border-bottom:1px solid #337ab7; padding:3px 5px;'>".$case_status['date']."</td>
+              <td align='left' style='width:60%; border-bottom:1px solid #337ab7; padding:3px 5px;'>".$case_status['staus']."</td>
+            </tr>";
+          } else {
+            echo "<tr style='color:Black;background-color:White;'>
+              <td align='left' style='width:40%; border-right:1px solid #337ab7; border-bottom:1px solid #337ab7; padding:3px 5px;'>".$case_status['date']."</td>
+              <td align='left' style='width:60%; border-bottom:1px solid #337ab7; padding:3px 5px;'>".$case_status['staus']."</td>
+            </tr>";
+          }
         }
       ?>
 		</table>
