@@ -63,7 +63,7 @@
             <button type="submit" data-toggle="modal" data-target="#confirmDeleteFavoriteFolder" class="btn btn-danger float-right">Delete folder</button>
           </div>
         <?php } else { ?>
-          <h5><?php echo($folder['name']); ?></h5>
+          <h5><?php echo($folder['name']); ?> <span class="font-weight-light">(<?php echo count($properties); ?> properties)</span></h5>
 
           <?php
             $show_favorites_flag = true;
