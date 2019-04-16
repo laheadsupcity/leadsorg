@@ -138,7 +138,7 @@ $(document).ready(function() {
           break;
       }
     } else {
-      window.location = "favorite_properties.php?folder_id=" + folder_id;
+      window.open("favorite_properties.php?folder_id=" + folder_id);
     }
   });
 

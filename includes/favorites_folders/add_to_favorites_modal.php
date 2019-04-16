@@ -20,6 +20,9 @@
         </button>
       </div>
       <div class="modal-body">
+        <div data-select-folder-alert class="alert alert-warning mb-3" role="alert" hidden>
+          You must select at least one folder.
+        </div>
         <div hidden>
           <div data-folder-row data-folder-id="" class="mb-2 w-100 d-flex align-items-center" hidden>
             <input data-folder-checkbox type="checkbox" name="favoriteFolder" value="">

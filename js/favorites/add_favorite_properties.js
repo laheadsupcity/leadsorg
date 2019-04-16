@@ -105,6 +105,11 @@ function handleAddToFavoritesFolder() {
       selected_apns = getSelectedParcelNumbers(),
       current_folder = getAddToFolderModal().data('current-folder');
 
+  if (folder_ids.length == 0) {
+    getAddToFolderModal().find('[data-select-folder-alert]').prop('hidden', false);
+    return;
+  }
+
   $.post(
     'add_to_favorites_folder.php',
     {
@@ -128,6 +133,7 @@ function handleAddToFavoritesFolder() {
 $(document).ready(function() {
 
   getAddToFolderModal().on('show.bs.modal', function(event) {
+    getAddToFolderModal().find('[data-select-folder-alert]').prop('hidden', true);
     handleAddToFavoritesModalShown();
   });
 

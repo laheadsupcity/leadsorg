@@ -55,7 +55,7 @@
         <?php if (empty($properties)) { ?>
           <div class="jumbotron jumbotron-fluid">
             <div class="container">
-              <h1 class="display-4">Favorites folder is currently empty!</h1>
+              <h1 class="display-4">Folder "<?php echo $folder['name']; ?>" is currently empty!</h1>
               <p class="lead">Perform a search and save some properties of interest.</p>
             </div>
           </div>
