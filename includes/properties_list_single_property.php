@@ -77,7 +77,7 @@
       }?>
     </div>
 
-    <div class="xlg-property-info-column property-info-column font-weight-light">
+    <div class="xlg-property-info-column favorites-folders property-info-column font-weight-light">
       <?php foreach ($favorites_folders as $folder_name) { ?>
         <div>
           <?php echo $folder_name; ?>

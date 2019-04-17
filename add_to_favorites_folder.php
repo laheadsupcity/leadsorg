@@ -72,3 +72,26 @@ foreach ($folder_ids as $folder_id) {
     );
   }
 }
+
+$result_query = sprintf(
+  "
+    SELECT
+      `fav`.`parcel_number`,
+      `folder`.`name`
+    FROM `favorite_properties` AS `fav`
+    JOIN `favorite_properties_folders` AS `folder` ON (
+      `fav`.`folder_id` = `folder`.`folder_id`
+    )
+    WHERE `folder`.`user_id` = %s;
+  ",
+  $user_id
+);
+
+$db->query($result_query);
+
+$response = [];
+foreach ($db->result() as $result) {
+  $response[$result->parcel_number][] = $result->name;
+}
+
+echo json_encode($response);

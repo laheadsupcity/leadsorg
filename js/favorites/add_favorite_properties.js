@@ -125,15 +125,47 @@ function handleAddToFavoritesFolder() {
 
       if (current_folder) {
         window.location = window.location;
+      } else {
+        populateFavoriteFoldersColumn(JSON.parse(data));
       }
     }
   );
 }
 
+function populateFavoriteFoldersColumn(parcel_number_folders_map) {
+  var property_rows = $('.property-item[data-parcel_number]');
+
+  property_rows.each(function(i, row) {
+    var row = $(row),
+        parcel_number = row.data('parcel_number');
+
+    if (parcel_number_folders_map[parcel_number]) {
+      row.data('favorites_folders', parcel_number_folders_map[parcel_number].sort().join());
+    } else {
+      row.data('favorites_folders', "");
+
+      parcel_number_folders_map[parcel_number] = [];
+    }
+
+    row.find(".favorites-folders.property-info-column").html(
+      parcel_number_folders_map[parcel_number].sort().map(
+        function(folder) {
+          return "<div>" + folder + "</div>";
+        }
+      )
+    )
+  });
+
+  sortProperties();
+}
+
 $(document).ready(function() {
 
   getAddToFolderModal().on('show.bs.modal', function(event) {
-    getAddToFolderModal().find('[data-select-folder-alert]').prop('hidden', true);
+    var modal = getAddToFolderModal();
+    modal.find('[data-select-folder-alert]').prop('hidden', true);
+    modal.find('[data-action="add"]').html("Add to folder(s)");
+
     handleAddToFavoritesModalShown();
   });
 
