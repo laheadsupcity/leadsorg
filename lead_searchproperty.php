@@ -11,8 +11,6 @@
 <script src="js/myscr.js"></script>
 <style>
 .active{background:#337ab7!important;}
-.caselist tr:nth-child(odd){background-color:#fff}
-.caselist tr:nth-child(even){background-color:#f2f2f2}
 .slideshow-container {
 max-width: 1000px;
 position: relative;
@@ -84,7 +82,7 @@ transition: background-color 0.6s ease;
 <body>
 <div style="width:100%; float:left; margin:0;"><?php  include('nav.php'); ?></div>
 	<div class="scr1" style="border:1px solid #0070c0; height:auto;">
-        <h4>PROPERTY INFORMATION</h4>    
+        <h4>PROPERTY INFORMATION</h4>
    <div style="padding: 10px;">
 	<?php
 		require_once('config.php');
@@ -100,7 +98,7 @@ transition: background-color 0.6s ease;
 		$count=count($result);
 	?>
 	<span id="MainContent_title" style="color:#004000;background-color:White;font-size:Large;">Search Result</span>
-	<?php 
+	<?php
 		if($count>0){
 			echo '<span id="MainContent_lblMessage" style="color:Red;"><p>'.$count.' Properties matching your search criteria found:</p></span>';
 		}
@@ -132,12 +130,12 @@ transition: background-color 0.6s ease;
 
                             </td>
                         </tr>
-                        
+
                     </tbody></table>
     <?php
 
 }else if(!$a && $b && !$c && !$d ){
-   
+
     $db = Database::instance();
     $query = "select  parcel_number,street_number,street_name,site_address_zip,site_address_city_state from property WHERE impstatus=0 AND street_name like ('%$b')";
     $db->query($query);
@@ -146,7 +144,7 @@ transition: background-color 0.6s ease;
 
     ?>
 <span id="MainContent_title" style="color:#004000;background-color:White;font-size:Large;">Search Result</span>
-<?php 
+<?php
 if($count>0){
 
 echo '<span id="MainContent_lblMessage" style="color:Red;"><p>'.$count.' Properties matching your search criteria found:</p></span>';
@@ -180,15 +178,15 @@ else {
 
                             </td>
                         </tr>
-                        
+
                     </tbody></table>
     <?php
  }
  else if(!$a && !$b && $c && !$d ){
 
     header("LOCATION:lead_property_detail.php?apn=$c");
-   
-    
+
+
  }
  else if(!$a && !$b && !$c && $d ){
     $db = Database::instance();
@@ -198,7 +196,7 @@ else {
     $apn=isset($result[0]['APN']) ? $result[0]['APN'] : '';
     $caseid=isset($result[0]['case_id']) ? $result[0]['case_id'] : '';
     header("LOCATION:lead_property_detail.php?apn=$apn&case_id=$caseid");
-    
+
  }
  else if($a && $b && !$c && !$d ){
    $db = Database::instance();
@@ -208,7 +206,7 @@ else {
     $count=count($result);
     ?>
 <span id="MainContent_title" style="color:#004000;background-color:White;font-size:Large;">Search Result</span>
-<?php 
+<?php
 if($count>0){
 
 echo '<span id="MainContent_lblMessage" style="color:Red;"><p>'.$count.' Properties matching your search criteria found:</p></span>';
@@ -242,10 +240,10 @@ else {
 
                             </td>
                         </tr>
-                        
+
                     </tbody></table>
     <?php
-    
+
  }
  else if($a && !$b && $c && !$d ){
   $db = Database::instance();
@@ -254,8 +252,8 @@ else {
     $result=$db->result_array();
     $count=count($result);
     $apn=isset($result[0]['parcel_number']) ? $result[0]['parcel_number'] : '';
-  
-    header("LOCATION:lead_property_detail.php?apn=$apn"); 
+
+    header("LOCATION:lead_property_detail.php?apn=$apn");
  }
  else if(!$a && !$b && $c && $d ){
     $db = Database::instance();
@@ -278,7 +276,7 @@ else {
  }
  else if($a && !$b && !$c && $d ){
     header("LOCATION:index.php");
-    
+
  }
  else if(!$a && $b && $c && !$d ){
      $db = Database::instance();
@@ -287,13 +285,13 @@ else {
     $result=$db->result_array();
     $count=count($result);
     $apn=isset($result[0]['parcel_number']) ? $result[0]['parcel_number'] : '';
-  
+
     header("LOCATION:lead_property_detail.php?apn=$apn");
-    
+
  }
  else if(!$a && $b && !$c && $d ){
     header("LOCATION:index.php");
-    
+
  }
  else if($a && $b && $c && !$d ){
     $db = Database::instance();
@@ -302,34 +300,33 @@ else {
     $result=$db->result_array();
     $count=count($result);
     $apn=isset($result[0]['parcel_number']) ? $result[0]['parcel_number'] : '';
-  
+
     header("LOCATION:lead_property_detail.php?apn=$apn");
-    
+
  }
  else if(!$a && $b && $c && $d ){
     header("LOCATION:index.php");
-    
+
  }
  else if($a && !$b && $c && $d ){
     header("LOCATION:index.php");
-    
+
  }
  else if($a && $b && !$c && $d ){
     header("LOCATION:index.php");
-    
+
  }
  else if($a && $b && $c && $d ){
     header("LOCATION:index.php");
-    
+
  }
  else {
 
-    
+
  }
- 
+
 ?>
 </div>
 </div>
 </body>
 </html>
-

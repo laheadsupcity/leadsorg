@@ -74,14 +74,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="css/property_detail.css" />
 
     <script type="text/javascript" src="js/bootstrap.min.js"></script>
     <script type="text/javascript" src="js/jquery.min.js"></script>
     <script src="js/myscr.js"></script>
     <style>
   .active5{background:#337ab7!important;}
-  .caselist tr:nth-child(odd){background-color:#fff}
-    .caselist tr:nth-child(even){background-color:#f2f2f2}
   .slideshow-container {
     max-width: 1000px;
     position: relative;
@@ -408,19 +407,20 @@
       <h4>PROPERTY CASE</h4>
       <p style="margin:15px 0; color:#333;">Please click on a Case Number to view&nbsp;"Property Activity Report"</p>
         <div class="d-flex">
-          <div class="col-sm-5 caselist" style="padding:0 20px 0 0;">
+          <div class="col-sm-5 property-case-list" style="padding:0 20px 0 0;">
             <table cellpadding="10" style="width:100%; margin:0 auto; border:1px solid #337ab7; font-size:12px;">
               <tr style="background: #337ab7; color:#fff;">
               <td style='padding:3px 5px; border-right:1px solid #fff;'>Case Type</td>
               <td style='padding:3px 5px; border-right:1px solid #fff;'>Case Number</td>
               <td style='padding:3px 5px;'>Date Closed</td>
               </tr>
-              <?php
-              foreach ($cases as $row) {
+              <?php foreach ($cases as $row) {
                   $caseid=getcasetypeid($row['pcid'], $row['case_id']);
                   $case_start_date = date_create($row['date_modified']);
+                  $has_unseen_updates = in_array($row['pcid'], $cases_with_updates);
               ?>
-                <tr style='color:#333; <?php if (in_array($row["pcid"], $matching_cases)) { ?>background-color: #fcf8e3;<?php } ?>'>
+                <tr class="<?php if ($has_unseen_updates) { ?>has-unseen-updates<?php } ?>"
+                    style='color:#333; <?php if (in_array($row["pcid"], $matching_cases)) { ?>background-color: #fcf8e3;<?php } ?>'>
                   <td style='border-bottom:1px solid #337ab7; border-right:1px solid #337ab7; padding:3px 5px;'><?php echo $row['case_type']; ?></td>
                   <td style='border-bottom:1px solid #337ab7; border-right:1px solid #337ab7; padding:3px 5px;'>
                     <a href='#' onclick='return opencasedetail(<?php echo $parcel_number; ?>,<?php echo $row['case_id']; ?>,<?php echo $caseid['id']; ?>,<?php echo json_encode($case_inspections_with_updates); ?>);'  style='color: DarkBlue;'><?php echo $row['case_id']; ?></a>
@@ -431,18 +431,14 @@
             </table>
           </div>
 
-          <div class="col-sm-7 casedata">
-            <!-- Insert case data-->
-          </div>
+          <div data-case-detail class="col-sm-7"></div>
         </div>
-                         <?php
-  } else {
-      ?>
-<div style="padding: 15px;border:1px solid #337ab7;">
-                <center style="color:red;" > This property is not available in this system </center>
-</div>
-                <?php
-  } ?>
+       <?php
+  } else { ?>
+    <div style="padding: 15px;border:1px solid #337ab7;">
+      <center style="color:red;" > This property is not available in this system </center>
+    </div>
+  <?php } ?>
     </div>
   </div>
 

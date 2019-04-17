@@ -1,0 +1,14 @@
+.property-inspection-case-list .has-unseen-updates,
+.property-case-list .has-unseen-updates {
+  background-color: #f7e5e5 !important;
+}
+
+.property-inspection-case-list tr:nth-child(odd),
+.property-case-list tr:nth-child(odd) {
+  background-color: #ffffff;
+}
+
+.property-inspection-case-list tr:nth-child(even),
+.property-case-list tr:nth-child(even) {
+  background-color: #f2f2f2;
+}

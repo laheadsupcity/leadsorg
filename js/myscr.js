@@ -818,7 +818,6 @@ function reschedulebatch(id) {
 }
 
 function opencasedetail(apn, cid, ctyid, case_inspections_with_updates) {
-  console.log(case_inspections_with_updates);
   jQuery.ajax({
     type: "POST",
     url: "lead_case_detail.php",
@@ -829,7 +828,7 @@ function opencasedetail(apn, cid, ctyid, case_inspections_with_updates) {
       'case_inspections_with_updates': case_inspections_with_updates
     },
     success: function(data) {
-      $('.casedata').html(data);
+      $('[data-case-detail]').html(data);
     }
   });
 
@@ -851,7 +850,7 @@ function liveopencasedetail(apn, cid, ctype) {
     success: function(data) {
       console.log(data);
       $('.wait').hide();
-      $('.casedata').html(data);
+      $('[data-case-detail]').html(data);
 
       //alert( "Batch deleted successfully" );
       //location.reload();
@@ -1230,25 +1229,12 @@ $(document).ready(function() {
       },
 
       success: function(data) {
-
-        console.log(data);
-
-        $('.casedata').html(data);
-
-
-
-        //alert( "Batch deleted successfully" );
-
-        //location.reload();
-
+        $('[data-case-detail]').html(data);
       }
 
     });
 
     return false;
-
-
-
   }
 
 

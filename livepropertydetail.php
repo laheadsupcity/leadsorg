@@ -61,17 +61,14 @@ return $result;
     <script src="js/myscr.js"></script>
     <style>
 	.active5{background:#337ab7!important;}
-	.caselist tr:nth-child(odd){background-color:#fff}
-    .caselist tr:nth-child(even){background-color:#f2f2f2}
 
-	
 	.slideshow-container {
 	  max-width: 1000px;
 	  position: relative;
 	  margin: auto;
 	}
 
-	
+
 	.prev{
 	  cursor: pointer;
 	  position: absolute;
@@ -106,7 +103,7 @@ return $result;
 	.mySlides{margin-bottom:35px;}
 	.prev img, .next img {width:50px;}
 
-	
+
 	.prev:hover, .next:hover {
 	  text-decoration:none;
 	  color:#337ab7;
@@ -131,7 +128,7 @@ return $result;
 	  top: 0;
 	}
 
-	
+
 	.dot {
 		display:none;
 	  cursor: pointer;
@@ -153,7 +150,7 @@ return $result;
 <body>
 <div style="width:100%; float:left; margin:0;"><?php  include('nav.php'); ?></div>
 	<div class="scr1" style="border:1px solid #fff; height:auto;">
-		<h4>PROPERTY INFORMATION</h4>   
+		<h4>PROPERTY INFORMATION</h4>
                 <?php if($totalcount >0 ){  ?>
 		<div class="col-sm-4" style="padding:0px 30px 0 0;">
 				<div style="border:1px solid #337ab7; margin:10px 0 0;">
@@ -274,9 +271,9 @@ return $result;
 						<div class="slideshow-container">
 							<?php
                                                         $defaultimage="images/No_Image.jpg";
-							if(count($imgurl) > 0){	
-							foreach($imgurl as $key){	
-							$cimge= getimgurl($key['imageurl']); 
+							if(count($imgurl) > 0){
+							foreach($imgurl as $key){
+							$cimge= getimgurl($key['imageurl']);
 							?>
 								<div class="mySlides">
                                                                 <img src="<?php echo isset($cimge) ? '//'.$cimge : $defaultimage ?>" style="width:100%;">
@@ -284,14 +281,14 @@ return $result;
 								</div>
 							<?php
 							}}
-							
+
 							else{?>
 
 							<div class="mySlides">
 								 <img src="<?php  echo $defaultimage; ?>" style="width:100%;">
 								</div>
 							<?php
-							
+
 							}
 							?>
 							<a class="prev" onclick="plusSlides(-1)"><img src="images/leftarrow.png"></a>
@@ -300,10 +297,10 @@ return $result;
 
 						<div style="text-align:center; display:none;">
 							<?php
-							foreach($imgurl as $key){	
-							$cimge= getimgurl($key['imageurl']); 
+							foreach($imgurl as $key){
+							$cimge= getimgurl($key['imageurl']);
 							?>
-						      <span class="dot" onclick="currentSlide()"></span> 
+						      <span class="dot" onclick="currentSlide()"></span>
 						  <?php
 							}
 							?>
@@ -318,9 +315,9 @@ return $result;
 							<tr>
 							<td class="field1">Address:</td>
 							<td class="field1data spdata">
-							<?php echo $property['full_mail_address']; echo "<br/>"; 
+							<?php echo $property['full_mail_address']; echo "<br/>";
 							echo $property['mail_address_city_state']; echo "<br/>" ;
-							echo $property['mail_address_zip']; 
+							echo $property['mail_address_zip'];
 							?>
 							</td>
 							</tr>
@@ -366,7 +363,7 @@ return $result;
 		<div style="width:100%; float:left; margin:15px 0 0;">
 			<h4>PROPERTY CASE</h4>
 			<p style="margin:15px 0; color:#333;">Please click on a Case Number to view&nbsp;"Property Activity Report"</p>
-				<div class="col-sm-5 caselist" style="padding:0 20px 0 0;">
+				<div class="col-sm-5" style="padding:0 20px 0 0;">
 					<table cellpadding="10" style="width:100%; margin:0 auto; border:1px solid #337ab7; font-size:12px;">
 						<tr style="background: #337ab7; color:#fff;">
 						<td style='padding:3px 5px; border-right:1px solid #fff;'>Case Type</td>
@@ -387,12 +384,12 @@ return $result;
 							</td>
 							<td style='padding:3px 5px; border-bottom:1px solid #337ab7;'><?php echo  $row[2] ;?></td>
 							</tr>
-						<?php }  ?>  
+						<?php }  ?>
 
 					</table>
 				</div>
 
-				<div class="col-sm-7 casedata">
+				<div data-case-detail class="col-sm-7">
 					<p style="text-align:center;"><img src="images/loading.gif" class="wait" style="display:none;"></p>
 					<!-- Insert case data-->
 				</div>
@@ -402,8 +399,8 @@ return $result;
                 <?php } ?>
 
 		</div>
-	</div>   
-	
+	</div>
+
 	<script type="text/javascript">
 	var slideIndex1 = 0;
 	showSlides1();
@@ -413,14 +410,14 @@ return $result;
 		var slides = document.getElementsByClassName("mySlides");
 		var dots = document.getElementsByClassName("dot");
 		for (i = 0; i < slides.length; i++) {
-		   slides[i].style.display = "none";  
+		   slides[i].style.display = "none";
 		}
 		slideIndex1++;
-		if (slideIndex1 > slides.length) {slideIndex1 = 1}    
+		if (slideIndex1 > slides.length) {slideIndex1 = 1}
 		for (i = 0; i < dots.length; i++) {
 			dots[i].className = dots[i].className.replace(" active", "");
 		}
-		slides[slideIndex1-1].style.display = "block";  
+		slides[slideIndex1-1].style.display = "block";
 		dots[slideIndex1-1].className += " active";
 		setTimeout(showSlides1, 3000); // Change image every 2 seconds
 	}
@@ -441,15 +438,15 @@ return $result;
 	  var i;
 	  var slides = document.getElementsByClassName("mySlides");
 	  var dots = document.getElementsByClassName("dot");
-	  if (n > slides.length) {slideIndex = 1}    
+	  if (n > slides.length) {slideIndex = 1}
 	  if (n < 1) {slideIndex = slides.length}
 	  for (i = 0; i < slides.length; i++) {
-		  slides[i].style.display = "none";  
+		  slides[i].style.display = "none";
 	  }
 	  for (i = 0; i < dots.length; i++) {
 		  dots[i].className = dots[i].className.replace(" active", "");
 	  }
-	  slides[slideIndex-1].style.display = "block";  
+	  slides[slideIndex-1].style.display = "block";
 	  dots[slideIndex-1].className += " active";
 	}
 </script>

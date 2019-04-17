@@ -146,7 +146,7 @@ class FavoriteProperties {
     $query = sprintf(
       "
         SELECT
-          `case_detail`.`id`
+          `case_detail`.`property_case_id`
         FROM `favorite_properties` AS `fav`
         JOIN `favorite_properties_folders` AS `f` ON (
           `fav`.`folder_id` = `f`.`folder_id`
@@ -165,7 +165,12 @@ class FavoriteProperties {
 
     $this->db->query($query);
 
-    return $this->db->result_array();
+    return array_map(
+      function ($result) {
+        return $result->property_case_id;
+      },
+      $this->db->result()
+    );
   }
 
   public function getPropertyCaseInspectionUpdatesForFolder($folder_id, $parcel_number) {

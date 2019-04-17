@@ -70,11 +70,11 @@ if(isset($responsedata['casetable'])){
 		<tr>
 		<td class="field2">Nature of Complaint:</td>
 		<td class="field2data" colspan="4"><?php echo $responsedata['propertyinfo']->ComplaintNature; ?></td>
-		</tr> 
+		</tr>
 	</table>
 	</div>
 	<div style="width:100%; overflow:hidden;">
-		<div class="col-sm-7 caselist" style="padding:0;">
+		<div class="col-sm-7" style="padding:0;">
 			<table cellspacing="5" style="width:100%; margin:0 auto; border:1px solid #337ab7; font-size:12px;">
 			<tr style="color:White;background-color:#3399FF;font-weight:bold;height:30px;">
 			<td style="padding:0 5px; border-right:1px solid #fff;">Date</td>
@@ -95,12 +95,3 @@ if(isset($responsedata['casetable'])){
 			 <p> <img id="MainContent_Image2" src="http://<?php echo $img[2]; ?>" style="color:#FFFF80; height:auto; width:100%;"> </p>
 		</div>
 	</div>
-
-<style>
-.caselist tr:nth-child(odd){background-color:#fff}
-.caselist tr:nth-child(even){background-color:#f2f2f2}
-</style>
-
-                
-                            
-                                                

@@ -100,28 +100,26 @@
 	</table>
 </div>
 
-<div class="d-flex">
-	<div class="col-sm-7 caselist" style="padding:0;">
+<div class="d-flex mt-2">
+	<div class="col-sm-7 property-inspection-case-list p-0">
 		<table cellspacing="5" style="width:100%; margin:0 auto; border:1px solid #337ab7; font-size:12px;">
-			<tr style="color:White;background-color:#3399FF;font-weight:bold;height:30px;">
-				<td style="padding:0 5px; border-right:1px solid #fff;">Date</td>
-				<td style="padding:0 5px;">Status</td>
+			<tr class="text-white font-weight-bold bg-primary p-1">
+				<td class="pl-1">Date</td>
+				<td class="pl-1">Status</td>
 			</tr>
 			<?php
-        foreach ($case_statuses as $case_status) {
-          if (in_array($case_status['id'], $case_inspections_with_updates)) {
-            echo "<tr style='color:Black;background-color:#f7e5e5;'>
-              <td align='left' style='width:40%; border-right:1px solid #337ab7; border-bottom:1px solid #337ab7; padding:3px 5px;'>".$case_status['date']."</td>
-              <td align='left' style='width:60%; border-bottom:1px solid #337ab7; padding:3px 5px;'>".$case_status['staus']."</td>
-            </tr>";
-          } else {
-            echo "<tr style='color:Black;background-color:White;'>
-              <td align='left' style='width:40%; border-right:1px solid #337ab7; border-bottom:1px solid #337ab7; padding:3px 5px;'>".$case_status['date']."</td>
-              <td align='left' style='width:60%; border-bottom:1px solid #337ab7; padding:3px 5px;'>".$case_status['staus']."</td>
-            </tr>";
-          }
-        }
+      foreach ($case_statuses as $case_status) {
+        $has_unseen_updates = in_array($case_status['id'], $case_inspections_with_updates);
       ?>
+        <tr class="<?php if ($has_unseen_updates) {?>has-unseen-updates<?php } ?>">
+          <td align='left' style='width:40%; border-right:1px solid #337ab7; border-bottom:1px solid #337ab7; padding:3px 5px;'>
+            <?php echo $case_status['date']; ?>
+          </td>
+          <td align='left' style='width:60%; border-bottom:1px solid #337ab7; padding:3px 5px;'>
+            <?php echo $case_status['staus']; ?>
+          </td>
+        </tr>
+      <?php } ?>
 		</table>
 	</div>
 
@@ -130,7 +128,3 @@
 	<p> <img id="MainContent_Image2" src="<?php echo isset($img[1]) ? '//'.$img[1] : $casedefaultimage ?>" style="color:#FFFF80; height:auto; width:100%;"> </p>
 	</div>
 </div>
-<style>
-.caselist tr:nth-child(odd){background-color:#fff}
-.caselist tr:nth-child(even){background-color:#f2f2f2}
-</style>
