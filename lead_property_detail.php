@@ -66,6 +66,29 @@
       $result=$db->result_array();
       return $result;
   }
+
+  function getRelatedPropertyCount($property) {
+    $db = Database::instance();
+    if ($property['full_mail_address'] == "") {
+      return 0;
+    }
+
+    $db->query(
+      sprintf(
+        "
+        SELECT
+          count(*) AS `related_properties_count`
+        FROM `property`
+        WHERE `full_mail_address` = \"%s\"
+        ",
+        $property['full_mail_address']
+      )
+    );
+
+    $related_properties_count = (int) $db->result_array()[0]['related_properties_count'] - 1;
+    return $related_properties_count;
+  }
+
 ?>
 <!DOCTYPE html>
 <html lang="en" style="font-size: 14px;">
@@ -268,6 +291,10 @@
               <tr>
                 <td class="field1">Owners Name:</td>
                 <td class="field1data spdata"><?php echo $property['owner_name2']; ?></td>
+              </tr>
+              <tr>
+                <td class="field1">Related Properties:</td>
+                <td class="field1data spdata"><?php echo getRelatedPropertyCount($property); ?></td>
               </tr>
               <tr>
                 <td class="field1">Phone 1:</td>
