@@ -156,6 +156,29 @@ function sortProperties() {
           }
           break;
         case SORT_COLUMN_FAVORITES_FOLDERS:
+          sortPropA = sortPropA == "" ? [] : sortPropA.split(',').sort();
+          sortPropB = sortPropB == "" ? [] : sortPropB.split(',').sort();
+
+          if (sortPropA.length == 1 && sortPropB.length == 1) {
+            sortPropA = sortPropA[0];
+            sortPropB = sortPropB[0];
+
+            compare_result = sortPropA > sortPropB ?
+              (sortDirection == SORT_TYPE_ASC ? 1 : -1) :
+              (sortPropA < sortPropB ? (sortDirection == SORT_TYPE_ASC ? -1 : 1) : 0);
+          } else if (sortPropA == sortPropB) {
+            compare_result = 0;
+          } else if (sortPropA.length == 0) {
+            compare_result = 1;
+          } else if (sortPropB.length == 0) {
+            compare_result = -1;
+          } else if (sortPropA.length > sortPropB.length) {
+            compare_result = sortDirection == SORT_TYPE_ASC ? 1 : -1;
+          } else {
+            compare_result = sortDirection == SORT_TYPE_ASC ? -1 : 1;
+          }
+
+          return compare_result;
 
           break;
       }

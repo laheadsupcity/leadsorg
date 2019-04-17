@@ -19,7 +19,7 @@
       <div data-sortable-column="related_properties" class="sm-property-info-column related-properties property-info-column sortable-column text-center">
         Related
       </div>
-      <div class="xlg-property-info-column property-info-column">
+      <div data-sortable-column="favorites_folders" class="xlg-property-info-column property-info-column">
         Favorite Folders
       </div>
       <div class="lg-property-info-column property-info-column">

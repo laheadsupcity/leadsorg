@@ -1,4 +1,5 @@
 <?php
+  $favorites_folders = $favorites->getFavoritesFoldersForAPN($property['parcel_number']);
   $owner_address = $property['full_mail_address'];
 
   $related_properties_for_owner_count =
@@ -51,6 +52,7 @@
   data-related_properties="<?php echo $related_properties_for_owner_count; ?>"
   data-matching-cases-string="<?php echo $matching_cases_for_property_string; ?>"
   data-property-url="<?php echo $property_url; ?>"
+  data-favorites_folders="<?php echo implode(',', $favorites_folders); ?>"
   class="property-item border-bottom w-100 d-flex justify-content-between align-items-center">
 
   <div class="d-flex flex-fill">
@@ -76,7 +78,7 @@
     </div>
 
     <div class="xlg-property-info-column property-info-column font-weight-light">
-      <?php foreach ($favorites->getFavoritesFoldersForAPN($property['parcel_number']) as $folder_name) { ?>
+      <?php foreach ($favorites_folders as $folder_name) { ?>
         <div>
           <?php echo $folder_name; ?>
         </div>
