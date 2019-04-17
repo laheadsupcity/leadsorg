@@ -1,3 +1,6 @@
+<?php
+  $favorites = new FavoriteProperties();
+?>
 <div
   class="border property-list-group mb-4">
   <div class="property-item-header border-bottom bg-light font-weight-bold d-flex justify-content-between align-items-end">
@@ -15,6 +18,9 @@
     <div class="d-flex flex-fill align-items-end">
       <div data-sortable-column="related_properties" class="sm-property-info-column related-properties property-info-column sortable-column text-center">
         Related
+      </div>
+      <div class="xlg-property-info-column property-info-column">
+        Favorite Folders
       </div>
       <div class="lg-property-info-column property-info-column">
         Parcel #

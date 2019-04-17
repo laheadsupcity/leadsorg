@@ -120,6 +120,30 @@ class FavoriteProperties {
     return $properties;
   }
 
+  public function getFavoritesFoldersForAPN($parcel_number) {
+    $favorites_folders_query = sprintf(
+      "
+        SELECT
+          `folder`.`name`
+        FROM `favorite_properties` AS `fav`
+        JOIN `favorite_properties_folders` AS `folder` ON (
+          folder.folder_id = fav.folder_id
+        )
+        WHERE `fav`.`parcel_number` = %s;
+      ",
+      $parcel_number
+    );
+
+    $this->db->query($favorites_folders_query);
+
+    return array_map(
+      function ($result) {
+        return $result->name;
+      },
+      $this->db->result()
+    );
+  }
+
   public function markPropertyAsSeen($user_id, $parcel_number) {
     date_default_timezone_set('America/Los_Angeles');
     $query = sprintf(

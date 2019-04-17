@@ -1,6 +1,11 @@
 <?php
   $owner_address = $property['full_mail_address'];
-  $related_properties_for_owner_count = $property['related_properties_count'] ? $property['related_properties_count'] : $related_properties_counts[$owner_address] - 1;
+
+  $related_properties_for_owner_count =
+    $property['related_properties_count'] ?
+    $property['related_properties_count'] :
+    $related_properties_counts[$owner_address] - 1;
+
   $has_related_properties = $related_properties_for_owner_count > 0;
 
   if ($show_matching_cases) {
@@ -68,6 +73,14 @@
       } else {
         echo "<span class=\"font-italic font-weight-light\">none</span>";
       }?>
+    </div>
+
+    <div class="xlg-property-info-column property-info-column font-weight-light">
+      <?php foreach ($favorites->getFavoritesFoldersForAPN($property['parcel_number']) as $folder_name) { ?>
+        <div>
+          <?php echo $folder_name; ?>
+        </div>
+      <?php } ?>
     </div>
 
     <div class="lg-property-info-column property-info-column">
