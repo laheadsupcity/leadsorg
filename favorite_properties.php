@@ -68,6 +68,7 @@
           <?php
             $show_favorites_flag = true;
             $show_matching_cases = false;
+            $include_related_properties = true;
             include('includes/properties_list.php');
           ?>
 

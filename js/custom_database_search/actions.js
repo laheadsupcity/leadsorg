@@ -179,6 +179,11 @@ $(document).ready(function() {
       return;
     }
 
+    var is_anchor = target.is('a');
+    if (is_anchor) {
+      return;
+    }
+
     var is_actions = target.parents('[data-actions]').length > 0;
     if (is_actions) {
       return;

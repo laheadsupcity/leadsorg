@@ -16,9 +16,11 @@
       Edit All<br />Related
     </div>
     <div class="d-flex flex-fill align-items-end">
-      <div data-sortable-column="related_properties" class="sm-property-info-column related-properties property-info-column sortable-column text-center">
-        Related
-      </div>
+      <?php if ($include_related_properties) { ?>
+        <div data-sortable-column="related_properties" class="sm-property-info-column related-properties property-info-column sortable-column text-center">
+          Related
+        </div>
+      <?php } ?>
       <div data-sortable-column="favorites_folders" class="xlg-property-info-column property-info-column">
         Favorite Folders
       </div>

@@ -67,16 +67,20 @@
     <div class="mr-4">
       <input type="checkbox" data-property-checkbox value="<?php echo $property['parcel_number']; ?>" />
     </div>
+
     <div class="mr-2 edit-related text-center">
       <input type="checkbox" data-edit-related-checkbox name="all" value="<?php echo $property['parcel_number']; ?>" checked>
     </div>
-    <div class="sm-property-info-column related-properties property-info-column sortable-column text-center font-weight-bold">
-      <?php if ($has_related_properties) {
-        echo "<span class='text-primary'>" . $related_properties_for_owner_count . "</span>";
-      } else {
-        echo "<span class=\"font-italic font-weight-light\">none</span>";
-      }?>
-    </div>
+
+    <?php if ($include_related_properties) { ?>
+      <div class="sm-property-info-column related-properties property-info-column sortable-column text-center font-weight-bold">
+        <?php if ($has_related_properties) { ?>
+          <a class="btn btn-outline-primary" href="related_properties.php?parcel_number=<?php echo $property['parcel_number']; ?>" target="_blank"><?php echo $related_properties_for_owner_count; ?></a>
+        <?php } else { ?>
+          <span class="font-italic font-weight-light">none</span>
+        <?php } ?>
+      </div>
+    <?php } ?>
 
     <div class="xlg-property-info-column favorites-folders property-info-column font-weight-light">
       <?php foreach ($favorites_folders as $folder_name) { ?>
