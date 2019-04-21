@@ -19,7 +19,7 @@ require_once('config.php');
    <script type="text/javascript" src="js/myscr.js"></script>
   <link rel="stylesheet" href="css/style.css">
  </head>
- <body style="background:url(images/login.jpg); background-size:cover;">
+ <body style="background:url(images/login_cityscape.jpg); background-size:cover;">
 <div class="scr1" style="max-width:700px; width:100%; margin:5% auto; height:500px; border:1px solid #fff; background:#fff; padding:20px 0;">
 	<h1 style="text-align:center; border-bottom:2px solid #337ab7; background:#fff; color:#337ab7; margin:0; padding-bottom:2px;">Login Form</h1>
 	<div class="login">
