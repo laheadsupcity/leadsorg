@@ -46,7 +46,7 @@
       <div data-sortable-column="num_units" class="sm-property-info-column property-info-column d-flex align-items-end num-units">
         Units
       </div>
-      <div class="sm-property-info-column property-info-column text-center">
+      <div data-sortable-column="num_beds" class="sm-property-info-column property-info-column d-flex align-items-end num-beds">
         Beds
       </div>
       <div class="sm-property-info-column property-info-column text-center">

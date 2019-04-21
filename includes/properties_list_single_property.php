@@ -44,6 +44,7 @@
 <div
   data-parcel_number="<?php echo $property['parcel_number']; ?>"
   data-num_units="<?php echo $property['number_of_units']; ?>"
+  data-num_beds="<?php echo $property['bedrooms']; ?>"
   data-building_area="<?php echo $property['building_area']; ?>"
   data-lot_area_sqft="<?php echo $property['lot_area_sqft']; ?>"
   data-year_built="<?php echo $property['year_built']; ?>"
@@ -119,10 +120,10 @@
       <div data-field="email2" class="editable-field text-truncate"><?php echo $property['email2']; ?></div>
     </div>
 
-    <div class="sm-property-info-column property-info-column sortable-column num-units">
+    <div class="sm-property-info-column property-info-column sortable-column text-center">
       <div><span class="font-weight-bold"><?php echo $property['number_of_units']; ?></span><br /> units</div>
     </div>
-    <div class="sm-property-info-column property-info-column text-center">
+    <div class="sm-property-info-column property-info-column sortable-column text-center">
       <div class="font-weight-bold"><?php echo $property['bedrooms']; ?></div> beds
     </div>
     <div class="sm-property-info-column property-info-column text-center">

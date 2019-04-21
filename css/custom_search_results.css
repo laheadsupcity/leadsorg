@@ -76,8 +76,16 @@
   width: 240px;
 }
 
-.num-units.sortable-column {
-  width: 63px;
+.sm-property-info-column.sortable-column {
+  width: 65px;
+}
+
+.property-item-header .sortable-column.num-beds {
+  right: -.2em;
+}
+
+.property-item-header .sortable-column.sm-property-info-column {
+  right: -1.1em;
 }
 
 .year-built.sortable-column {
@@ -124,10 +132,6 @@
 .property-item-header .sortable-column {
   position: relative;
   cursor: pointer;
-}
-
-.property-item-header .sortable-column.num-units {
-  right: -1.1em;
 }
 
 .property-item-header .sortable-column.building-size {

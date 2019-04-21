@@ -3,6 +3,7 @@ const SORT_TYPE_DESC = "DESC";
 const SORT_TYPE_NEITHER = "NEITHER";
 
 const SORT_COLUMN_UNITS = "num_units";
+const SORT_COLUMN_BEDS = "num_beds";
 const SORT_COLUMN_BUILDING_AREA = "building_area";
 const SORT_COLUMN_LOT_AREA_SQFT = "lot_area_sqft";
 const SORT_COLUMN_YEAR_BUILT = "year_built";
@@ -23,14 +24,15 @@ function getOrderedSortSettings() {
 }
 
 function initDefaultSortSettings() {
-  let index = 0;
-  changeSortSetting(SORT_COLUMN_UNITS, SORT_TYPE_DESC, index++);
-  changeSortSetting(SORT_COLUMN_BUILDING_AREA, SORT_TYPE_DESC, index++);
-  changeSortSetting(SORT_COLUMN_LOT_AREA_SQFT, SORT_TYPE_DESC, index++);
-  changeSortSetting(SORT_COLUMN_YEAR_BUILT, SORT_TYPE_DESC, index++);
-  changeSortSetting(SORT_COLUMN_SALE_DATE, SORT_TYPE_DESC, index++);
-  changeSortSetting(SORT_COLUMN_RELATED_PROPERTIES, SORT_TYPE_DESC, index++);
-  changeSortSetting(SORT_COLUMN_FAVORITES_FOLDERS, SORT_TYPE_ASC, index++);
+  let order = 0;
+  changeSortSetting(SORT_COLUMN_UNITS, SORT_TYPE_DESC, order++);
+  changeSortSetting(SORT_COLUMN_BUILDING_AREA, SORT_TYPE_DESC, order++);
+  changeSortSetting(SORT_COLUMN_LOT_AREA_SQFT, SORT_TYPE_DESC, order++);
+  changeSortSetting(SORT_COLUMN_YEAR_BUILT, SORT_TYPE_DESC, order++);
+  changeSortSetting(SORT_COLUMN_SALE_DATE, SORT_TYPE_DESC, order++);
+  changeSortSetting(SORT_COLUMN_RELATED_PROPERTIES, SORT_TYPE_DESC, order++);
+  changeSortSetting(SORT_COLUMN_FAVORITES_FOLDERS, SORT_TYPE_ASC, order++);
+  changeSortSetting(SORT_COLUMN_BEDS, SORT_TYPE_DESC, order++);
 }
 
 function changeSortSetting(column, direction, order) {
@@ -130,6 +132,7 @@ function sortProperties() {
 
       switch (setting.column) {
         case SORT_COLUMN_UNITS:
+        case SORT_COLUMN_BEDS:
         case SORT_COLUMN_BUILDING_AREA:
         case SORT_COLUMN_LOT_AREA_SQFT:
         case SORT_COLUMN_YEAR_BUILT:
