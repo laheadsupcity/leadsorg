@@ -3,6 +3,7 @@ const SORT_TYPE_DESC = "DESC";
 const SORT_TYPE_NEITHER = "NEITHER";
 
 const SORT_COLUMN_UNITS = "num_units";
+const SORT_COLUMN_OWNER_NAME = "owner_name";
 const SORT_COLUMN_BEDS = "num_beds";
 const SORT_COLUMN_BUILDING_AREA = "building_area";
 const SORT_COLUMN_LOT_AREA_SQFT = "lot_area_sqft";
@@ -33,6 +34,7 @@ function initDefaultSortSettings() {
   changeSortSetting(SORT_COLUMN_RELATED_PROPERTIES, SORT_TYPE_DESC, order++);
   changeSortSetting(SORT_COLUMN_FAVORITES_FOLDERS, SORT_TYPE_ASC, order++);
   changeSortSetting(SORT_COLUMN_BEDS, SORT_TYPE_DESC, order++);
+  changeSortSetting(SORT_COLUMN_OWNER_NAME, SORT_TYPE_ASC, order++);
 }
 
 function changeSortSetting(column, direction, order) {
@@ -112,15 +114,10 @@ function setupSortableColumns() {
 
 function sortProperties() {
   $('.property-item').sort(function(propertyA, propertyB) {
-    let result,
-        ordered_sort_settings = getOrderedSortSettings();
+    let ordered_sort_settings = getOrderedSortSettings();
 
     for (var index in ordered_sort_settings) {
       var setting = sortSettings[ordered_sort_settings[index]];
-
-      if (result) {
-        return result;
-      }
 
       let sortPropA = $(propertyA).data(setting.column);
       let sortPropB = $(propertyB).data(setting.column);
@@ -143,9 +140,21 @@ function sortProperties() {
           if (sortPropA == sortPropB) {
             continue;
           } else if (sortPropA > sortPropB) {
-            result = sortDirection == SORT_TYPE_ASC ? 1 : -1;
+            return sortDirection == SORT_TYPE_ASC ? 1 : -1;
           } else if (sortPropA < sortPropB) {
-            result = sortDirection == SORT_TYPE_ASC ? -1 : 1;
+            return sortDirection == SORT_TYPE_ASC ? -1 : 1;
+          }
+          break;
+        case SORT_COLUMN_OWNER_NAME:
+          sortPropA = sortPropA.trim().toLowerCase();
+          sortPropB = sortPropB.trim().toLowerCase();
+
+          if (sortPropA == sortPropB) {
+            continue;
+          } else if (sortPropA > sortPropB) {
+            return sortDirection == SORT_TYPE_ASC ? 1 : -1;
+          } else if (sortPropA < sortPropB) {
+            return sortDirection == SORT_TYPE_ASC ? -1 : 1;
           }
           break;
         case SORT_COLUMN_SALE_DATE:
@@ -155,7 +164,7 @@ function sortProperties() {
           if (sortPropA == sortPropB) {
             continue;
           } else {
-            result = sortDirection == SORT_TYPE_ASC ? sortPropA - sortPropB : sortPropB - sortPropA;
+            return sortDirection == SORT_TYPE_ASC ? sortPropA - sortPropB : sortPropB - sortPropA;
           }
           break;
         case SORT_COLUMN_FAVORITES_FOLDERS:
@@ -166,23 +175,24 @@ function sortProperties() {
             sortPropA = sortPropA[0];
             sortPropB = sortPropB[0];
 
-            compare_result = sortPropA > sortPropB ?
-              (sortDirection == SORT_TYPE_ASC ? 1 : -1) :
-              (sortPropA < sortPropB ? (sortDirection == SORT_TYPE_ASC ? -1 : 1) : 0);
+            if (sortPropA > sortPropB) {
+              return sortDirection == SORT_TYPE_ASC ? 1 : -1;
+            } else if (sortPropA < sortPropB) {
+              return sortDirection == SORT_TYPE_ASC ? -1 : 1;
+            } else {
+              continue;
+            }
           } else if (sortPropA == sortPropB) {
-            compare_result = 0;
+            continue;
           } else if (sortPropA.length == 0) {
-            compare_result = 1;
+            return 1;
           } else if (sortPropB.length == 0) {
-            compare_result = -1;
+            return -1;
           } else if (sortPropA.length > sortPropB.length) {
-            compare_result = sortDirection == SORT_TYPE_ASC ? 1 : -1;
+            return sortDirection == SORT_TYPE_ASC ? 1 : -1;
           } else {
-            compare_result = sortDirection == SORT_TYPE_ASC ? -1 : 1;
+            return sortDirection == SORT_TYPE_ASC ? -1 : 1;
           }
-
-          return compare_result;
-
           break;
       }
     }

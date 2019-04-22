@@ -49,7 +49,7 @@
   data-lot_area_sqft="<?php echo $property['lot_area_sqft']; ?>"
   data-year_built="<?php echo $property['year_built']; ?>"
   data-sale_date="<?php echo $property['sales_date']; ?>"
-  data-owner_name="<?php echo $property['owner_name2']; ?>"
+  data-owner_name="<?php echo trim($property['owner_name2']); ?>"
   data-related_properties="<?php echo $related_properties_for_owner_count; ?>"
   data-matching-cases-string="<?php echo $matching_cases_for_property_string; ?>"
   data-property-url="<?php echo $property_url; ?>"
@@ -104,7 +104,7 @@
       </div>
     </div>
 
-    <div class="xlg-property-info-column property-info-column">
+    <div class="xlg-property-info-column property-info-column sortable-column">
       <?php echo $property['owner_name2']; ?>
     </div>
 
