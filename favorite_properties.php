@@ -74,9 +74,11 @@
 
           <div class="mt-3 d-flex justify-content-between">
             <div class="d-flex" style="height: 44px;">
-              <button type="submit" id="export_properties_csv_button" class="mr-1 btn btn-primary">Export selected</button>
-              <button type="submit" data-toggle="modal" data-target="#addToFavoritesFolderModal" class="mr-1 btn btn-primary">Add to folder(s)</button>
-              <button type="submit" data-action="remove_from_folder" class="mr-3 btn btn-warning">Remove selected</button>
+              <button id="export_properties_csv_button" class="mr-1 btn btn-primary">Export selected</button>
+              <button data-toggle="modal" data-target="#addToFavoritesFolderModal" class="mr-1 btn btn-primary">Add to folder(s)</button>
+              <button data-toggle="modal" data-target="#resetFlagsFolderModal" class="btn btn-info mr-1">Reset flags</button>
+              <button data-action="remove_from_folder" class="btn btn-warning mr-3">Remove selected</button>
+
               <?php include 'includes/select_properties_alert.php'; ?>
             </div>
             <button type="submit" data-toggle="modal" data-target="#confirmDeleteFavoriteFolder" class="btn btn-danger float-right">Delete folder</button>
@@ -84,6 +86,7 @@
         <?php } ?>
       <?php }?>
 
+      <?php include('includes/favorites_folders/confirm_reset_folder_flags_modal.php'); ?>
       <?php include('includes/favorites_folders/remove_from_folder_modal.php'); ?>
       <?php include('includes/favorites_folders/delete_favorites_folder_modal.php'); ?>
       <?php

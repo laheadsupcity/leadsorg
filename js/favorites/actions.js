@@ -2,6 +2,10 @@ function getConfirmDeleteFolderModal() {
   return $('#confirmDeleteFavoriteFolder');
 }
 
+function getConfirmResetFolderModal() {
+  return $('#resetFlagsFolderModal');
+}
+
 function handleConfirmRemove(folder_id) {
   var selected_properties = $("[data-property-checkbox]:checked").map(function(index, checkbox) {
     return checkbox.value;
@@ -36,6 +40,20 @@ function handleRemoveFromFolder() {
 
 }
 
+function resetFolderFlags() {
+  var folder_id = getConfirmResetFolderModal().data('folder-id');
+
+  $.post(
+    'reset_favorites_folder_flags.php',
+    {
+      folder_id: folder_id
+    },
+    function (data) {
+      window.location = window.location;
+    }
+  );
+}
+
 $(document).ready(function() {
 
   $('[data-action="remove_from_folder"]').click(function(event) {
@@ -61,5 +79,10 @@ $(document).ready(function() {
       }
     );
   });
+
+  getConfirmResetFolderModal().find('[data-action="reset"]').click(function(event) {
+    resetFolderFlags();
+  });
+
 
 });
