@@ -10,14 +10,11 @@ class Property {
       "
       SELECT * FROM `property`
         WHERE
-        `full_mail_address` IN (
-            SELECT `full_mail_address` FROM `property`
+        `owner_address_and_zip` IN (
+            SELECT `owner_address_and_zip` FROM `property`
             WHERE `parcel_number` = %s
         ) AND
-        `mail_address_zip` IN (
-          SELECT `mail_address_zip` FROM `property`
-          WHERE `parcel_number` = %s
-        ) AND
+        `full_mail_address` <> \"\" AND
         `parcel_number` <> %s
 
       ",
