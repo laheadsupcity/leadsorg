@@ -71,14 +71,14 @@ class FavoriteProperties {
         `related_properties`.`count` AS `related_properties_count`
       FROM (
         SELECT
-          `full_mail_address`,
-          count(`full_mail_address`)-1 AS `count`
+          `owner_address_and_zip`,
+          count(`owner_address_and_zip`)-1 AS `count`
         FROM `property`
         WHERE `full_mail_address` <> \"\"
-        GROUP BY `full_mail_address`
+        GROUP BY `owner_address_and_zip`
       ) AS `related_properties`
       RIGHT JOIN `property` AS `property1` ON (
-        `property1`.`full_mail_address` = `related_properties`.`full_mail_address`
+        `property1`.`owner_address_and_zip` = `related_properties`.`owner_address_and_zip`
       )
       JOIN (
         SELECT

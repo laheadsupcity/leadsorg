@@ -182,8 +182,7 @@ class CustomDatabaseSearch {
         p.phone2,
         p.email1,
         p.email2,
-        p.full_mail_address,
-        p.mail_address_zip,
+        p.owner_address_and_zip,
         p.id
         FROM `property` AS p WHERE p.parcel_number IN (
           \"%s\"
@@ -212,16 +211,16 @@ class CustomDatabaseSearch {
 
     $addresses_query = sprintf(
       "
-      SELECT count(full_mail_address) as `related_properties_count`, full_mail_address as owner_address
+      SELECT count(owner_address_and_zip) as `related_properties_count`, owner_address_and_zip
       FROM `property`
-      WHERE full_mail_address IN (
+      WHERE owner_address_and_zip IN (
         SELECT
-          distinct full_mail_address as owner_address
+          distinct owner_address_and_zip
         FROM `property`
         WHERE parcel_number IN (
           %s
         ) AND full_mail_address <> \"\"
-      ) GROUP BY owner_address;
+      ) GROUP BY owner_address_and_zip;
       ",
       implode(',', $this->result_apns)
     );
@@ -232,7 +231,7 @@ class CustomDatabaseSearch {
 
     $related_count_map = [];
     foreach ($results as $result) {
-      $address =  $result['owner_address'];
+      $address =  $result['owner_address_and_zip'];
       $related_properties_count =  $result['related_properties_count'];
 
       $related_count_map[$address] = $related_properties_count;

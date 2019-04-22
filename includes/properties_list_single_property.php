@@ -1,6 +1,6 @@
 <?php
   $favorites_folders = $favorites->getFavoritesFoldersForAPN($property['parcel_number']);
-  $owner_address = $property['full_mail_address'];
+  $owner_address = $property['owner_address_and_zip'];
 
   $related_properties_for_owner_count =
     $property['related_properties_count'] ?
