@@ -1,5 +1,7 @@
 <?php
 require_once('config.php');
+require_once('Property.php');
+
 include('datafunction.php');
 $id=isset($_REQUEST['editid']) ? $_REQUEST['editid'] : '';
 $property_data=getpropertydata($id);
@@ -7,6 +9,8 @@ $zip=getziplist();
 $city=getcitylist();
 $zoning=getzoninglist();
 $exemption=getexemptionlist();
+
+$user_id = $_SESSION['userdetail']['id'];
 ?>
 <!doctype html>
 <html lang="en" style="font-size: 14px;">
@@ -25,14 +29,15 @@ $exemption=getexemptionlist();
 
     <script type="text/javascript" src="js/jquery.min.js"></script>
     <script type="text/javascript" src="js/edit_property.js"></script>
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
     <style>
       .active1{background:#337ab7!important;}
     </style>
   </head>
  <body>
   <div style="width:100%; float:left; margin:0;"><?php  include('nav.php'); ?></div>
-    <div class="main-content main-content-fixed-width mx-auto">
-      <form id="update-property-form" method="post" >
+    <div data-user-id="<?php echo $user_id; ?>" class="main-content main-content-fixed-width mx-auto">
+      <form id="update-property-form">
         <div class="mt-3 mb-3 d-flex flex-wrap">
           <div class="col-sm-4">
             <h5 class="text-primary font-weight-bold">Owner Information</h5>
@@ -128,11 +133,6 @@ $exemption=getexemptionlist();
             <p><label><span>Email 2</span></label><br/> <input type="text" class="edittext" name="email2" id="email2" value="<?php echo  isset($property_data['email2']) ? $property_data['email2'] : '' ?>"></p>
           </div>
 
-          <div class="col-sm-4">
-            <h5 class="text-primary font-weight-bold">Notes</h5>
-            <textarea class="form-control" id="notes" name="notes" rows="12"><?php echo $property_data['notes']; ?></textarea>
-          </div>
-
           <div class="col-sm-12">
             <h5 class="text-primary font-weight-bold">Other Information</h5>
             <table style="width:100%;">
@@ -153,11 +153,33 @@ $exemption=getexemptionlist();
                 <td style="width: 34%;"><p><label><span>Assessed Land Value</span></label><br/> <input type="text" style="width: 46%;" class="edittext" name="alv" id="alv" value="<?php echo  isset($property_data['assessed_land_value']) ? $property_data['assessed_land_value'] : '' ?>"><input type="hidden" name="pid" value="<?php echo  isset($_REQUEST['editid']) ? $_REQUEST['editid'] : '' ?>"/></p></td>
               </tr>
             </table>
-            <button data-action="update" class="btn btn-primary mb-5">Update</button>
           </div>
+          <div class="container d-flex no-gutters">
+            <div class="col-6 mr-4">
+              <h5 class="text-primary font-weight-bold">Private Notes</h5>
+              <?php
+                $private_note = Property::getPrivateNoteForAPN($user_id, $property_data['parcel_number']);
+                $public_note = Property::getPublicNoteForAPN($property_data['parcel_number']);
+              ?>
+              <textarea class="form-control" id="notes" name="private_note" rows="6"><?php echo isset($private_note) ? trim($private_note['content']) : ""; ?></textarea>
+            </div>
+
+            <div class="col-6">
+              <h5 class="text-primary font-weight-bold">Public Notes</h5>
+              <?php
+                $public_note = Property::getPublicNoteForAPN($property_data['parcel_number']);
+              ?>
+              <textarea class="form-control" id="notes" name="public_note" rows="6"><?php echo isset($public_note) ? trim($public_note['content']) : ""; ?></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="text-center">
+          <button data-action="update_property" class="btn btn-primary mb-5">Update</button>
         </div>
       </form>
     </div>
   </div>
+
+  <?php include('includes/confirm_edit_property_modal.php'); ?>
  </body>
 </html>

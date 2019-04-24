@@ -1,4 +1,8 @@
 <?php
+  require_once('Property.php');
+
+  $user_id = $_SESSION['userdetail']['id'];
+
   $favorites_folders = $favorites->getFavoritesFoldersForAPN($property['parcel_number']);
   $owner_address = $property['owner_address_and_zip'];
 
@@ -177,8 +181,24 @@
       </div>
     <?php } ?>
 
-    <div class="xlg-property-info-column property-info-column notes-column editable-field font-weight-light">
-      <?php echo $property['notes']; ?>
+    <div class="xlg-property-info-column property-info-column font-weight-light">
+      <?php
+        $public_note = Property::getPublicNoteForAPN($property['parcel_number']);
+        $content = isset($public_note) ? $public_note['content'] : "";
+      ?>
+      <div data-property-note data-is-private="false" class="public-notes-column editable-field">
+        <?php echo $content; ?>
+      </div>
+    </div>
+
+    <div class="xlg-property-info-column property-info-column font-weight-light">
+      <?php
+        $private_note = Property::getPrivateNoteForAPN($user_id, $property['parcel_number']);
+        $content = isset($private_note) ? $private_note['content'] : "";
+      ?>
+      <div data-property-note data-is-private="true" class="private-notes-column editable-field">
+        <?php echo $content; ?>
+      </div>
     </div>
   </div>
   <div data-actions class="ml-3 mr-1">

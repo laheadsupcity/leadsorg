@@ -2,6 +2,9 @@
   require_once('config.php');
   require_once('Database.php');
   require_once('FavoriteProperties.php');
+  require_once('Property.php');
+
+  $user_id = $_SESSION['userdetail']['id'];
 
   $favorites = new FavoriteProperties();
 
@@ -417,9 +420,23 @@
             </table>
             </div>
             <div style="border:1px solid #337ab7; margin:10px 0 0;">
-              <h4 style="text-transform:initial;">Notes</h4>
-              <div class="field1data spdata" style="width:100%; height: 118px; overflow-y: scroll;">
-                <?php echo $property['notes']; ?>
+              <h4 style="text-transform:initial;">Private Notes</h4>
+              <div class="field1data spdata" style="width:100%; height: 59px; overflow-y: scroll;">
+                <?php
+                  $private_note = Property::getPrivateNoteForAPN($user_id, $parcel_number);
+
+                  echo isset($private_note) ? $private_note['content'] : "";
+                ?>
+              </div>
+            </div>
+            <div style="border:1px solid #337ab7; margin:10px 0 0;">
+              <h4 style="text-transform:initial;">Public Notes</h4>
+              <div class="field1data spdata" style="width:100%; height: 59px; overflow-y: scroll;">
+                <?php
+                  $public_note = Property::getPublicNoteForAPN($parcel_number);
+
+                  echo isset($public_note) ? $public_note['content'] : "";
+                ?>
               </div>
             </div>
          <?php } ?>

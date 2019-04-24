@@ -10,7 +10,7 @@
 ?>
 <!doctype html>
 <!--
-  Override font size here since this is the only page using bootstrap 4 at the time of writing
+  Override font size here since this is one of the only page using bootstrap 4 at the time of writing
   and the newer version of bootstrap sets font size differently.
   We can find a better way to set base font size once all pages are moved from bootstrap 3 to 4.
  -->

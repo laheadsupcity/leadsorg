@@ -11,6 +11,11 @@ const noNotesMarkup = "<span class='font-italic'>no notes yet</span>";
 
 var editable_fields = [];
 
+function getUserID() {
+  // TO DO: This is temporary hack until user sessions are handled properly
+  return $('[data-user-id]').data('user-id');
+}
+
 function getParcelNumber(editable_field) {
   return editable_field.parents('.property-item').data('parcel_number');
 }
@@ -194,12 +199,13 @@ function setupEditableContactInfoFields() {
 }
 
 function setupEditableNotes() {
-  $('.notes-column').each(function(index, editable_field) {
+  $('[data-property-note]').each(function(index, editable_field) {
     editable_field = $(editable_field);
     let id = 'editable-notes-field-' + index,
         parcel_number = getParcelNumber(editable_field),
         current_value = editable_field.html().trim(),
-        content = current_value == "" ? noNotesMarkup : current_value;
+        content = current_value == "" ? noNotesMarkup : current_value,
+        is_private = editable_field.data('is-private');
 
     editable_fields[id] = {
       id: id,
@@ -207,7 +213,8 @@ function setupEditableNotes() {
       is_editing: false,
       parcel_number: parcel_number,
       current_value: current_value,
-      new_value: null
+      new_value: null,
+      is_private: is_private
     };
 
     editable_field
@@ -239,10 +246,12 @@ function setupEditableNotes() {
     $.post(
       "edit_property_notes.php",
       {
+        user_id: getUserID(),
         parcel_number: edited_field_data.parcel_number,
-        notes: edited_field_data.new_value
+        content: edited_field_data.new_value,
+        is_private: edited_field_data.is_private
       },
-      function(data) {
+      function() {
         editable_fields[edited_field_data.id].current_value = editable_fields[edited_field_data.id].new_value;
         editable_fields[edited_field_data.id].new_value = null;
         toggleEdit(edited_field_data.id);

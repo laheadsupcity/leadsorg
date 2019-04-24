@@ -5,7 +5,7 @@ $pid= isset($_POST['pid']) ? $_POST['pid'] : '';
 
 $edit_related_properties_contact_info = $_POST['editRelated'] == 'true';
 
-$array = array(
+$params = array(
   "parcel_number"=>$_POST['apn'],
   "owner_name2"=>$_POST['ownername'],
   "owner1_first_name"=>$_POST['ofname'],
@@ -44,8 +44,7 @@ $array = array(
   "phone1" => $_POST['phone1'],
   "phone2" => $_POST['phone2'],
   "email1" => $_POST['email1'],
-  "email2" => $_POST['email2'],
-  "notes" => $_POST['notes']
+  "email2" => $_POST['email2']
 );
 
 $full_mail_address = $_POST['fmaddress'];
@@ -65,7 +64,7 @@ if ($edit_related_properties_contact_info && !empty($full_mail_address)) {
 
 $db->update(
 	'property',
-	$array,
+	$params,
 	array('id' => $pid)
 );
 

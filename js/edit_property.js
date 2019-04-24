@@ -1,23 +1,41 @@
+function getUserID() {
+  // TO DO: This is temporary hack until user sessions are handled properly
+  return $('[data-user-id]').data('user-id');
+}
+
 function updateProperty() {
-  if (confirm("Are you sure you want to update this?")) {
-    var property_data = $('#update-property-form').serialize();
-    jQuery.ajax({
-      type: "POST",
-      url: "lead_updateproperty.php",
-      dataType: 'json',
-      data: property_data,
-      success: function(data) {
-        console.log(data);
-        if (data.msg = "success") {
-          alert("Data updated successfully");
-        }
-        window.location = window.location;
-      }
-    });
-    return false;
-  } else {
-    return false;
-  }
+  var property_data = $('#update-property-form').serialize(),
+      parcel_number = $('#update-property-form').find('[name=apn]').val(),
+      private_note = $('#update-property-form').find('[name=private_note]').val();
+      public_note = $('#update-property-form').find('[name=public_note]').val();
+
+  $.post(
+    "edit_property_notes.php",
+    {
+      user_id: getUserID(),
+      parcel_number: parcel_number,
+      content: private_note,
+      is_private: true
+    }
+  );
+
+  $.post(
+    "edit_property_notes.php",
+    {
+      user_id: getUserID(),
+      parcel_number: parcel_number,
+      content: public_note,
+      is_private: false
+    }
+  );
+
+  $.post(
+    'lead_updateproperty.php',
+    property_data,
+    function(data) {
+      window.location = window.location;
+    }
+  );
 }
 
 $(document).ready(function() {
@@ -26,7 +44,13 @@ $(document).ready(function() {
     $(event.currentTarget).val($(event.currentTarget).prop('checked'));
   });
 
-  $('[data-action="update"]').click(function() {
+  $('[data-action="update_property"]').click(function(event) {
+    event.preventDefault();
+
+    $('#confirmEditProperty').modal('show');
+  });
+
+  $('[data-action="confirm_edit"]').click(function() {
     updateProperty();
   });
 

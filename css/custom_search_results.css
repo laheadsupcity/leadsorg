@@ -120,12 +120,18 @@
   width: 134px;
 }
 
-.notes-column.is-not-editing {
+.private-notes-column.is-not-editing {
   background-color: #fef9f7;
   padding: 10px;
 }
 
-.notes-column.is-editing {
+.public-notes-column.is-not-editing {
+  background-color: #fbe8e0;
+  padding: 10px;
+}
+
+.public-notes-column.is-editing,
+.private-notes-column.is-editing {
   background-color: none;
 }
 

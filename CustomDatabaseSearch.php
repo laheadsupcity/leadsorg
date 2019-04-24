@@ -177,7 +177,6 @@ class CustomDatabaseSearch {
         p.year_built,
         p.sales_date,
         p.sales_price,
-        p.notes,
         p.phone1,
         p.phone2,
         p.email1,

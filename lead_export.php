@@ -13,6 +13,8 @@ if (!empty($selected_property_data)) {
     $parcel_number = $data['parcel_number'];
     $csv_data = getCSVExportData($parcel_number);
     $csv_data['matching_cases'] = $data['matching_cases'];
+    $csv_data['private_note'] = $data['private_note'];
+    $csv_data['public_note'] = $data['public_note'];
 
     $objmerged[] = array_merge((array) $csv_data, (array) $table);
   }
@@ -30,6 +32,7 @@ if (!empty($selected_property_data)) {
   }
   exit;
 }
+
 function getCSVExportData($id)
 {
   $db = Database::instance();

@@ -28,6 +28,48 @@ class Property {
     return $db->result_array();
   }
 
+  public static function getPrivateNoteForAPN($user_id, $parcel_number) {
+    $db = Database::instance();
+
+    $query = sprintf(
+      "
+        SELECT * FROM `property_notes`
+        WHERE
+          `user_id` = %s AND
+          `is_private` = 1 AND
+          `parcel_number` = %s
+      ",
+      $user_id,
+      $parcel_number
+    );
+
+    $db->query($query);
+
+    $results = $db->result_array();
+
+    return empty($results) ? null : $results[0];
+  }
+
+  public static function getPublicNoteForAPN($parcel_number) {
+    $db = Database::instance();
+
+    $query = sprintf(
+      "
+        SELECT * FROM `property_notes`
+        WHERE
+          `is_private` = 0 AND
+          `parcel_number` = %s
+      ",
+      $parcel_number
+    );
+
+    $db->query($query);
+
+    $results = $db->result_array();
+
+    return empty($results) ? null : $results[0];
+  }
+
 }
 
 ?>

@@ -72,7 +72,12 @@
       <?php if ($show_matching_cases) { ?>
         <div class="matching-cases property-info-column">Matching cases</div>
       <?php } ?>
-      <div class="xlg-property-info-column property-info-column">Notes</div>
+      <div class="xlg-property-info-column property-info-column">
+        Public Notes
+      </div>
+      <div class="xlg-property-info-column property-info-column">
+        Private Notes
+      </div>
     </div>
     <div class="actions-header ml-2">
     </div>

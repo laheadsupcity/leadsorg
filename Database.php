@@ -887,7 +887,6 @@ class Database
         SELECT
           T1.parcel_number,
           count(T1.parcel_number) - 1 AS `related_properties_count`,
-          T1.notes,
           T1.owner_name2,
           T1.phone1,
           T1.phone2,
