@@ -4,8 +4,6 @@ include('CaseTypeStatusFilter.php');
 
 class InclusionFilter {
 
-  const DATE_FORMAT = "m/d/Y";
-
   private $db;
   private $case_type_id;
   private $from_date;

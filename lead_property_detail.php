@@ -456,6 +456,7 @@
               <tr style="background: #337ab7; color:#fff;">
               <td style='padding:3px 5px; border-right:1px solid #fff;'>Case Type</td>
               <td style='padding:3px 5px; border-right:1px solid #fff;'>Case Number</td>
+              <td style='padding:3px 5px; border-right:1px solid #fff;'>Date Opened</td>
               <td style='padding:3px 5px;'>Date Closed</td>
               </tr>
               <?php foreach ($cases as $row) {
@@ -469,6 +470,7 @@
                   <td style='border-bottom:1px solid #337ab7; border-right:1px solid #337ab7; padding:3px 5px;'>
                     <a href='#' onclick='return opencasedetail(<?php echo $parcel_number; ?>,<?php echo $row['case_id']; ?>,<?php echo $caseid['id']; ?>,<?php echo json_encode($case_inspections_with_updates); ?>);'  style='color: DarkBlue;'><?php echo $row['case_id']; ?></a>
                   </td>
+                  <td style='padding:3px 5px; border-bottom:1px solid #337ab7; border-right:1px solid #337ab7;'><?php echo date('m/d/Y', strtotime($row['created_date'])); ?></td>
                   <td style='padding:3px 5px; border-bottom:1px solid #337ab7;'><?php echo $row['case_date']; ?></td>
                 </tr>
               <?php } ?>
