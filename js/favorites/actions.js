@@ -6,11 +6,13 @@ function getConfirmResetFolderModal() {
   return $('#resetFlagsFolderModal');
 }
 
-function handleConfirmRemove(folder_id) {
-  var selected_properties = $("[data-property-checkbox]:checked").map(function(index, checkbox) {
+function getSelectedProperties() {
+  return $("[data-property-checkbox]:checked").map(function(index, checkbox) {
     return checkbox.value;
   }).toArray();
+}
 
+function handleConfirmRemove(folder_id) {
   $.post(
     "remove_properties_favorites_folder.php",
     {
@@ -32,7 +34,7 @@ function handleRemoveFromFolder() {
   var selected_properties = $("[data-property-checkbox]:checked");
 
   if (selected_properties.length == 0) {
-    // no op
+    $('#selectPropertiesWarning').prop('hidden', false);
     return;
   }
 
@@ -41,12 +43,15 @@ function handleRemoveFromFolder() {
 }
 
 function resetFolderFlags() {
+  var selected_properties = getSelectedProperties();
+
   var folder_id = getConfirmResetFolderModal().data('folder-id');
 
   $.post(
     'reset_favorites_folder_flags.php',
     {
-      folder_id: folder_id
+      folder_id: folder_id,
+      parcel_numbers: selected_properties
     },
     function (data) {
       window.location = window.location;
@@ -84,5 +89,14 @@ $(document).ready(function() {
     resetFolderFlags();
   });
 
+  $('[data-action=reset_flags]').click(function(event) {
+    var selected_properties = getSelectedProperties();
+
+    if (selected_properties.length == 0) {
+      $('#selectPropertiesWarning').prop('hidden', false);
+    } else {
+      getConfirmResetFolderModal().modal('show');
+    }
+  });
 
 });
