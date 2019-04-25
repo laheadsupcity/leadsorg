@@ -76,7 +76,7 @@
         <div class="matching-cases property-info-column">Matching cases</div>
       <?php } ?>
       <div class="xlg-property-info-column property-info-column">
-        Public Notes
+        Notes
       </div>
       <div class="xlg-property-info-column property-info-column">
         Private Notes

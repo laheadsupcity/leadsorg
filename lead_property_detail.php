@@ -430,7 +430,7 @@
               </div>
             </div>
             <div style="border:1px solid #337ab7; margin:10px 0 0;">
-              <h4 style="text-transform:initial;">Public Notes</h4>
+              <h4 style="text-transform:initial;">Notes</h4>
               <div class="field1data spdata" style="width:100%; height: 59px; overflow-y: scroll;">
                 <?php
                   $public_note = Property::getPublicNoteForAPN($parcel_number);

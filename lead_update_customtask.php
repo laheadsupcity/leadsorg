@@ -165,7 +165,7 @@ $user_id = $_SESSION['userdetail']['id'];
             </div>
 
             <div class="col-6">
-              <h5 class="text-primary font-weight-bold">Public Notes</h5>
+              <h5 class="text-primary font-weight-bold">Notes</h5>
               <?php
                 $public_note = Property::getPublicNoteForAPN($property_data['parcel_number']);
               ?>
