@@ -33,6 +33,9 @@
       <div data-sortable-column="owner_name" class="xlg-property-info-column property-info-column">
         Owner
       </div>
+      <div class="xlg-property-info-column property-info-column">
+        Owner Address
+      </div>
       <div class="phone-number text-truncate property-info-column">
         Phone 1
       </div>

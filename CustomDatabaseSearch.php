@@ -167,6 +167,8 @@ class CustomDatabaseSearch {
         p.site_address_city_state,
         p.site_address_zip,
         p.owner_name2,
+        p.full_mail_address,
+        p.mail_address_zip,
         p.number_of_units,
         p.number_of_stories,
         p.bedrooms,

@@ -112,6 +112,10 @@
       <?php echo $property['owner_name2']; ?>
     </div>
 
+    <div class="xlg-property-info-column property-info-column">
+      <?php echo $property['full_mail_address']; ?>, <?php echo $property['mail_address_zip']; ?>
+    </div>
+
     <div class="phone-number owner-column property-info-column">
       <div data-field="phone1" class="editable-field text-truncate"><?php echo $property['phone1']; ?></div>
     </div>
