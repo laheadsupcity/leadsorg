@@ -542,11 +542,6 @@ body {
   background-color: #0070c0;
 }
 
-.btn.focus, .btn:focus, .btn:hover {
-  color: #fff !important;
-  text-decoration: none;
-}
-
 @media screen and (min-width: 950px) and (max-width: 1050px) {
   .scr1 label {
     font-size: 11px;

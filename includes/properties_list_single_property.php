@@ -79,7 +79,7 @@
     <?php if ($include_related_properties) { ?>
       <div class="sm-property-info-column related-properties property-info-column sortable-column text-center font-weight-bold">
         <?php if ($has_related_properties) { ?>
-          <a class="btn btn-outline-primary" href="related_properties.php?parcel_number=<?php echo $property['parcel_number']; ?>" target="_blank"><?php echo $related_properties_for_owner_count; ?></a>
+          <a class="btn btn-outline-dark" href="related_properties.php?parcel_number=<?php echo $property['parcel_number']; ?>" target="_blank"><?php echo $related_properties_for_owner_count; ?></a>
         <?php } else { ?>
           <span class="font-italic font-weight-light">none</span>
         <?php } ?>
