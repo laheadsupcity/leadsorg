@@ -116,24 +116,7 @@ $user_id = $_SESSION['userdetail']['id'];
             </table>
           </div>
 
-          <div class="col-sm-4">
-            <h5 class="text-primary font-weight-bold">Contact Information</h5>
-            <div class="form-check mb-2">
-              <input class="form-check-input" type="checkbox" value="true" id="editRelated" name="editRelated" checked>
-              <label class="form-check-label" for="editRelated">
-                Edit contact info for related properties
-              </label>
-            </div>
-            <p><label><span>Phone 1</span></label><br/> <input type="text" class="edittext" name="phone1" id="phone1" value="<?php echo  isset($property_data['phone1']) ? $property_data['phone1'] : '' ?>"></p>
-
-            <p><label><span>Phone 2</span></label><br/> <input type="text" class="edittext" name="phone2" id="phone2" value="<?php echo  isset($property_data['phone2']) ? $property_data['phone2'] : '' ?>"></p>
-
-            <p><label><span>Email 1</span></label><br/> <input type="text" class="edittext" name="email1" id="email1" value="<?php echo  isset($property_data['email1']) ? $property_data['email1'] : '' ?>"></p>
-
-            <p><label><span>Email 2</span></label><br/> <input type="text" class="edittext" name="email2" id="email2" value="<?php echo  isset($property_data['email2']) ? $property_data['email2'] : '' ?>"></p>
-          </div>
-
-          <div class="col-sm-12">
+          <div class="col-sm-12 mb-4">
             <h5 class="text-primary font-weight-bold">Other Information</h5>
             <table style="width:100%;">
               <tr>
@@ -154,23 +137,37 @@ $user_id = $_SESSION['userdetail']['id'];
               </tr>
             </table>
           </div>
-          <div class="container d-flex no-gutters">
-            <div class="col-6 mr-4">
-              <h5 class="text-primary font-weight-bold">Private Notes</h5>
-              <?php
-                $private_note = Property::getPrivateNoteForAPN($user_id, $property_data['parcel_number']);
-                $public_note = Property::getPublicNoteForAPN($property_data['parcel_number']);
-              ?>
-              <textarea class="form-control" id="notes" name="private_note" rows="6"><?php echo isset($private_note) ? trim($private_note['content']) : ""; ?></textarea>
-            </div>
 
-            <div class="col-6">
-              <h5 class="text-primary font-weight-bold">Notes</h5>
-              <?php
-                $public_note = Property::getPublicNoteForAPN($property_data['parcel_number']);
-              ?>
-              <textarea class="form-control" id="notes" name="public_note" rows="6"><?php echo isset($public_note) ? trim($public_note['content']) : ""; ?></textarea>
+          <div class="col-sm-4">
+            <h5 class="text-primary font-weight-bold">Contact Information</h5>
+            <div class="form-check mb-2">
+              <input class="form-check-input" type="checkbox" value="true" id="editRelated" name="editRelated" checked>
+              <label class="form-check-label" for="editRelated">
+                Edit contact info for related properties
+              </label>
             </div>
+            <p><label><span>Phone 1</span></label><br/> <input type="text" class="edittext" name="phone1" id="phone1" value="<?php echo  isset($property_data['phone1']) ? $property_data['phone1'] : '' ?>"></p>
+
+            <p><label><span>Phone 2</span></label><br/> <input type="text" class="edittext" name="phone2" id="phone2" value="<?php echo  isset($property_data['phone2']) ? $property_data['phone2'] : '' ?>"></p>
+
+            <p><label><span>Email 1</span></label><br/> <input type="text" class="edittext" name="email1" id="email1" value="<?php echo  isset($property_data['email1']) ? $property_data['email1'] : '' ?>"></p>
+
+            <p><label><span>Email 2</span></label><br/> <input type="text" class="edittext" name="email2" id="email2" value="<?php echo  isset($property_data['email2']) ? $property_data['email2'] : '' ?>"></p>
+          </div>
+          <div class="col-4">
+            <h5 class="text-primary font-weight-bold">Notes</h5>
+            <?php
+              $public_note = Property::getPublicNoteForAPN($property_data['parcel_number']);
+            ?>
+            <textarea class="form-control" id="notes" name="public_note" rows="12"><?php echo isset($public_note) ? trim($public_note['content']) : ""; ?></textarea>
+          </div>
+          <div class="col-4">
+            <h5 class="text-primary font-weight-bold">Private Notes</h5>
+            <?php
+              $private_note = Property::getPrivateNoteForAPN($user_id, $property_data['parcel_number']);
+              $public_note = Property::getPublicNoteForAPN($property_data['parcel_number']);
+            ?>
+            <textarea class="form-control" id="notes" name="private_note" rows="12"><?php echo isset($private_note) ? trim($private_note['content']) : ""; ?></textarea>
           </div>
         </div>
         <div class="text-center">
