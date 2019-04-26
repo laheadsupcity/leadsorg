@@ -120,7 +120,7 @@ class FavoriteProperties {
     return $properties;
   }
 
-  public function getFavoritesFoldersForAPN($parcel_number) {
+  public function getFavoritesFoldersForAPN($user_id, $parcel_number) {
     $favorites_folders_query = sprintf(
       "
         SELECT
@@ -129,9 +129,12 @@ class FavoriteProperties {
         JOIN `favorite_properties_folders` AS `folder` ON (
           folder.folder_id = fav.folder_id
         )
-        WHERE `fav`.`parcel_number` = %s;
+        WHERE
+          `fav`.`parcel_number` = %s AND
+          `user_id` = %s;
       ",
-      $parcel_number
+      $parcel_number,
+      $user_id
     );
 
     $this->db->query($favorites_folders_query);

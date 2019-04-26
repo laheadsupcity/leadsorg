@@ -3,7 +3,11 @@
 
   $user_id = $_SESSION['userdetail']['id'];
 
-  $favorites_folders = $favorites->getFavoritesFoldersForAPN($property['parcel_number']);
+  $favorites_folders = $favorites->getFavoritesFoldersForAPN(
+    $user_id,
+    $property['parcel_number']
+  );
+
   $owner_address = $property['owner_address_and_zip'];
 
   $related_properties_for_owner_count =
