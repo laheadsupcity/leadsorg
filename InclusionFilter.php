@@ -38,14 +38,6 @@ class InclusionFilter {
     );
   }
 
-  private function getCurrentDateAsDateObject() {
-    return sprintf(
-      "STR_TO_DATE(\"%s\", '%s')",
-      date('m/d/Y', time()),
-      "%m/%d/%Y"
-    );
-  }
-
   private function hasStatusFilters() {
     return !empty(
       array_filter(
@@ -123,10 +115,9 @@ class InclusionFilter {
       );
     } else if ($this->hasFromDate()) {
       $date_clause = sprintf(
-        "COUNT(IF(pi.case_type_id = %s AND STR_TO_DATE(pi.date, \"%%m/%%d/%%Y\") >= %s AND STR_TO_DATE(pi.date, \"%%m/%%d/%%Y\") <= %s, 1, NULL)) > 0",
+        "COUNT(IF(pi.case_type_id = %s AND STR_TO_DATE(pi.date, \"%%m/%%d/%%Y\") >= %s, 1, NULL)) > 0",
         $this->getCaseTypeID(),
-        $this->getFromDateAsExpression(),
-        $this->getCurrentDateAsDateObject()
+        $this->getFromDateAsExpression()
       );
     } else if ($this->hasToDate()) {
       $date_clause = sprintf(
@@ -176,10 +167,9 @@ class InclusionFilter {
           );
         } else if ($this->hasFromDate()) {
           $date_clause = sprintf(
-            "COUNT(IF(case_type_id=%s AND STR_TO_DATE(pi.date, \"%%m/%%d/%%Y\") >= %s AND STR_TO_DATE(pi.date, \"%%m/%%d/%%Y\") <= %s, 1, NULL)) > 0",
+            "COUNT(IF(case_type_id=%s AND STR_TO_DATE(pi.date, \"%%m/%%d/%%Y\") >= %s, 1, NULL)) > 0",
             $this->getCaseTypeID(),
-            $this->getFromDateAsExpression(),
-            $this->getCurrentDateAsDateObject()
+            $this->getFromDateAsExpression()
           );
         } else if ($this->hasToDate()) {
           $date_clause = sprintf(
@@ -222,9 +212,8 @@ class InclusionFilter {
         );
       } else if ($status_filter->hasFromDate() && !$status_filter->hasToDate()) {
         $date_clause = sprintf(
-          "STR_TO_DATE(pi.date, \"%%m/%%d/%%Y\") >= %s AND STR_TO_DATE(pi.date, \"%%m/%%d/%%Y\") <= %s",
-          $status_filter->getFromDateAsExpression(),
-          $status_filter->getCurrentDateAsDateObject()
+          "STR_TO_DATE(pi.date, \"%%m/%%d/%%Y\") >= %s",
+          $status_filter->getFromDateAsExpression()
         );
         $having_clause = sprintf(
           "COUNT(IF(case_type_id=%s AND pi.staus = \"%s\" AND %s, 1, NULL)) > 0",

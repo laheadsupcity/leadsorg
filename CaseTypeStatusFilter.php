@@ -46,14 +46,6 @@ class CaseTypeStatusFilter {
     );
   }
 
-  public function getCurrentDateAsDateObject() {
-    return sprintf(
-      "STR_TO_DATE(\"%s\", '%s')",
-      date('m/d/Y', time()),
-      "%m/%d/%Y"
-    );
-  }
-
   public function getStatus() {
     return $this->case_status_type;
   }
@@ -72,11 +64,9 @@ class CaseTypeStatusFilter {
       );
     } else if (!empty($this->from_date) && empty($this->to_date)) {
       $date_range_condition = sprintf(
-        "STR_TO_DATE(pi.date, '%s') >= %s AND STR_TO_DATE(pi.date, '%s') <= %s",
+        "STR_TO_DATE(pi.date, '%s') >= %s",
         '%m/%d/%Y',
-        $this->getFromDateAsExpression(),
-        '%m/%d/%Y',
-        $this->getCurrentDateAsDateObject()
+        $this->getFromDateAsExpression()
       );
     } else if (empty($this->from_date) && !empty($this->to_date)) {
       $date_range_condition = sprintf(
