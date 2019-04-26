@@ -17,6 +17,9 @@
           </div>
           <input type="text" data-favorite-folder-name class="form-control">
         </div>
+        <div id="existingNameAlert" class="alert alert-warning mt-3" role="alert" hidden>
+          A folder with this name already exists.
+        </div>
       </div>
       <div class="modal-footer">
         <button type="button" data-action="cancel" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
