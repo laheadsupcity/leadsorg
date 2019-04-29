@@ -10,7 +10,7 @@
         </button>
       </div>
       <div class="modal-body">
-        Are you sure you would like to reset all flags in this favorites folder?
+        Are you sure you would like to reset all update flags for the selected properties?
       </div>
       <div class="modal-footer">
         <button type="button" data-action="cancel" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
