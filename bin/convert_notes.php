@@ -1,6 +1,14 @@
 <?php
 require_once('config.php');
 
+$delete_query = sprintf(
+  "
+    DELETE FROM `property_notes`
+  "
+);
+
+$db->query($delete_query);
+
 $query = sprintf(
   "
     SELECT `parcel_number`, `notes` FROM `property`
