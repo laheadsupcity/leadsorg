@@ -43,7 +43,7 @@
     $det=getcasedetail($apn, $case_id);
     $case=getcaselist($apn, $case_id);
     $case_statuses=getCaseInspection($apn, $case_id, $case_det_id);
-    error_log("=========dfffffffffffff==================>".print_r($case_statuses, true));
+
     $det =isset($det[0]) ?  $det[0]: '';
     $url=isset($det['imageurl']) ?  $det['imageurl']: '';
     $img = explode('http://', $url);

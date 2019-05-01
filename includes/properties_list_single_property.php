@@ -11,8 +11,8 @@
   $owner_address = $property['owner_address_and_zip'];
 
   $related_properties_for_owner_count =
-    $property['related_properties_count'] ??
-    $related_properties_counts[$owner_address] ?? 0;
+    isset($property['related_properties_count']) ? $property['related_properties_count'] :
+    isset($related_properties_counts[$owner_address]) ? $related_properties_counts[$owner_address] : 0;
 
   $has_related_properties = $related_properties_for_owner_count > 0;
 

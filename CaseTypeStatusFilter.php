@@ -10,8 +10,8 @@ class CaseTypeStatusFilter {
   function __construct($data_array, $is_include) {
     $this->is_include = $is_include;
     $this->case_status_type = $data_array['case_status_type'];
-    $this->from_date = $data_array['from_date'] ?? null;
-    $this->to_date = $data_array['to_date'] ?? null;
+    $this->from_date = isset($data_array['from_date']) ? $data_array['from_date'] : null;
+    $this->to_date = isset($data_array['to_date']) ? $data_array['to_date'] : null;
   }
 
   public function hasFromDate() {

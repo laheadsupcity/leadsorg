@@ -149,7 +149,7 @@ class Database
         if ($limit) {
             $query .= ' LIMIT ' . $limit;
         }
-        error_log("==========selectquery=========>".print_r($query, true));
+
         return $this->query($query);
     }
 

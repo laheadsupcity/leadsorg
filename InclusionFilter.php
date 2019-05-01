@@ -15,7 +15,9 @@ class InclusionFilter {
     $this->case_type_id = $data_array['case_type_id'];
     $this->from_date = $data_array['from_date'];
     $this->to_date = $data_array['to_date'];
-    $this->status_filters = $this->getStatusFilters($data_array['status_filters']);
+    $this->status_filters = $this->getStatusFilters(
+      isset($data_array['status_filters']) ? $data_array['status_filters'] : null
+    );
   }
 
   public function getCaseTypeID() {

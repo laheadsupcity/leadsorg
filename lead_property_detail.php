@@ -4,8 +4,6 @@
   require_once('FavoriteProperties.php');
   require_once('Property.php');
 
-  $user_id = $_SESSION['userdetail']['id'];
-
   $favorites = new FavoriteProperties();
 
   $parcel_number = isset($_REQUEST['apn']) ? $_REQUEST['apn'] : '';
@@ -17,7 +15,7 @@
   $property = $property[0];
 
   $matching_cases = isset($_REQUEST['matching_cases']) ? explode(',', $_REQUEST['matching_cases']) : '';
-  $favorites_folder_id = $_REQUEST['folder_id'];
+  $favorites_folder_id = isset($_REQUEST['folder_id']) ? $_REQUEST['folder_id'] : null;
 
   $cases_with_updates = $favorites->getPropertyCaseUpdatesForFolder($favorites_folder_id, $parcel_number);
   $case_inspections_with_updates = $favorites->getPropertyCaseInspectionUpdatesForFolder($favorites_folder_id, $parcel_number);
@@ -423,6 +421,7 @@
               <h4 style="text-transform:initial;">Private Notes</h4>
               <div class="field1data spdata" style="width:100%; height: 59px; overflow-y: scroll;">
                 <?php
+                  $user_id = $_SESSION['userdetail']['id'];
                   $private_note = Property::getPrivateNoteForAPN($user_id, $parcel_number);
 
                   echo isset($private_note) ? $private_note['content'] : "";
