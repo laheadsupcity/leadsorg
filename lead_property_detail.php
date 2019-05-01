@@ -404,41 +404,36 @@
                   </tr>
                 </table>
             </div>
-                                   <?php
-               $upstatus=isset($det['update_status']) ? $det['update_status'] : '';
-          if ($upstatus >0) {
-              ?>
             <div style="border:1px solid #337ab7; margin:10px 0 0;">
-            <h4 style="text-transform:initial;">Date</h4>
-            <table cellspacing="5" style="width:100%; margin:0 auto;">
-                <tr>
-              <td class="field1">Recent Update Date:</td>
-              <td class="field1data spdata"><?php echo date('m/d/Y H:i A', strtotime($det['date_modified'])); ?></td>
-              </tr>
-            </table>
+              <h4 style="text-transform:initial;">Date</h4>
+              <table cellspacing="5" style="width:100%; margin:0 auto;">
+                  <tr>
+                <td class="field1">Recent Update Date:</td>
+                <td class="field1data spdata"><?php echo date('m/d/Y H:i A', strtotime($det['date_modified'])); ?></td>
+                </tr>
+              </table>
             </div>
             <div style="border:1px solid #337ab7; margin:10px 0 0;">
-              <h4 style="text-transform:initial;">Private Notes</h4>
-              <div class="field1data spdata" style="width:100%; height: 59px; overflow-y: scroll;">
-                <?php
-                  $user_id = $_SESSION['userdetail']['id'];
-                  $private_note = Property::getPrivateNoteForAPN($user_id, $parcel_number);
+             <h4 style="text-transform:initial;">Private Notes</h4>
+             <div class="field1data spdata" style="width:100%; height: 59px; overflow-y: scroll;">
+               <?php
+                 $user_id = $_SESSION['userdetail']['id'];
+                 $private_note = Property::getPrivateNoteForAPN($user_id, $parcel_number);
 
-                  echo isset($private_note) ? $private_note['content'] : "";
-                ?>
-              </div>
+                 echo isset($private_note) ? $private_note['content'] : "";
+               ?>
+             </div>
             </div>
             <div style="border:1px solid #337ab7; margin:10px 0 0;">
-              <h4 style="text-transform:initial;">Notes</h4>
-              <div class="field1data spdata" style="width:100%; height: 59px; overflow-y: scroll;">
-                <?php
-                  $public_note = Property::getPublicNoteForAPN($parcel_number);
+             <h4 style="text-transform:initial;">Notes</h4>
+             <div class="field1data spdata" style="width:100%; height: 59px; overflow-y: scroll;">
+               <?php
+                 $public_note = Property::getPublicNoteForAPN($parcel_number);
 
-                  echo isset($public_note) ? $public_note['content'] : "";
-                ?>
-              </div>
+                 echo isset($public_note) ? $public_note['content'] : "";
+               ?>
+             </div>
             </div>
-         <?php } ?>
         </div>
       </div>
 
