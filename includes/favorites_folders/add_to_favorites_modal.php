@@ -7,7 +7,7 @@
 
 <div
   data-show-unseen-update-flag="<?php echo $show_unseen_update_flag; ?>"
-  <?php if ($folder_id_to_exclude) { ?>
+  <?php if (isset($folder_id_to_exclude)) { ?>
     data-current-folder=<?php echo $folder_id_to_exclude; ?>
   <?php } ?>
   class="modal fade" id="addToFavoritesFolderModal" tabindex="-1" role="dialog" aria-labelledby="addToFavoritesFolderModalTitle" aria-hidden="true">
@@ -43,7 +43,7 @@
         <div class="form-check">
           <input class="form-check-input" type="checkbox" value="" id="removeFromExistingFolders">
           <label class="form-check-label text-danger font-weight-bold" for="removeFromExistingFolders">
-            <?php if ($folder_id_to_exclude) { ?>
+            <?php if (isset($folder_id_to_exclude)) { ?>
               Move selected properties out of current folder
             <?php } else { ?>
               Move selected properties out of existing folders
