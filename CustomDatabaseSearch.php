@@ -212,16 +212,22 @@ class CustomDatabaseSearch {
 
     $addresses_query = sprintf(
       "
-      SELECT count(owner_address_and_zip) as `related_properties_count`, owner_address_and_zip
+      SELECT
+        count(`owner_address_and_zip`) - 1 AS `related_properties_count`,
+        `owner_address_and_zip`
       FROM `property`
-      WHERE owner_address_and_zip IN (
-        SELECT
-          distinct owner_address_and_zip
-        FROM `property`
-        WHERE parcel_number IN (
-          %s
-        ) AND full_mail_address <> \"\"
-      ) GROUP BY owner_address_and_zip;
+      WHERE
+        `full_mail_address` <> \"\" AND
+        `owner_address_and_zip` IN (
+          SELECT
+            `owner_address_and_zip`
+          FROM `property`
+          WHERE parcel_number IN (
+            %s
+          )
+        )
+      GROUP BY owner_address_and_zip
+      HAVING `related_properties_count` > 0;
       ",
       implode(',', $this->result_apns)
     );

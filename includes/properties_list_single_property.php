@@ -13,7 +13,7 @@
   $related_properties_for_owner_count =
     $property['related_properties_count'] ?
     $property['related_properties_count'] :
-    $related_properties_counts[$owner_address] - 1;
+    $related_properties_counts[$owner_address];
 
   $has_related_properties = $related_properties_for_owner_count > 0;
 
