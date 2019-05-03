@@ -146,13 +146,13 @@ $user_id = $_SESSION['userdetail']['id'];
                 Edit contact info for related properties
               </label>
             </div>
-            <p><label><span>Phone 1</span></label><br/> <input type="text" class="edittext" name="phone1" id="phone1" value="<?php echo  isset($property_data['phone1']) ? $property_data['phone1'] : '' ?>"></p>
+            <p><label><span>Phone 1</span></label><br/> <input type="text" class="edittext" name="phone1" id="phone1" maxlength="20" value="<?php echo  isset($property_data['phone1']) ? $property_data['phone1'] : '' ?>"></p>
 
-            <p><label><span>Phone 2</span></label><br/> <input type="text" class="edittext" name="phone2" id="phone2" value="<?php echo  isset($property_data['phone2']) ? $property_data['phone2'] : '' ?>"></p>
+            <p><label><span>Phone 2</span></label><br/> <input type="text" class="edittext" name="phone2" id="phone2" maxlength="20" value="<?php echo  isset($property_data['phone2']) ? $property_data['phone2'] : '' ?>"></p>
 
-            <p><label><span>Email 1</span></label><br/> <input type="text" class="edittext" name="email1" id="email1" value="<?php echo  isset($property_data['email1']) ? $property_data['email1'] : '' ?>"></p>
+            <p><label><span>Email 1</span></label><br/> <input type="text" class="edittext" name="email1" id="email1" maxlength="255" value="<?php echo  isset($property_data['email1']) ? $property_data['email1'] : '' ?>"></p>
 
-            <p><label><span>Email 2</span></label><br/> <input type="text" class="edittext" name="email2" id="email2" value="<?php echo  isset($property_data['email2']) ? $property_data['email2'] : '' ?>"></p>
+            <p><label><span>Email 2</span></label><br/> <input type="text" class="edittext" name="email2" id="email2" maxlength="255" value="<?php echo  isset($property_data['email2']) ? $property_data['email2'] : '' ?>"></p>
           </div>
           <div class="col-4">
             <h5 class="text-primary font-weight-bold">Notes</h5>

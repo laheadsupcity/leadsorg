@@ -3,7 +3,8 @@ const TYPE_NOTES = "notes";
 
 const editableNotesTextArea = "<div data-edit-input class=\"input-group\" hidden><textarea class=\"form-control\" rows=\"3\"></textarea></div>";
 
-const editableFieldInput = "<div data-edit-input class=\"input-group\" hidden><input type=\"text\" class=\"form-control\"></div>";
+const editablePhoneFieldInput = "<div data-edit-input class=\"input-group\" hidden><input type=\"text\" class=\"form-control\" maxlength=\"20\"></div>";
+const editableEmailFieldInput = "<div data-edit-input class=\"input-group\" hidden><input type=\"text\" class=\"form-control\" maxlength=\"255\"></div>";
 
 const unknownFieldMarkup = "<span class='font-italic'>unknown</span>";
 
@@ -121,7 +122,8 @@ function setupEditableContactInfoFields() {
         edit_related = true,
         owner_name = getOwnerName(editable_field),
         current_value = editable_field.html(),
-        content = current_value == "" ? unknownFieldMarkup : current_value;
+        content = current_value == "" ? unknownFieldMarkup : current_value,
+        field = editable_field.data('field');
 
     editable_fields[id] = {
       id: id,
@@ -130,7 +132,7 @@ function setupEditableContactInfoFields() {
       is_editing: false,
       parcel_number: parcel_number,
       owner_name: owner_name,
-      field: editable_field.data('field'),
+      field: field,
       current_value: current_value,
       new_value: null
     };
@@ -138,8 +140,13 @@ function setupEditableContactInfoFields() {
     editable_field
       .addClass('is-not-editing')
       .attr('id', id)
-      .html("<span data-field-value>" + content + "</span>")
-      .append(editableFieldInput);
+      .html("<span data-field-value>" + content + "</span>");
+
+    if (field == "phone1" || field == "phone2") {
+      editable_field.append(editablePhoneFieldInput);
+    } else if (field == "email1" || field == "email2") {
+      editable_field.append(editableEmailFieldInput);
+    }
 
     editable_field.click(function() {
       if (editable_fields[id].is_editing) {

@@ -10,7 +10,7 @@
       <div class="modal-body">
         Are you sure you would like to change <span class="font-italic font-weight-bold"><span data-owner-name class="text-nowrap"></span>'s</span> contact information to the following?
 
-        <div class="h4 text-center text-primary mt-2" data-new-contact-info></div>
+        <div class="h4 text-center text-primary mt-2 text-truncate" data-new-contact-info></div>
 
         <div class="h5 text-danger text-center font-weight-light mt-4" data-related-properties="">Editing for all <span class="font-weight-bold" data-count></span> related properties!</div>
       </div>
