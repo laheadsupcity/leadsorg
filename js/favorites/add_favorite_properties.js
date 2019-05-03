@@ -62,6 +62,10 @@ function handleAddToFavoritesModalShown() {
 
         modal.find('[data-folders-list]').append(folder);
       });
+
+      if (Object.keys(favorites_folders).length == 0) {
+        modal.find('[data-folders-list]').append("No favorites folders yet!");
+      }
     }
   );
 }

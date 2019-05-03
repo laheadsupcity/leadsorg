@@ -91,7 +91,7 @@
       <?php include('includes/favorites_folders/delete_favorites_folder_modal.php'); ?>
       <?php
         $folder_id_to_exclude = $folder_id;
-        $show_unseen_update_flag = true;
+        $is_search_results = false;
         include('includes/favorites_folders/add_to_favorites_modal.php');
       ?>
 

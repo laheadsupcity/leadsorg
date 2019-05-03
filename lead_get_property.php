@@ -111,7 +111,7 @@
 
   <?php include('includes/create_lead_batch_modal.php') ?>
   <?php
-    $show_unseen_update_flag = false;
+    $is_search_results = true;
     include('includes/favorites_folders/add_to_favorites_modal.php');
   ?>
  </body>

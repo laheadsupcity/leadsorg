@@ -6,7 +6,7 @@
 ?>
 
 <div
-  data-show-unseen-update-flag="<?php echo $show_unseen_update_flag; ?>"
+  data-show-unseen-update-flag="<?php echo !$is_search_results; ?>"
   <?php if (isset($folder_id_to_exclude)) { ?>
     data-current-folder=<?php echo $folder_id_to_exclude; ?>
   <?php } ?>
@@ -40,16 +40,18 @@
         <div data-folders-list></div>
       </div>
       <div class="modal-footer d-flex justify-content-between">
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="" id="removeFromExistingFolders">
-          <label class="form-check-label text-danger font-weight-bold" for="removeFromExistingFolders">
-            <?php if (isset($folder_id_to_exclude)) { ?>
-              Move selected properties out of current folder
-            <?php } else { ?>
-              Move selected properties out of existing folders
-            <?php } ?>
-          </label>
-        </div>
+        <?php if (!$is_search_results) { ?>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="removeFromExistingFolders">
+            <label class="form-check-label text-danger font-weight-bold" for="removeFromExistingFolders">
+              <?php if (isset($folder_id_to_exclude)) { ?>
+                Move selected properties out of current folder
+              <?php } else { ?>
+                Move selected properties out of existing folders
+              <?php } ?>
+            </label>
+          </div>
+        <?php } ?>
         <div>
           <button type="button" data-action="cancel" class="btn btn-secondary" data-dismiss="modal">Close</button>
           <button type="button" data-action="add" class="btn btn-primary">Add to folder(s)</button>
