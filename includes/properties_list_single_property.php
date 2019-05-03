@@ -71,7 +71,7 @@
         <?php } ?>
       </div>
     <?php } ?>
-    <div class="mr-4">
+    <div class="sm-property-info-column">
       <input type="checkbox" data-property-checkbox value="<?php echo $property['parcel_number']; ?>" />
     </div>
 

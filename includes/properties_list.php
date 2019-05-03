@@ -9,7 +9,10 @@
         <i class="far fa-flag"></i>
       </div>
     <?php } ?>
-    <div class="mr-4">
+    <div class="sm-property-info-column">
+      <div>
+        Select<br /> All
+      </div>
       <input type="checkbox" id="checkAll" name="all">
     </div>
     <div class="mr-2 edit-related text-center">
