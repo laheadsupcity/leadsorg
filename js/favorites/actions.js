@@ -13,6 +13,8 @@ function getSelectedProperties() {
 }
 
 function handleConfirmRemove(folder_id) {
+  var selected_properties = getSelectedProperties();
+
   $.post(
     "remove_properties_favorites_folder.php",
     {
