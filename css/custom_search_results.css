@@ -121,11 +121,13 @@
 }
 
 .private-notes-column.is-not-editing {
+  white-space: pre-wrap;
   background-color: #fef9f7;
   padding: 10px;
 }
 
 .public-notes-column.is-not-editing {
+  white-space: pre-wrap;
   background-color: #fbe8e0;
   padding: 10px;
 }

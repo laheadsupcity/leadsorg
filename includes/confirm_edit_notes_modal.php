@@ -9,7 +9,7 @@
       </div>
       <div class="modal-body">
         Are you sure you would like to save the following notes?
-        <div class="text-primary mt-2" data-new-notes></div>
+        <div class="text-primary mt-2" data-new-notes style="white-space: pre-wrap;"></div>
       </div>
       <div class="modal-footer">
         <button data-action="cancel_edit" type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>

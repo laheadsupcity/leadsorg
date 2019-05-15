@@ -415,24 +415,20 @@
             </div>
             <div style="border:1px solid #337ab7; margin:10px 0 0;">
              <h4 style="text-transform:initial;">Private Notes</h4>
-             <div class="field1data spdata" style="width:100%; height: 59px; overflow-y: scroll;">
-               <?php
+             <div class="field1data spdata note" style="width:100%; height: 59px; overflow-y: scroll;"><?php
                  $user_id = $_SESSION['userdetail']['id'];
                  $private_note = Property::getPrivateNoteForAPN($user_id, $parcel_number);
 
-                 echo isset($private_note) ? $private_note['content'] : "";
-               ?>
-             </div>
+                 echo isset($private_note) ? trim($private_note['content']) : "";
+               ?></div>
             </div>
             <div style="border:1px solid #337ab7; margin:10px 0 0;">
              <h4 style="text-transform:initial;">Notes</h4>
-             <div class="field1data spdata" style="width:100%; height: 59px; overflow-y: scroll;">
-               <?php
+             <div class="field1data spdata note" style="width:100%; height: 59px; overflow-y: scroll;"><?php
                  $public_note = Property::getPublicNoteForAPN($parcel_number);
 
-                 echo isset($public_note) ? $public_note['content'] : "";
-               ?>
-             </div>
+                 echo isset($public_note) ? trim($public_note['content']) : "";
+               ?></div>
             </div>
         </div>
       </div>

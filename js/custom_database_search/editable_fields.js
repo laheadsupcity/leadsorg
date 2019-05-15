@@ -241,7 +241,7 @@ function setupEditableNotes() {
 
     editable_field.find('.form-control').on('focusout keyup', function(event) {
       event.preventDefault();
-      if((event.keyCode && event.keyCode == 13) || event.type == "focusout") {
+      if(event.type == "focusout") {
         makeEdit(id);
       }
     });

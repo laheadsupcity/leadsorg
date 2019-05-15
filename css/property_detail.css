@@ -12,3 +12,7 @@
 .property-case-list tr:nth-child(even) {
   background-color: #f2f2f2;
 }
+
+.note {
+  white-space: pre-wrap;
+}
