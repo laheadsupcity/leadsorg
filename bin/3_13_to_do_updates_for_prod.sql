@@ -1,0 +1,86 @@
+-- 1. Add fk APN on property_cases
+-- 2. Add is_case_open on property_cases_detail
+-- 3. Add fk APN to property_inspection
+-- 4. Add index to is_case_open
+-- 4. TEST TRIGGERS
+--
+
+-- DELETE FROM property_inspection
+-- WHERE APN IN (
+--   4335015013,5030006023,5078005020,5078007004,5078012004,5078022028,5089005010,5093022010,5094021008,5124014005,5134010010,5135004004,5141023004,5142017013,5142023013,5143001014,5152002009,5153018005,5156025015,5183003009,5190023006,5204023003,5423012036,5423023002,5427012006,5432001004,5433024025,5456005035,5459009030,5520017009,5520017010,5527013016,5528003040,5529021047,5534015005,5534025006,5536003018,5542001017,5546003003,5547020030,5555007010,5586027006,5593029032,6038006037
+-- );
+
+-- DELETE FROM property_cases
+-- WHERE APN IN (
+--   4335007021,4335015013,4402008005,5030006023,5077019016,5078005020,5078007004,5078012004,5078022028,5089005010,5093022010,5094021008,5124014005,5134010010,5135004004,5141023004,5142017013,5142023013,5143001014,5152002009,5153018005,5156025015,5183003009,5190023006,5204023003,5423012036,5423023002,5427012006,5432001004,5433024025,5456005035,5459009030,5520017009,5520017010,5527013016,5528003040,5529021047,5534015005,5534025006,5536003018,5542001017,5546003003,5547020030,5555007009,5555007010,5586027006,5593029032,6031017016,6038006037
+-- );
+
+-- ALTER TABLE `property`
+-- DROP INDEX `parcel_number_idx`;
+--
+-- ALTER TABLE `property`
+-- ADD CONSTRAINT `uc_parcel_number`
+-- UNIQUE (`parcel_number`);
+
+-- ALTER TABLE property_inspection
+-- ADD CONSTRAINT fk_APN
+-- FOREIGN KEY (APN) REFERENCES property(parcel_number);
+
+-- ALTER TABLE `property_cases`
+-- ADD CONSTRAINT `fk_property_cases_APN`
+-- FOREIGN KEY (`APN`) REFERENCES `property`(`parcel_number`);
+
+-- ALTER TABLE `property_cases_detail` ADD COLUMN
+-- `is_case_open` BOOLEAN NOT NULL DEFAULT TRUE;
+--
+-- drop procedure if exists derive_open_flag;
+--
+-- delimiter $$
+--
+-- create procedure derive_open_flag(property_case_detail_id int)
+-- BEGIN
+--     DECLARE v_is_case_open boolean DEFAULT TRUE;
+--
+--     select FALSE
+--     into v_is_case_open
+--     from property_inspection
+--     where `property_case_detail_id` = property_case_detail_id
+--     and staus = 'All Violations Resolved Date'
+--     LIMIT 1;
+--
+--     update property_cases_detail
+--     set is_case_open = v_is_case_open
+--     where id = property_case_detail_id
+--     and is_case_open != v_is_case_open;
+-- END;
+-- $$
+--
+-- delimiter ;
+--
+-- delimiter $$
+--
+-- create trigger property_inspection_rai
+-- after insert on property_inspection
+-- for each row
+-- BEGIN
+--   call derive_open_flag(new.property_case_detail_id);
+-- END;
+-- $$
+--
+-- create trigger property_inspection_rau
+-- after update on property_inspection
+-- for each row
+-- BEGIN
+--   call derive_open_flag(new.property_case_detail_id);
+-- END;
+-- $$
+--
+-- create trigger property_inspection_rad
+-- after delete on property_inspection
+-- for each row
+-- BEGIN
+--   call derive_open_flag(old.property_case_detail_id);
+-- END;
+-- $$
+--
+-- delimiter ;
