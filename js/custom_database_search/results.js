@@ -246,7 +246,7 @@ $(document).ready(function() {
 
   setupSortableColumns();
 
-  $('.results-pagination a').click(function(event) {
+  $('.pagination a').click(function(event) {
     handlePagination(event);
   });
 

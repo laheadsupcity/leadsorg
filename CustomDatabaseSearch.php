@@ -73,6 +73,9 @@ class CustomDatabaseSearch {
 
   public function getResults($limit = 100, $page = 1)
   {
+      $limit = (int) $limit;
+      $offset = ((int) $page - 1) * $limit;
+
       $conditions = $this->getConditions();
 
       $included_case_types_expr = $this->case_type_filter_builder->getIncludedIDsExpression();
@@ -132,32 +135,22 @@ class CustomDatabaseSearch {
 
       $apns_to_cases_map = [];
 
-      $last_apn = null;
-      $limit_reached = false;
       foreach ($apns_and_cases as $entry) {
         $apn = $entry['parcel_number'];
         $pcid = $entry['pcid'];
         $case_type = $entry['case_type'];
         $case_number = $entry['case_id'];
 
-        if ($limit_reached && $last_apn != $apn) {
-          break;
-        }
-
         $apns_to_cases_map[$apn][] = [
           'type' => $case_type,
           'pcid' => $pcid,
           'case_number' => $case_number
         ];
-
-        $last_apn = $apn;
-
-        if (count($apns_to_cases_map) == $limit) {
-          $limit_reached = true;
-        }
       }
 
-      $apns_to_search = array_keys($apns_to_cases_map);
+      $matching_apns = array_keys($apns_to_cases_map);
+
+      $apns_to_search = array_slice($matching_apns, $offset, $limit);
 
       $property_query = sprintf(
         "SELECT
@@ -191,15 +184,12 @@ class CustomDatabaseSearch {
         implode('","', $apns_to_search)
       );
 
-      // ADD THIS BACK IN WHEN QUERY IS MORE PERFORMANT
-      // $this->db->query("SELECT FOUND_ROWS();");
-
       $this->db->query($property_query);
 
       $results = $this->db->result_array();
 
       $this->result_apns = $apns_to_search;
-      $this->results_count = count($results); // $this->db->result_array()[0]["FOUND_ROWS()"];
+      $this->results_count = count($matching_apns);
       $this->matching_cases_map = $apns_to_cases_map;
 
       return $results;
