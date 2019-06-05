@@ -201,6 +201,16 @@
                 </div>
               </div>
 
+              <div data-note-content-filter class="mb-2">
+                <div class="heading mb-2">
+                  Notes
+                  <div>
+                    <small>To search properties with any notes content, select checkbox and leave input blank</small>
+                  </div>
+                </div>
+                <?php require('includes/notes_content_filter.php'); ?>
+              </div>
+
               <div data-case-type-filter>
                 <div class="heading mb-2">Open Case Type</div>
                 <?php require('includes/case_type_filter.php'); ?>

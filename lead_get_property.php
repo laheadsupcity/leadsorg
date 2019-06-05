@@ -50,13 +50,17 @@
       'year_built_min' => $_GET['year_built_min'],
       'year_built_max' => $_GET['year_built_max'],
       'sales_date_from' => $_GET['sales_date_from'],
-      'sales_date_to' => $_GET['sales_date_to']
+      'sales_date_to' => $_GET['sales_date_to'],
+      'filter_on_notes' => $_GET['filter_on_notes'],
+      'notes_content_to_match' => $_GET['notes_content_to_match']
     );
 
     $current_page = isset($_GET["page"]) ? $_GET["page"] : 1;
     $num_rec_per_page = isset($_REQUEST['num_rec_per_page']) ? $_REQUEST['num_rec_per_page'] : 1000;
 
-    $searcher = new CustomDatabaseSearch($search_params);
+    $user_id = $_SESSION['userdetail']['id'];
+
+    $searcher = new CustomDatabaseSearch($user_id, $search_params);
     $properties = $searcher->getResults($num_rec_per_page, $current_page);
     $matching_cases = $searcher->getMatchingCasesForProperties();
     $related_properties_counts = $searcher->getRelatedPropertiesCounts();

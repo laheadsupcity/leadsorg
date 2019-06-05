@@ -133,7 +133,9 @@ function handleFormSubmit(form) {
     num_stories_max: null,
     cost_per_sq_ft_min: null,
     cost_per_sq_ft_max: null,
-    case_types: {}
+    case_types: {},
+    filter_on_notes: false,
+    notes_content_to_match: null
   };
 
   $.each(form.serializeArray(), function(_, key_value) {

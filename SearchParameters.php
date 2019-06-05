@@ -167,4 +167,12 @@ class SearchParameters {
     return $case_type;
   }
 
+  public function isFilteringOnNotes() {
+    return $this->search_params['filter_on_notes'] == "on";
+  }
+
+  public function getNotesContentToMatch() {
+    return $this->search_params['notes_content_to_match'];
+  }
+
 }

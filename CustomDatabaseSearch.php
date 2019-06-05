@@ -6,14 +6,16 @@ include('SearchParameters.php');
 class CustomDatabaseSearch {
 
   private $search_params;
+  private $user_id;
   private $results_count;
   private $apns_to_cases_map;
   private $result_apns;
   private $case_type_filter_builder;
 
-  function __construct($search_param_data)
+  function __construct($user_id, $search_param_data)
   {
     $this->db = Database::instance();
+    $this->user_id = $user_id;
     $this->search_params = new SearchParameters($search_param_data);
 
     $case_type_filters = $this->search_params->getCaseTypeFilters();
@@ -148,7 +150,7 @@ class CustomDatabaseSearch {
         ];
       }
 
-      $matching_apns = array_keys($apns_to_cases_map);
+      $matching_apns = $this->filterOnNotes($apns_to_cases_map);
 
       $apns_to_search = array_slice($matching_apns, $offset, $limit);
 
@@ -193,6 +195,54 @@ class CustomDatabaseSearch {
       $this->matching_cases_map = $apns_to_cases_map;
 
       return $results;
+  }
+
+  public function filterOnNotes($apns_to_cases_map) {
+    $matching_apns = array_keys($apns_to_cases_map);
+    if (!$this->search_params->isFilteringOnNotes()) {
+      return $matching_apns;
+    }
+
+    $notes_content_to_match_clause = "";
+    if (!empty($this->search_params->getNotesContentToMatch())) {
+      $notes_content_to_match_clause = sprintf(
+        "
+          AND
+          `content` LIKE '%%%s%%'
+        ",
+        $this->search_params->getNotesContentToMatch()
+      );
+    }
+
+    $query = sprintf(
+      "
+        SELECT
+          `parcel_number`
+        FROM
+          `property_notes`
+        WHERE
+          `parcel_number` IN ('%s') AND
+          (
+            `is_private` = 0 OR
+            `user_id` = %s
+          )
+          %s
+      ",
+      implode($matching_apns, "','"),
+      $this->user_id,
+      $notes_content_to_match_clause
+    );
+
+    $this->db->query($query);
+
+    $results = $this->db->result_array();
+
+    return array_map(
+      function($result) {
+        return $result['parcel_number'];
+      },
+      $results
+    );
   }
 
   public function getRelatedPropertiesCounts() {
