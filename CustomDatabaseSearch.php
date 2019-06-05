@@ -222,6 +222,7 @@ class CustomDatabaseSearch {
           `property_notes`
         WHERE
           `parcel_number` IN ('%s') AND
+          `content` <> '' AND
           (
             `is_private` = 0 OR
             `user_id` = %s
