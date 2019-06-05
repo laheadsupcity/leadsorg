@@ -217,7 +217,7 @@ class CustomDatabaseSearch {
     $query = sprintf(
       "
         SELECT
-          `parcel_number`
+          DISTINCT `parcel_number`
         FROM
           `property_notes`
         WHERE
