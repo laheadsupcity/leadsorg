@@ -26,7 +26,11 @@ function getCheckedProperties() {
     checkedProperties.push($(this).val());
   });
 
-  return checkedProperties.join(',');
+  return checkedProperties;
+}
+
+function openProperty(property_element) {
+  window.open($(property_element).data('property-url'));
 }
 
 function resetLeadBatchModalErrors() {
@@ -42,6 +46,15 @@ function resetLeadBatchModal() {
   $('#batchNameExists').hide();
 
   $(modal).find('#batchName').val("");
+}
+
+function handleOpenAll() {
+  var selected_properties = getCheckedProperties();
+
+  selected_properties.forEach(function(parcel_number) {
+    let property = $('[data-parcel_number="' + parcel_number + '"]')
+    openProperty(property);
+  });
 }
 
 $(document).ready(function() {
@@ -77,7 +90,7 @@ $(document).ready(function() {
           url: "lead_batch.php",
           dataType: 'json',
           data: {
-            'check': checked_properties,
+            'check': checked_properties.join(','),
             'name': name
           },
           success: function(data) {
@@ -193,7 +206,11 @@ $(document).ready(function() {
       return;
     }
 
-    window.open($(event.currentTarget).data('property-url'));
+    openProperty($(event.currentTarget));
+  });
+
+  $('[data-action="open_all"]').click(function(event) {
+    handleOpenAll();
   });
 
 });

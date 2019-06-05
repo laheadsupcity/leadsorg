@@ -76,6 +76,7 @@
             <div class="d-flex" style="height: 44px;">
               <button id="export_properties_csv_button" class="mr-1 btn btn-primary">Export selected</button>
               <button data-toggle="modal" data-target="#addToFavoritesFolderModal" class="mr-1 btn btn-primary">Add to folder(s)</button>
+              <button data-action="open_all" class="mr-1 btn btn-primary">Open All</button>
               <button data-action="reset_flags" class="btn btn-info mr-1">Reset flags</button>
               <button data-action="remove_from_folder" class="btn btn-warning mr-3">Remove selected</button>
 

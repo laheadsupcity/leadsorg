@@ -97,6 +97,7 @@
         <button type="submit" class="btn btn-primary mr-1" data-toggle="modal" data-target="#createLeadBatchModal">Create Lead Batch</button>
         <button type="submit" id="export_properties_csv_button" class="btn btn-primary mr-1">Export Selected</button>
         <button type="button" class="btn btn-primary mr-1" data-toggle="modal" data-target="#addToFavoritesFolderModal">Add to Favorites</button>
+        <button data-action="open_all" type="button" class="btn btn-primary">Open All</button>
       </div>
 
     <?php } else { ?>
