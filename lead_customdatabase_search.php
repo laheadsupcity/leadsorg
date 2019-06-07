@@ -201,7 +201,7 @@
                 </div>
               </div>
 
-              <div data-note-content-filter class="mb-2">
+              <div class="mb-4">
                 <div class="heading mb-2">
                   Notes
                   <div>
@@ -209,6 +209,20 @@
                   </div>
                 </div>
                 <?php require('includes/notes_content_filter.php'); ?>
+              </div>
+
+              <div class="mb-3">
+                <div class="heading mb-2">
+                  Case Status
+                  <div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" value="on" name="is_open_cases_exclusively" id="is_open_cases_exclusively" checked>
+                      <label class="form-check-label" for="is_open_cases_exclusively">
+                        Properties with open cases only
+                      </label>
+                    </div>
+                  </div>
+                </div>
               </div>
 
               <div data-case-type-filter>

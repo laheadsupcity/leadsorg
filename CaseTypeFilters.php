@@ -40,8 +40,8 @@ class CaseTypeFilters {
     return $this->inclusion_filters;
   }
 
-  public function getExclusionFilters() {
-    return $this->exclusion_filters;
+  public function hasExclusionFilters() {
+    return !empty($this->exclusion_filters);
   }
 
   public function getIncludedIDsExpression() {

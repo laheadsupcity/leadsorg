@@ -167,6 +167,10 @@ class SearchParameters {
     return $case_type;
   }
 
+  public function isPropertiesWithOpenCasesExclusively() {
+    return $this->search_params['is_open_cases_exclusively'] == "on";
+  }
+
   public function isFilteringOnNotes() {
     return $this->search_params['filter_on_notes'] == "on";
   }

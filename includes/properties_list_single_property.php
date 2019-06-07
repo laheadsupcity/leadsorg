@@ -15,17 +15,21 @@
     isset($related_properties_counts[$owner_address]) ? $related_properties_counts[$owner_address] : 0;
 
   $has_related_properties = $related_properties_for_owner_count > 0;
-
   if ($show_matching_cases) {
-    $matching_cases_for_property = $matching_cases[$property['parcel_number']];
+    $matching_cases_for_property = [];
+    foreach ($matching_cases as $case) {
+      if ((int) $case['parcel_number'] == (int) $property['parcel_number']) {
+        $matching_cases_for_property[] = $case;
+      }
+    }
 
     $matching_cases_for_property_string = implode(', ',
       array_map(
         function($matching_case) {
           return sprintf(
             "%s (%s)",
-            $matching_case['type'],
-            $matching_case['case_number']
+            $matching_case['case_type'],
+            $matching_case['case_id']
           );
         },
         $matching_cases_for_property

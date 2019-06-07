@@ -26,7 +26,7 @@
   <?php
     include('nav.php');
 
-    $search_params=array(
+    $search_params = array(
       'num_units_min' => $_GET['num_units_min'],
       'num_units_max' => $_GET['num_units_max'],
       'zip' => isset($_GET['zip_codes']) ? $_GET['zip_codes'] : [],
@@ -51,6 +51,7 @@
       'year_built_max' => $_GET['year_built_max'],
       'sales_date_from' => $_GET['sales_date_from'],
       'sales_date_to' => $_GET['sales_date_to'],
+      'is_open_cases_exclusively' => $_GET['is_open_cases_exclusively'],
       'filter_on_notes' => $_GET['filter_on_notes'],
       'notes_content_to_match' => $_GET['notes_content_to_match']
     );

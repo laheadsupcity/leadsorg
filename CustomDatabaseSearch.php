@@ -39,16 +39,7 @@ class CustomDatabaseSearch {
       }
     }
 
-    $expression = implode(" OR ", $clauses);
-
-    if (empty($expression)) {
-      return "";
-    } else {
-      return sprintf(
-        "%s AND",
-        $expression
-      );
-    }
+    return implode(" OR ", $clauses);
   }
 
   private function getExclusionSubquery()
@@ -56,149 +47,191 @@ class CustomDatabaseSearch {
     $expr = $this->case_type_filter_builder->getExcludedIDsExpression();
 
     if (empty($expr)) {
-      return null;
+      return "";
     }
 
+    $clauses = [];
+
+    if ($this->search_params->isPropertiesWithOpenCasesExclusively()) {
+      $clauses[] = "COUNT(IF(`staus`='All Violations Resolved Date', 1, NULL)) = 0";
+    }
+
+    $having_clauses = "HAVING " . implode($clauses, " AND ");
+
     $query = sprintf(
-      'LEFT JOIN (
-        SELECT APN FROM property_inspection
-        WHERE case_type_id IN ("%s")
-        GROUP BY APN, property_case_detail_id
-        HAVING COUNT(IF(staus="All Violations Resolved Date", 1, NULL)) = 0
-      ) AS open_excluded_cases
-      ON p.parcel_number = open_excluded_cases.APN',
-      $expr
+      "
+        LEFT JOIN (
+          SELECT
+            `APN`
+          FROM
+            `property_inspection`
+          WHERE
+            `case_type_id` IN ('%s')
+          GROUP BY
+            `APN`,
+            `property_case_detail_id`
+          %s
+        ) AS `open_excluded_cases`
+        ON `p`.`parcel_number` = `open_excluded_cases`.`APN`
+      ",
+      $expr,
+      empty($clauses) ? "" : $having_clauses
     );
 
     return $query;
   }
 
-  public function getResults($limit = 100, $page = 1)
-  {
-      $limit = (int) $limit;
-      $offset = ((int) $page - 1) * $limit;
+  private function getHavingClauseForMatchingCases() {
+    $clauses = [];
 
-      $conditions = $this->getConditions();
+    $inclusion_clauses = $this->getStatusInclusionClauses();
 
-      $included_case_types_expr = $this->case_type_filter_builder->getIncludedIDsExpression();
-      $inclusion_clauses = $this->getStatusInclusionClauses();
+    if (!empty($inclusion_clauses)) {
+      $clauses[] = $inclusion_clauses;
+    }
 
-      $exclusion_subquery = $this->getExclusionSubquery();
+    if ($this->search_params->isPropertiesWithOpenCasesExclusively()) {
+      $clauses[] = "COUNT(IF(staus='All Violations Resolved Date', 1, NULL)) = 0";
+    }
 
-      if (isset($exclusion_subquery)) {
-        $conditions[] = "open_excluded_cases.APN IS NULL";
-      }
-
-      $case_closed_date_clause = $this->getCaseClosedDateClause();
-      if(isset($case_closed_date_clause)) {
-        $conditions[] = $case_closed_date_clause;
-      }
-
-      if (!empty($conditions)) {
-        $where = implode(' AND ', $conditions);
-      }
-
-      $query = sprintf(
-        "SELECT
-          p.parcel_number,
-          cases.pcid,
-          cases.case_type,
-          cases.case_id
-        FROM (
-          SELECT APN, property_case_detail_id FROM property_inspection AS pi
-          %s
-          GROUP BY APN, property_case_detail_id
-          HAVING %s
-          COUNT(IF(staus=\"All Violations Resolved Date\", 1, NULL)) = 0
-        ) as open_cases
-        JOIN property AS p ON (
-          p.parcel_number = open_cases.APN
-        )
-        JOIN property_cases_detail AS pcd ON (
-          pcd.id = open_cases.property_case_detail_id AND
-          pcd.apn = open_cases.APN
-        )
-        JOIN property_cases AS cases ON (
-          cases.pcid = pcd.property_case_id AND
-          cases.APN = pcd.apn
-        )
-        %s
-        %s
-        ORDER BY p.parcel_number;",
-        isset($included_case_types_expr) ? sprintf(" WHERE pi.case_type_id IN ('%s')", $included_case_types_expr) : "",
-        !empty($inclusion_clauses) ? $inclusion_clauses : "",
-        isset($exclusion_subquery) ? $exclusion_subquery : "",
-        isset($where) ? " WHERE $where" : ""
+    if (empty($clauses)) {
+      return "";
+    } else {
+      return sprintf(
+        "
+          HAVING
+            %s
+        ",
+        implode($clauses, " AND ")
       );
-
-      $this->db->query($query);
-
-      $apns_and_cases = $this->db->result_array();
-
-      $apns_to_cases_map = [];
-
-      foreach ($apns_and_cases as $entry) {
-        $apn = $entry['parcel_number'];
-        $pcid = $entry['pcid'];
-        $case_type = $entry['case_type'];
-        $case_number = $entry['case_id'];
-
-        $apns_to_cases_map[$apn][] = [
-          'type' => $case_type,
-          'pcid' => $pcid,
-          'case_number' => $case_number
-        ];
-      }
-
-      $matching_apns = $this->filterOnNotes($apns_to_cases_map);
-
-      $apns_to_search = array_slice($matching_apns, $offset, $limit);
-
-      $property_query = sprintf(
-        "SELECT
-        p.parcel_number,
-        p.street_number,
-        p.street_name,
-        p.site_address_city_state,
-        p.site_address_zip,
-        p.owner_name2,
-        p.full_mail_address,
-        p.mail_address_zip,
-        p.number_of_units,
-        p.number_of_stories,
-        p.bedrooms,
-        p.bathrooms,
-        p.lot_area_sqft,
-        p.building_area,
-        p.cost_per_sq_ft,
-        p.year_built,
-        p.sales_date,
-        p.sales_price,
-        p.phone1,
-        p.phone2,
-        p.email1,
-        p.email2,
-        p.owner_address_and_zip,
-        p.id
-        FROM `property` AS p WHERE p.parcel_number IN (
-          \"%s\"
-        );",
-        implode('","', $apns_to_search)
-      );
-
-      $this->db->query($property_query);
-
-      $results = $this->db->result_array();
-
-      $this->result_apns = $apns_to_search;
-      $this->results_count = count($matching_apns);
-      $this->matching_cases_map = $apns_to_cases_map;
-
-      return $results;
+    }
   }
 
-  public function filterOnNotes($apns_to_cases_map) {
-    $matching_apns = array_keys($apns_to_cases_map);
+  private function getMatchingCasesResults() {
+    $included_case_types_expr = $this->case_type_filter_builder->getIncludedIDsExpression();
+
+    $conditions = $this->getConditions();
+
+    if ($this->case_type_filter_builder->hasExclusionFilters()) {
+      $conditions[] = "open_excluded_cases.APN IS NULL";
+    }
+
+    $case_closed_date_clause = $this->getCaseClosedDateClause();
+    if(isset($case_closed_date_clause)) {
+      $conditions[] = $case_closed_date_clause;
+    }
+
+    if (!empty($conditions)) {
+      $where = implode(' AND ', $conditions);
+    }
+
+    $query = sprintf(
+      "SELECT
+        `p`.`parcel_number`,
+        `cases`.`pcid`,
+        `cases`.`case_type`,
+        `cases`.`case_id`
+      FROM (
+        SELECT
+          `APN`,
+          `property_case_detail_id`
+        FROM
+          `property_inspection` AS `pi`
+          %s
+        GROUP BY
+          `APN`,
+          `property_case_detail_id`
+          %s
+      ) as `matching_cases`
+      JOIN `property` AS `p` ON (
+        `p`.`parcel_number` = `matching_cases`.`APN`
+      )
+      JOIN `property_cases_detail` AS `pcd` ON (
+        `pcd`.`id` = `matching_cases`.`property_case_detail_id` AND
+        `pcd`.`apn` = `matching_cases`.`APN`
+      )
+      JOIN `property_cases` AS `cases` ON (
+        `cases`.`pcid` = `pcd`.`property_case_id` AND
+        `cases`.`APN` = `pcd`.`apn`
+      )
+      %s
+      %s
+      ORDER BY `p`.`parcel_number`;",
+      isset($included_case_types_expr) ? sprintf(" WHERE pi.case_type_id IN ('%s')", $included_case_types_expr) : "",
+      $this->getHavingClauseForMatchingCases(),
+      $this->getExclusionSubquery(),
+      isset($where) ? " WHERE $where" : ""
+    );
+
+    $this->db->query($query);
+
+    return $this->db->result_array();
+  }
+
+  public function getResults($limit = 100, $page = 1)
+  {
+    $limit = (int) $limit;
+    $offset = ((int) $page - 1) * $limit;
+
+    $cases_results = $this->getMatchingCasesResults();
+
+    $matching_apns = $this->filterOnNotes($cases_results);
+
+    $apns_to_search = array_slice($matching_apns, $offset, $limit);
+
+    $property_query = sprintf(
+      "SELECT
+      p.parcel_number,
+      p.street_number,
+      p.street_name,
+      p.site_address_city_state,
+      p.site_address_zip,
+      p.owner_name2,
+      p.full_mail_address,
+      p.mail_address_zip,
+      p.number_of_units,
+      p.number_of_stories,
+      p.bedrooms,
+      p.bathrooms,
+      p.lot_area_sqft,
+      p.building_area,
+      p.cost_per_sq_ft,
+      p.year_built,
+      p.sales_date,
+      p.sales_price,
+      p.phone1,
+      p.phone2,
+      p.email1,
+      p.email2,
+      p.owner_address_and_zip,
+      p.id
+      FROM `property` AS p WHERE p.parcel_number IN (
+        \"%s\"
+      );",
+      implode('","', $apns_to_search)
+    );
+
+    $this->db->query($property_query);
+
+    $results = $this->db->result_array();
+
+    $this->result_apns = $apns_to_search;
+    $this->results_count = count($matching_apns);
+    $this->matching_cases_data = $cases_results;
+
+    return $results;
+  }
+
+  public function filterOnNotes($cases_results) {
+    $matching_apns = array_unique(
+      array_map(
+        function($result) {
+          return $result['parcel_number'];
+        },
+        $cases_results
+      )
+    );
+
     if (!$this->search_params->isFilteringOnNotes()) {
       return $matching_apns;
     }
@@ -294,7 +327,7 @@ class CustomDatabaseSearch {
 
   public function getMatchingCasesForProperties()
   {
-    return $this->matching_cases_map;
+    return $this->matching_cases_data;
   }
 
   public function getConditions() {

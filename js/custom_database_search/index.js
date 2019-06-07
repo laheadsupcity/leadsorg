@@ -134,6 +134,7 @@ function handleFormSubmit(form) {
     cost_per_sq_ft_min: null,
     cost_per_sq_ft_max: null,
     case_types: {},
+    is_open_cases_exclusively: true,
     filter_on_notes: false,
     notes_content_to_match: null
   };
