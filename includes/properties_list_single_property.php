@@ -1,7 +1,7 @@
 <?php
   require_once('Property.php');
 
-  $user_id = $_SESSION['userdetail']['id'];
+  $user_id = $_SESSION['userdetail']['id'] ? $_SESSION['userdetail']['id'] : $_GET['user_id'] ;
 
   $favorites_folders = $favorites->getFavoritesFoldersForAPN(
     $user_id,
@@ -76,12 +76,14 @@
       </div>
     <?php } ?>
     <div class="sm-property-info-column">
-      <input type="checkbox" data-property-checkbox value="<?php echo $property['parcel_number']; ?>" />
+      <input type="checkbox" data-property-checkbox value="<?php echo $property['parcel_number']; ?>" <?php echo($select_all ? "checked" : ""); ?> />
     </div>
 
-    <div class="mr-2 edit-related text-center">
-      <input type="checkbox" data-edit-related-checkbox name="all" value="<?php echo $property['parcel_number']; ?>" checked>
-    </div>
+    <?php if (!$read_only_fields) { ?>
+      <div class="mr-2 edit-related text-center">
+        <input type="checkbox" data-edit-related-checkbox name="all" value="<?php echo $property['parcel_number']; ?>" checked>
+      </div>
+    <?php } ?>
 
     <?php if ($include_related_properties) { ?>
       <div class="sm-property-info-column related-properties property-info-column sortable-column text-center font-weight-bold">

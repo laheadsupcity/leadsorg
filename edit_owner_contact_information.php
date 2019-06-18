@@ -4,7 +4,7 @@ require_once('config.php');
 $parcel_number = $_POST['parcel_number'];
 $field = $_POST['field'];
 $value = $_POST['value'];
-$edit_related = $_POST['edit_related'] == "true";
+$related_properties_to_edit = $_POST['related_properties_to_edit'];
 
 $owner_address = $db->select(
   'property',
@@ -17,9 +17,11 @@ $owner_address = $db->select(
 
 $owner_address = $db->result_array()[0]['full_mail_address'];
 
-$where_clause = $edit_related && !empty($owner_address)?
-  array(
-    'full_mail_address' => $owner_address
+$where_clause = !empty($related_properties_to_edit) ?
+  sprintf(
+    "parcel_number IN ('%s') OR parcel_number = %s",
+    implode($related_properties_to_edit, "','"),
+    $parcel_number
   ) :
   array('parcel_number' => $parcel_number);
 

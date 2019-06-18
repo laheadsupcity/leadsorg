@@ -25,23 +25,41 @@ function getOwnerName(editable_field) {
   return editable_field.parents('.property-item').data('owner_name');
 }
 
-function shouldEditRelated(parcel_number) {
-  var property_row = $('[data-parcel_number=' + parcel_number + ']'),
+function shouldEditRelated(edited_field_data) {
+  var property_row = $('[data-parcel_number=' + edited_field_data.parcel_number + ']'),
       edit_related_checkbox = property_row.find('[data-edit-related-checkbox]');
 
   return edit_related_checkbox.prop('checked');
 }
 
-function confirmContactInfoEdit(edited_field_data) {
-  var related_properties_copy = $('#editContactInfoModal [data-related-properties]');
+function getRelatedPropertiesTableForAPN(parcel_number, callback) {
+  $.get(
+    'related_properties_table.php',
+    {
+      'user_id': getUserID(),
+      'parcel_number': parcel_number
+    },
+    callback
+  );
+}
 
-  var edit_related = shouldEditRelated(edited_field_data.parcel_number);
-  var related_count = 0;
+function confirmContactInfoEdit(edited_field_data) {
+  var related_properties_table = $('#editContactInfoModal [data-related-properties]');
+  related_properties_table.empty();
+
+  var edit_related = shouldEditRelated(edited_field_data);
+
   if (edit_related) {
-    related_count = $('#' + edited_field_data.id).parents('.property-item').data('related_properties');
-    related_properties_copy.find('[data-count]').html(related_count);
+    getRelatedPropertiesTableForAPN(
+      edited_field_data.parcel_number,
+      function(data) {
+        related_properties_table.html(data);
+        related_properties_table.prop('hidden', !(edit_related && data != ""));
+      }
+    );
   }
-  related_properties_copy.prop('hidden', !(edit_related && related_count > 0));
+
+
 
   $('#editContactInfoModal [data-owner-name]').html(edited_field_data.owner_name.trim());
   $('#editContactInfoModal [data-new-contact-info]').html(
@@ -160,13 +178,20 @@ function setupEditableContactInfoFields() {
     editable_field.find('.form-control').on('focusout keyup', function(event) {
       event.preventDefault();
       if((event.keyCode && event.keyCode == 13) || event.type == "focusout") {
-        makeEdit(id);
+        if (!$('#editContactInfoModal').is(':visible')) {
+          makeEdit(id);
+        }
       }
     });
   });
 
   $('#editContactInfoModal [data-action=confirm_edit]').click(function() {
-    var edited_field_data = Object.values(editable_fields).filter(field => field.is_editing)[0];
+    var edited_field_data = Object.values(editable_fields).filter(field => field.is_editing)[0],
+        related_properties_to_edit = $('#editContactInfoModal').find('[data-property-checkbox]:checked').map(
+          function() {
+            return this.value;
+          }
+        );
 
     $.post(
       "edit_owner_contact_information.php",
@@ -174,7 +199,7 @@ function setupEditableContactInfoFields() {
         parcel_number: edited_field_data.parcel_number,
         field: edited_field_data.field,
         value: edited_field_data.new_value,
-        edit_related: edited_field_data.edit_related
+        related_properties_to_edit: related_properties_to_edit.toArray()
       },
       function(data) {
         data = JSON.parse(data);
@@ -239,7 +264,7 @@ function setupEditableNotes() {
       toggleEdit(id);
     });
 
-    editable_field.find('.form-control').on('focusout keyup', function(event) {
+    editable_field.find('.form-control').on('focusout', function(event) {
       event.preventDefault();
       if(event.type == "focusout") {
         makeEdit(id);

@@ -239,7 +239,7 @@ function handlePageSizeChange(event) {
 function resizePropertyList() {
   var window_height = $(window).height();
 
-  $('.property-list').height(window_height - 300);
+  $('.property-list').height(window_height - 350);
 }
 
 $(document).ready(function() {

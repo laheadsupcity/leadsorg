@@ -59,7 +59,7 @@ function handleOpenAll() {
 
 $(document).ready(function() {
 
-  $("[data-property-checkbox],#checkAll").change(function() {
+  $("[data-property-checkbox],[data-check-all]").change(function() {
     $('#selectPropertiesWarning').prop('hidden', true);
   });
 
@@ -111,8 +111,8 @@ $(document).ready(function() {
     });
   }
 
-  $("#checkAll").click(function() {
-    $('[data-property-checkbox]').not(this).prop('checked', this.checked);
+  $(document).on('click', "[data-check-all]", function() {
+    $(this).closest('.property-list-group').find('[data-property-checkbox]').not(this).prop('checked', this.checked);
   });
 
   $('[data-target="#createLeadBatchModal"],[data-target="#addToFavoritesFolderModal"]').click(function(event) {
