@@ -118,7 +118,7 @@ function toggleEdit(id) {
     input.focus();
   } else {
     var new_content = editable_fields[id].current_value == "" ?
-      unknownFieldMarkup :
+      (editable_fields[id].type == TYPE_NOTES ? noNotesMarkup : unknownFieldMarkup) :
       editable_fields[id].current_value;
 
     value_element.html(new_content);
