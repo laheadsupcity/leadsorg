@@ -1,6 +1,7 @@
 <?php
   require_once('config.php');
   require_once('Property.php');
+  require_once('LoggedInUser.php');
 
   $parcel_number = $_GET['parcel_number'];
   $properties = Property::getRelatedPropertiesForAPN($parcel_number);
@@ -29,6 +30,8 @@
 <body>
   <?php
     include('nav.php');
+
+    $is_admin_user = LoggedInUser::isAdminUser($user_id);
   ?>
 
   <div class="main-content mx-auto pl-4 pr-4">
@@ -49,7 +52,9 @@
 
       <?php require('includes/search_results/pagination.php'); ?>
       <div class="mt-3 mb-3 d-flex align-items-center">
-        <button type="submit" class="btn btn-primary mr-1" data-toggle="modal" data-target="#createLeadBatchModal">Create Lead Batch</button>
+        <?php if ($is_admin_user) { ?>
+          <button type="submit" class="btn btn-primary mr-1" data-toggle="modal" data-target="#createLeadBatchModal">Create Lead Batch</button>
+        <?php } ?>
         <button type="submit" id="export_properties_csv_button" class="btn btn-primary mr-1">Export Selected</button>
         <button type="button" class="btn btn-primary mr-1" data-toggle="modal" data-target="#addToFavoritesFolderModal">Add to Favorites</button>
       </div>

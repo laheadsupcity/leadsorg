@@ -2,7 +2,6 @@
   require_once('FavoriteProperties.php');
   require_once('LoggedInUser.php');
 
-
   // csmail added set_error_handler, so that this warning goes in to the void
   // temporary fix since the way the previous developers handled sessions is wonky and needs to be overhauled eventually
   // Currently session_start is called in signin.php and called again here, which causes

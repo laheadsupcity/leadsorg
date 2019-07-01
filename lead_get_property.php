@@ -1,6 +1,7 @@
 <?php
   require_once('config.php');
   require_once('CustomDatabaseSearch.php');
+  require_once('LoggedInUser.php');
 ?>
 <!doctype html>
 <html lang="en" style="font-size: 14px;">
@@ -61,6 +62,8 @@
 
     $user_id = $_SESSION['userdetail']['id'];
 
+    $is_admin_user = LoggedInUser::isAdminUser($user_id);
+
     $searcher = new CustomDatabaseSearch($user_id, $search_params);
     $properties = $searcher->getResults($num_rec_per_page, $current_page);
     $matching_cases = $searcher->getMatchingCasesForProperties();
@@ -99,7 +102,9 @@
 
       <?php require('includes/search_results/pagination.php'); ?>
       <div class="mt-3 mb-3 d-flex align-items-center">
-        <button type="submit" class="btn btn-primary mr-1" data-toggle="modal" data-target="#createLeadBatchModal">Create Lead Batch</button>
+        <?php if ($is_admin_user) { ?>
+          <button type="submit" class="btn btn-primary mr-1" data-toggle="modal" data-target="#createLeadBatchModal">Create Lead Batch</button>
+        <?php } ?>
         <button type="submit" id="export_properties_csv_button" class="btn btn-primary mr-1">Export Selected</button>
         <button type="button" class="btn btn-primary mr-1" data-toggle="modal" data-target="#addToFavoritesFolderModal">Add to Favorites</button>
         <button data-action="open_all" type="button" class="btn btn-primary">Open All</button>
