@@ -55,6 +55,7 @@ function confirmContactInfoEdit(edited_field_data) {
       function(data) {
         related_properties_table.html(data);
         related_properties_table.prop('hidden', !(edit_related && data != ""));
+        related_properties_table.height(300);
 
         setupSortableColumns("related_properties_for_" + edited_field_data.parcel_number + '_modal');
       }
