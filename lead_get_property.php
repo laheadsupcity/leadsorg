@@ -94,22 +94,29 @@
         </div>
       </div>
 
-      <?php
-        $show_favorites_flag = false;
-        $show_matching_cases = true;
-        $include_related_properties = true;
-        $id = 'custom_database_search_results';
-        include('includes/properties_list.php');
-      ?>
+      <div data-loading class="d-flex justify-content-center mb-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
+      </div>
+      <div data-results-and-actions class="d-none">
+        <?php
+          $show_favorites_flag = false;
+          $show_matching_cases = true;
+          $include_related_properties = true;
+          $id = 'custom_database_search_results';
+          include('includes/properties_list.php');
+        ?>
 
-      <?php require('includes/search_results/pagination.php'); ?>
-      <div class="mt-3 mb-3 d-flex align-items-center">
-        <?php if ($is_admin_user) { ?>
-          <button type="submit" class="btn btn-primary mr-1" data-toggle="modal" data-target="#createLeadBatchModal">Create Lead Batch</button>
-        <?php } ?>
-        <button type="submit" id="export_properties_csv_button" class="btn btn-primary mr-1">Export Selected</button>
-        <button type="button" class="btn btn-primary mr-1" data-toggle="modal" data-target="#addToFavoritesFolderModal">Add to Favorites</button>
-        <button data-action="open_all" type="button" class="btn btn-primary">Open All</button>
+        <?php require('includes/search_results/pagination.php'); ?>
+        <div class="mt-3 mb-3 d-flex align-items-center">
+          <?php if ($is_admin_user) { ?>
+            <button type="submit" class="btn btn-primary mr-1" data-toggle="modal" data-target="#createLeadBatchModal">Create Lead Batch</button>
+          <?php } ?>
+          <button type="submit" id="export_properties_csv_button" class="btn btn-primary mr-1">Export Selected</button>
+          <button type="button" class="btn btn-primary mr-1" data-toggle="modal" data-target="#addToFavoritesFolderModal">Add to Favorites</button>
+          <button data-action="open_all" type="button" class="btn btn-primary">Open All</button>
+        </div>
       </div>
 
     <?php } else { ?>

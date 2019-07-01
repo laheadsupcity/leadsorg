@@ -112,6 +112,9 @@ function setupSortableColumns(id) {
       handleSortToggle(id, event, column);
     });
   });
+
+  $('[data-loading]').remove();
+  $('[data-results-and-actions]').removeClass('d-none');
 }
 
 function sortProperties(id) {

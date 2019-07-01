@@ -2,6 +2,7 @@
   <?php
     $favorites = new FavoriteProperties();
   ?>
+
   <div
     data-id="<?php echo($id); ?>"
     class="border property-list-group mb-4">
