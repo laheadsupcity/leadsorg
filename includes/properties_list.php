@@ -3,6 +3,7 @@
     $favorites = new FavoriteProperties();
   ?>
   <div
+    data-id="<?php echo($id); ?>"
     class="border property-list-group mb-4">
     <div class="property-item-header border-bottom bg-light font-weight-bold d-flex justify-content-between align-items-end">
       <?php if ($show_favorites_flag) { ?>

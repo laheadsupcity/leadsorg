@@ -17,6 +17,7 @@
 
     <script type="text/javascript" src="js/custom_database_search/actions.js"></script>
     <script type="text/javascript" src="js/custom_database_search/results.js"></script>
+    <script type="text/javascript" src="js/custom_database_search/sortable_table.js"></script>
     <script type="text/javascript" src="js/favorites/actions.js"></script>
     <script type="text/javascript" src="js/favorites/add_favorite_properties.js"></script>
     <script type="text/javascript" src="js/custom_database_search/editable_fields.js"></script>
