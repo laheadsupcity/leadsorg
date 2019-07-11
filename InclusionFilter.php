@@ -44,7 +44,11 @@ class InclusionFilter {
     return !empty(
       array_filter(
         $this->status_filters,
-        create_function('$filter', 'return !$filter->isCaseClosedDateFilter();')
+        function($filter) {
+          return
+            !$filter->isCaseClosedDateFilter() &&
+            !$filter->isCaseOpenedDateFilter();
+        }
       )
     );
   }
@@ -85,14 +89,24 @@ class InclusionFilter {
   private function getStatusExclusions() {
     return array_filter(
       $this->status_filters,
-      create_function('$filter', 'return $filter->isExclude() && !$filter->isCaseClosedDateFilter();')
+      function($filter) {
+        return
+          $filter->isExclude() &&
+          !$filter->isCaseClosedDateFilter() &&
+          !$filter->isCaseOpenedDateFilter();;
+      }
     );
   }
 
   private function getStatusInclusions() {
     return array_filter(
       $this->status_filters,
-      create_function('$filter', 'return !$filter->isExclude() && !$filter->isCaseClosedDateFilter();')
+      function($filter) {
+        return
+          !$filter->isExclude() &&
+          !$filter->isCaseClosedDateFilter() &&
+          !$filter->isCaseOpenedDateFilter();
+      }
     );
   }
 
@@ -101,6 +115,16 @@ class InclusionFilter {
     // Grab the first and only one
     foreach ($this->status_filters as $filter) {
       if ($filter->isCaseClosedDateFilter()) {
+        return $filter;
+      }
+    }
+  }
+
+  public function getCaseOpenedDateFilter() {
+    // There is only one case opened date status filter
+    // Grab the first and only one
+    foreach ($this->status_filters as $filter) {
+      if ($filter->isCaseOpenedDateFilter()) {
         return $filter;
       }
     }

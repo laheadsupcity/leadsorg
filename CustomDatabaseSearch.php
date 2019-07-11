@@ -134,6 +134,11 @@ class CustomDatabaseSearch {
       $conditions[] = $case_closed_date_clause;
     }
 
+    $case_open_date_clause = $this->getCaseOpenedDateClause();
+    if(isset($case_open_date_clause)) {
+      $conditions[] = $case_open_date_clause;
+    }
+
     if (!empty($conditions)) {
       $where = implode(' AND ', $conditions);
     }
@@ -517,6 +522,65 @@ class CustomDatabaseSearch {
           $clause = sprintf(
             "STR_TO_DATE(cases.case_date, '%s') <= %s",
             '%m/%d/%Y',
+            $to_date_expr
+          );
+        }
+      }
+
+      $clause = sprintf(
+        "WHEN cases.case_type_id = %s THEN %s",
+        $inclusion_filter->getCaseTypeID(),
+        $clause
+      );
+
+      $clauses[] = $clause;
+    }
+
+    return sprintf(
+      "(
+          CASE
+            %s
+            ELSE 1=1
+          END
+
+      )",
+      implode(' ', $clauses)
+    );
+  }
+
+  private function getCaseOpenedDateClause() {
+    $case_open_date_filters = $this->case_type_filter_builder->getCaseOpenedDateFilters();
+
+    if (empty($case_open_date_filters)) {
+      return null;
+    }
+
+    $clauses = array();
+    foreach ($case_open_date_filters as $inclusion_filter) {
+      $filter = $inclusion_filter->getCaseOpenedDateFilter();
+      $clause = null;
+      if ($filter->isExclude()) {
+        $clause = "cases.created_date IS NULL \"\"";
+      } else if (!$filter->hasFromDate() && !$filter->hasToDate()) {
+        $clause = "cases.created_date IS NOT NULL";
+      } else {
+        $from_date_expr = $filter->getFromDateAsDateTimeExpression();
+        $to_date_expr = $filter->getToDateAsDateTimeExpression();
+
+        if ($filter->hasFromDate() && $filter->hasToDate()) {
+          $clause = sprintf(
+            "cases.created_date >= '%s' AND cases.created_date <= '%s'",
+            $from_date_expr,
+            $to_date_expr
+          );
+        } else if ($filter->hasFromDate()) {
+          $clause = sprintf(
+            "cases.created_date >= '%s'",
+            $from_date_expr
+          );
+        } else if ($filter->hasToDate()) {
+          $clause = sprintf(
+            "cases.created_date <= '%s'",
             $to_date_expr
           );
         }

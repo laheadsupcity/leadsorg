@@ -9,6 +9,35 @@
     </tr>
   </thead>
   <tbody>
+    <tr class="bg-light border-bottom" data-case-type-id="<?php echo $case_type_entry['case_type_id']; ?>" data-case-status-index="case_open_date">
+      <td class="align-middle">
+        <input type="checkbox" data-include class="form-control" value="case_open_date">
+      </td>
+      <td class="align-middle">
+        Case Opened Date
+      </td>
+      <td class="align-middle">
+        <input
+          data-case-type-<?php echo $case_type_entry['case_type_id']; ?>-status-case_open_date-from-date
+          type="text"
+          style="width: 80px"
+          class="case-status-datepicker form-control form-control-sm"
+          value=""
+        />
+      </td>
+      <td class="align-middle">
+        <input
+          data-case-type-<?php echo $case_type_entry['case_type_id']; ?>-status-case_open_date-to-date
+          type="text"
+          style="width: 80px"
+          class="case-status-datepicker form-control form-control-sm"
+          value=""
+        />
+      </td>
+      <td class="align-middle">
+        <input type="checkbox" data-exclude class="form-control" value="case_open_date">
+      </td>
+    </tr>
     <tr class="bg-light border-bottom" data-case-type-id="<?php echo $case_type_entry['case_type_id']; ?>" data-case-status-index="case_closed_date">
       <td class="align-middle">
         <input type="checkbox" data-include class="form-control" value="case_closed_date">

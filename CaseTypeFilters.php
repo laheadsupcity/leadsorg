@@ -91,4 +91,21 @@ class CaseTypeFilters {
     return $filters;
   }
 
+  public function getCaseOpenedDateFilters() {
+    if (empty($this->getInclusionFilters())) {
+      return array();
+    }
+
+    $filters = [];
+    foreach ($this->getInclusionFilters() as $inclusion_filter) {
+      $case_opened_date_filter = $inclusion_filter->getCaseOpenedDateFilter();
+
+      if (!empty($case_opened_date_filter)) {
+        $filters[] = $inclusion_filter;
+      }
+    }
+
+    return $filters;
+  }
+
 }

@@ -30,6 +30,10 @@ class CaseTypeStatusFilter {
     return $this->getStatus() == "case_closed_date";
   }
 
+  public function isCaseOpenedDateFilter() {
+    return $this->getStatus() == "case_open_date";
+  }
+
   public function getFromDateAsExpression() {
     return sprintf(
       "STR_TO_DATE(\"%s\", '%s')",
@@ -44,6 +48,16 @@ class CaseTypeStatusFilter {
       $this->to_date,
       "%m/%d/%Y"
     );
+  }
+
+  public function getFromDateAsDateTimeExpression() {
+    $from_date = date_create($this->from_date);
+    return date_format($from_date, "Y-m-d H:i:s");
+  }
+
+  public function getToDateAsDateTimeExpression() {
+    $to_date = date_create($this->to_date);
+    return date_format($to_date, "Y-m-d H:i:s");
   }
 
   public function getStatus() {
