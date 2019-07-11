@@ -107,10 +107,23 @@ class CustomDatabaseSearch {
     }
   }
 
-  private function getMatchingCasesResults() {
+  private function filterPropertiesWithMatchingCases($apns_with_matching_notes) {
+    if (isset($apns_with_matching_notes) && count($apns_with_matching_notes) == 0) {
+      // notes filter did not match any properties
+      // shortcut and return empty results
+      return [];
+    }
+
     $included_case_types_expr = $this->case_type_filter_builder->getIncludedIDsExpression();
 
     $conditions = $this->getConditions();
+
+    if (isset($apns_with_matching_notes)) {
+      $conditions[] = sprintf(
+        "`p`.`parcel_number` IN ('%s')",
+        implode($apns_with_matching_notes, "','")
+      );
+    }
 
     if ($this->case_type_filter_builder->hasExclusionFilters()) {
       $conditions[] = "open_excluded_cases.APN IS NULL";
@@ -173,9 +186,19 @@ class CustomDatabaseSearch {
     $limit = (int) $limit;
     $offset = ((int) $page - 1) * $limit;
 
-    $cases_results = $this->getMatchingCasesResults();
+    $apns_with_notes = null;
+    if ($this->search_params->isFilteringOnNotes()) {
+      $apns_with_notes = $this->filterPropertiesWithMatchingNotes();
+    }
 
-    $matching_apns = $this->filterOnNotes($cases_results);
+    $cases_results = $this->filterPropertiesWithMatchingCases($apns_with_notes);
+
+    $matching_apns = array_map(
+      function($result) {
+        return $result['parcel_number'];
+      },
+      $cases_results
+    );
 
     $apns_to_search = array_slice($matching_apns, $offset, $limit);
 
@@ -222,18 +245,9 @@ class CustomDatabaseSearch {
     return $results;
   }
 
-  public function filterOnNotes($cases_results) {
-    $matching_apns = array_unique(
-      array_map(
-        function($result) {
-          return $result['parcel_number'];
-        },
-        $cases_results
-      )
-    );
-
+  public function filterPropertiesWithMatchingNotes() {
     if (!$this->search_params->isFilteringOnNotes()) {
-      return $matching_apns;
+      return null;
     }
 
     $notes_content_to_match_clause = "";
@@ -254,7 +268,6 @@ class CustomDatabaseSearch {
         FROM
           `property_notes`
         WHERE
-          `parcel_number` IN ('%s') AND
           `content` <> '' AND
           (
             `is_private` = 0 OR
@@ -262,7 +275,6 @@ class CustomDatabaseSearch {
           )
           %s
       ",
-      implode($matching_apns, "','"),
       $this->user_id,
       $notes_content_to_match_clause
     );

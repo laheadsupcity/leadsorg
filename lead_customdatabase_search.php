@@ -29,11 +29,13 @@
     <link rel="stylesheet" type="text/css" href="css/jquery.datetimepicker.css"/>
     <link rel="stylesheet" type="text/css" href="css/custom_search.css"/>
     <link rel="stylesheet" type="text/css" href="css/main_content.css"/>
+
     <script type="text/javascript" src="js/jquery.min.js"></script>
     <script type="text/javascript" src="js/moment.js"></script>
     <script src="js/jquery.datetimepicker.full.min.js"></script>
     <script type="text/javascript" src="js/multiselect.js"></script>
     <script type="text/javascript" src="js/myscr.js"></script>
+
     <script type="text/javascript" src="js/custom_database_search/index.js"></script>
     <style>
       .active1{background:#337ab7!important;}

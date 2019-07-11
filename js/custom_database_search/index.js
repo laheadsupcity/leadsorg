@@ -344,6 +344,16 @@ function setupCaseStatusDatePickers(case_type_id) {
   });
 }
 
+function handleNotesFilterChange(event) {
+  var notes_input = $(event.target),
+      notes_checkbox = $('[data-notes-filter-checkbox]'),
+      notes_value = notes_input.val();
+
+  if (notes_value.length > 0) {
+    notes_checkbox.prop('checked', true);
+  }
+}
+
 $(document).ready(function() {
 
   $('.case-type-datepicker').datetimepicker({
@@ -355,6 +365,10 @@ $(document).ready(function() {
   $('.case-type-datepicker, .case-status-datepicker').change(function(event) {
     handleDateRangeChange(event);
   });
+
+  $('[data-notes-filter-input]').change(function() {
+    handleNotesFilterChange(event);
+  })
 
   // setup datepickers for statuses only if case type is selected
   // this is to avoid a performance issue
