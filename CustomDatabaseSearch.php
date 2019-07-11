@@ -193,12 +193,12 @@ class CustomDatabaseSearch {
 
     $cases_results = $this->filterPropertiesWithMatchingCases($apns_with_notes);
 
-    $matching_apns = array_map(
+    $matching_apns = array_unique(array_map(
       function($result) {
         return $result['parcel_number'];
       },
       $cases_results
-    );
+    ));
 
     $apns_to_search = array_slice($matching_apns, $offset, $limit);
 
