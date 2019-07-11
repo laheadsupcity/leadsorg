@@ -1,6 +1,7 @@
 function navigateToPage(page) {
   var url = new URL(window.location.href);
   url.searchParams.set('page', page);
+  url.searchParams.set('sortSettings', $.param(sortSettings.custom_database_search_results));
 
   window.location.href = url.toString();
 }
