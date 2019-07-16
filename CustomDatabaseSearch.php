@@ -167,16 +167,20 @@ class CustomDatabaseSearch {
       JOIN `property_cases_detail` AS `pcd` ON (
         `pcd`.`id` = `matching_cases`.`property_case_detail_id` AND
         `pcd`.`apn` = `matching_cases`.`APN`
+        %s
       )
       JOIN `property_cases` AS `cases` ON (
         `cases`.`pcid` = `pcd`.`property_case_id` AND
         `cases`.`APN` = `pcd`.`apn`
+        %s
       )
       %s
       %s
       ORDER BY `p`.`parcel_number`;",
       isset($included_case_types_expr) ? sprintf(" WHERE pi.case_type_id IN ('%s')", $included_case_types_expr) : "",
       $this->getHavingClauseForMatchingCases(),
+      isset($included_case_types_expr) ? sprintf("AND `pcd`.`case_type_id` IN ('%s')", $included_case_types_expr) : "",
+      isset($included_case_types_expr) ? sprintf("AND `cases`.`case_type_id` IN ('%s')", $included_case_types_expr) : "",
       $this->getExclusionSubquery(),
       isset($where) ? " WHERE $where" : ""
     );
