@@ -60,7 +60,7 @@
     );
 
     $current_page = isset($_GET["page"]) ? $_GET["page"] : 1;
-    $num_rec_per_page = isset($_REQUEST['num_rec_per_page']) ? $_REQUEST['num_rec_per_page'] : 1000;
+    $num_rec_per_page = isset($_REQUEST['num_rec_per_page']) ? $_REQUEST['num_rec_per_page'] : 10;
 
     $user_id = $_SESSION['userdetail']['id'];
 
