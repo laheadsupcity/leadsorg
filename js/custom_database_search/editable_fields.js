@@ -312,12 +312,10 @@ function handleEditRelatedCheckboxChange(event) {
 
 $(document).ready(function() {
 
-  $('[data-edit-related-checkbox]').change(function(event) {
+  $(document).on('change', '[data-edit-related-checkbox]', function(event) {
     handleEditRelatedCheckboxChange(event);
   });
 
-  setupEditableContactInfoFields();
 
-  setupEditableNotes();
 
 });

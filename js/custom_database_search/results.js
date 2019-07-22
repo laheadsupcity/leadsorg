@@ -1,9 +1,10 @@
 function navigateToPage(page) {
   var url = new URL(window.location.href);
   url.searchParams.set('page', page);
-  url.searchParams.set('sortSettings', $.param(sortSettings.custom_database_search_results));
 
-  window.location.href = url.toString();
+  setupPagination(page);
+
+  fetchProperties(url.search);
 }
 
 function handlePagination(event) {
@@ -31,7 +32,7 @@ function handlePageSizeChange(event) {
   url.searchParams.set('num_rec_per_page', page_size);
   url.searchParams.set('page', 1);
 
-  window.location.href = url.toString();
+  fetchProperties(url.search);
 }
 
 function resizePropertyList() {
@@ -40,26 +41,73 @@ function resizePropertyList() {
   $('.property-list').height(window_height - 350);
 }
 
+function fetchProperties(search_parameters, properties_only = true) {
+  let searchParams = new URLSearchParams(search_parameters),
+      entries = Object.fromEntries(searchParams.entries());
+
+  entries.user_id = $('[data-user-id]').data('user-id');
+
+  entries.properties_only = properties_only;
+
+  $('.main-content').width($(window).width());
+  if (properties_only) {
+    $('.property-list').html($('[data-loading]').html());
+  } else {
+    $('[data-loading]').addClass('d-flex').removeClass('d-none');
+    $('[data-results-and-actions]').addClass('d-none');
+  }
+
+  $.get(
+    'fetch_properties_results.php',
+    entries,
+    function(data) {
+      data = JSON.parse(data);
+
+      if (properties_only) {
+        $('.property-list').replaceWith(data.properties_list_markup);
+      } else {
+        $('[data-properties-list]').html(data.properties_list_markup);
+        $('[data-loading]').removeClass('d-flex').addClass('d-none');
+        $('[data-results-and-actions]').removeClass('d-none');
+      }
+
+      resizePropertyList();
+      $('.main-content').width($('.properties-scroll').width() + 13);
+
+      var id = $('.property-list-group').data('id');
+
+      if (!properties_only) {
+        setupSortableColumns(id);
+      }
+
+      setupEditableContactInfoFields();
+
+      setupEditableNotes();
+
+      $('[data-total-records]').html(data.total_records);
+
+      $('.pagination a').click(function(event) {
+        handlePagination(event);
+      });
+    }
+  );
+}
+
+function setupPagination(current_page) {
+  $('.page-item').removeClass('active');
+  $('.page-' + current_page).addClass('active');
+}
+
 $(document).ready(function() {
 
-  var id = $('.property-list-group').data('id');
-
-  setupSortableColumns(id);
-
-  $('.pagination a').click(function(event) {
-    handlePagination(event);
-  });
+  fetchProperties(window.location.search, false);
 
   $('#num_rec_per_page').change(function(event) {
     handlePageSizeChange(event);
   });
 
-  resizePropertyList();
-
   $(window).resize(function(event) {
     resizePropertyList();
   });
-
-  $('.main-content').width($('.properties-scroll').width() + 13);
 
 });

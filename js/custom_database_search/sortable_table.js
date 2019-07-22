@@ -96,7 +96,7 @@ function toggleSortDirection(id, column_header, column, direction = null, reorde
     });
   }
 
-  sortProperties(id);
+  // sortProperties(id);
 }
 
 function setupSortableColumns(id) {
@@ -119,9 +119,6 @@ function setupSortableColumns(id) {
       handleSortToggle(id, event, column);
     });
   });
-
-  $('[data-loading]').remove();
-  $('[data-results-and-actions]').removeClass('d-none');
 }
 
 function sortProperties(id) {

@@ -1,4 +1,16 @@
-<?php if (!empty($properties)) { ?>
+<?php if (!empty($properties) && $properties_only) { ?>
+  <?php
+    $favorites = new FavoriteProperties();
+  ?>
+
+  <div class="property-list">
+    <div class="properties-scroll">
+      <?php foreach ($properties as $property) { ?>
+        <?php include('includes/properties_list_single_property.php'); ?>
+      <?php } ?>
+    </div>
+  </div>
+<?php } else if (!empty($properties)) { ?>
   <?php
     $favorites = new FavoriteProperties();
   ?>
@@ -102,7 +114,15 @@
     </div>
   </div>
 
+  <?php
+    if ($show_pagination) {
+      require('includes/search_results/pagination.php');
+    }
+  ?>
+
   <?php include('includes/confirm_edit_contact_info_modal.php'); ?>
 
   <?php include('includes/confirm_edit_notes_modal.php'); ?>
+
+
 <?php } ?>

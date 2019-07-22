@@ -1,3 +1,9 @@
+function resizePropertyList() {
+  var window_height = $(window).height();
+
+  $('.property-list').height(window_height - 350);
+}
+
 function getConfirmDeleteFolderModal() {
   return $('#confirmDeleteFavoriteFolder');
 }
@@ -100,5 +106,15 @@ $(document).ready(function() {
       getConfirmResetFolderModal().modal('show');
     }
   });
+
+  resizePropertyList();
+  $('.main-content').width($('.properties-scroll').width() + 13);
+
+  var id = $('.property-list-group').data('id');
+  setupSortableColumns(id);
+
+  setupEditableContactInfoFields();
+
+  setupEditableNotes();
 
 });

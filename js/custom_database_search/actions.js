@@ -59,7 +59,7 @@ function handleOpenAll() {
 
 $(document).ready(function() {
 
-  $("[data-property-checkbox],[data-check-all]").change(function() {
+  $(document).on('change', "[data-property-checkbox],[data-check-all]", function() {
     $('#selectPropertiesWarning').prop('hidden', true);
   });
 
@@ -73,7 +73,7 @@ $(document).ready(function() {
       resetLeadBatchModal();
     });
 
-    $("[data-action=batch_submit]").click(function(event) {
+    $(document).on('click', "[data-action=batch_submit]", function(event) {
       var checked_properties = getCheckedProperties(),
           name_input = $("#batchName");
 
@@ -115,7 +115,7 @@ $(document).ready(function() {
     $(this).closest('.property-list-group').find('[data-property-checkbox]').not(this).prop('checked', this.checked);
   });
 
-  $('[data-target="#createLeadBatchModal"],[data-target="#addToFavoritesFolderModal"]').click(function(event) {
+  $(document).on('click', '[data-target="#createLeadBatchModal"],[data-target="#addToFavoritesFolderModal"]', function(event) {
     event.stopPropagation();
 
     var checked_properties = getCheckedProperties();
@@ -181,7 +181,7 @@ $(document).ready(function() {
     }
   });
 
-  $('[data-parcel_number]').click(function(event) {
+  $(document).on('click', '[data-parcel_number]', function(event) {
     var target = $(event.target)
 
     var is_editable_field =
@@ -209,7 +209,7 @@ $(document).ready(function() {
     openProperty($(event.currentTarget));
   });
 
-  $('[data-action="open_all"]').click(function(event) {
+  $(document).on('click', '[data-action="open_all"]', function(event) {
     handleOpenAll();
   });
 

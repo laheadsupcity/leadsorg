@@ -16,7 +16,6 @@
     <script type="text/javascript" src="js/bootstrap.min.js"></script>
 
     <script type="text/javascript" src="js/custom_database_search/actions.js"></script>
-    <script type="text/javascript" src="js/custom_database_search/results.js"></script>
     <script type="text/javascript" src="js/custom_database_search/sortable_table.js"></script>
     <script type="text/javascript" src="js/favorites/actions.js"></script>
     <script type="text/javascript" src="js/favorites/add_favorite_properties.js"></script>
@@ -70,6 +69,7 @@
             $show_favorites_flag = true;
             $show_matching_cases = false;
             $include_related_properties = true;
+            $id = 'favorites_list';
             include('includes/properties_list.php');
           ?>
 

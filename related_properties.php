@@ -8,7 +8,7 @@
 
   $current_page = 1;
   $total_records = count($properties);
-  $num_rec_per_page = 1000;
+  $num_rec_per_page = 10;
 ?>
 <!doctype html>
 <html lang="en" style="font-size: 14px;">
@@ -48,11 +48,11 @@
         $show_favorites_flag = false;
         $show_matching_cases = false;
         $include_related_properties = false;
+        $show_pagination = false;
         $id = 'related_properties';
         include('includes/properties_list.php');
       ?>
 
-      <?php require('includes/search_results/pagination.php'); ?>
       <div class="mt-3 mb-3 d-flex align-items-center">
         <?php if ($is_admin_user) { ?>
           <button type="submit" class="btn btn-primary mr-1" data-toggle="modal" data-target="#createLeadBatchModal">Create Lead Batch</button>

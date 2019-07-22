@@ -11,7 +11,7 @@
     <a class="page-link" href="#" data-previous-page data-current-page="<?php echo $current_page ?>"><span aria-hidden="true">&laquo;</span></a>
   </li>
   <?php for($page = $pagination_start; $page <= $pagination_end; $page++) { ?>
-    <li class="page-item <?php if ($current_page == $page) {?>active<?php } ?>">
+    <li class="page-item page-<?php echo($page); ?> <?php if ($current_page == $page) {?>active<?php  } ?>">
       <a class="page-link" href="#" data-page="<?php echo $page; ?>"><span aria-hidden="true"><?php echo $page; ?></span></a>
     </li>
   <?php } ?>
