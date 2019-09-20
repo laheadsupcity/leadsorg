@@ -90,7 +90,7 @@ function toggleSortDirection(id, column_header, column, direction = null, reorde
     });
   }
 
-  // sortProperties(id);
+  fetchProperties(window.location.search);
 }
 
 function setupSortableColumns(id) {
