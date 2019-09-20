@@ -1,15 +1,24 @@
 function navigateToPage(page) {
   var url = new URL(window.location.href);
+
   url.searchParams.set('page', page);
 
-  setupPagination(page);
+  $('.page-item').removeClass('active');
+  $('.page-' + page).addClass('active');
+
+  fetchProperties(url.search);
+}
+
+function handlePageSizeChange(event) {
+  var page_size = $(event.currentTarget).val();
+  var url = new URL(window.location.href);
+
+  url.searchParams.set('num_rec_per_page', page_size);
 
   fetchProperties(url.search);
 }
 
 function handlePagination(event) {
-  event.preventDefault();
-
   var target = $(event.currentTarget),
       is_previous = target.data('previous-page'),
       is_next = target.data('next-page'),
@@ -23,16 +32,6 @@ function handlePagination(event) {
   }
 
   navigateToPage(page);
-}
-
-function handlePageSizeChange(event) {
-  var page_size = $(event.currentTarget).val();
-  var url = new URL(window.location.href);
-
-  url.searchParams.set('num_rec_per_page', page_size);
-  url.searchParams.set('page', 1);
-
-  fetchProperties(url.search);
 }
 
 function resizePropertyList() {
@@ -49,6 +48,8 @@ function fetchProperties(search_parameters, properties_only = true) {
 
   entries.properties_only = properties_only;
 
+  entries.sortSettings = $.param(sortSettings.custom_database_search_results);
+
   $('.main-content').width($(window).width());
   if (properties_only) {
     $('.property-list').html($('[data-loading]').html());
@@ -61,6 +62,7 @@ function fetchProperties(search_parameters, properties_only = true) {
     'fetch_properties_results.php',
     entries,
     function(data) {
+      console.log(data);
       data = JSON.parse(data);
 
       if (properties_only) {
@@ -85,22 +87,19 @@ function fetchProperties(search_parameters, properties_only = true) {
       setupEditableNotes();
 
       $('[data-total-records]').html(data.total_records);
-
-      $('.pagination a').click(function(event) {
-        handlePagination(event);
-      });
     }
   );
 }
 
-function setupPagination(current_page) {
-  $('.page-item').removeClass('active');
-  $('.page-' + current_page).addClass('active');
-}
-
 $(document).ready(function() {
 
+  initDefaultSortSettings('custom_database_search_results');
+
   fetchProperties(window.location.search, false);
+
+  $(document).on('click', '.pagination a', function(event) {
+    handlePagination(event);
+  });
 
   $('#num_rec_per_page').change(function(event) {
     handlePageSizeChange(event);

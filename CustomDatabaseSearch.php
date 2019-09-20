@@ -209,8 +209,6 @@ class CustomDatabaseSearch {
       $cases_results
     ));
 
-    $apns_to_search = array_slice($matching_apns, $offset, $limit);
-
     $property_query = sprintf(
       "SELECT
       p.parcel_number,
@@ -239,8 +237,12 @@ class CustomDatabaseSearch {
       p.id
       FROM `property` AS p WHERE p.parcel_number IN (
         \"%s\"
-      );",
-      implode('","', $apns_to_search)
+      )
+      %s
+      %s;",
+      implode('","', $matching_apns),
+      $this->search_params->getSortByClause(),
+      sprintf("LIMIT %s, %s", $offset, $limit)
     );
 
     $this->db->query($property_query);

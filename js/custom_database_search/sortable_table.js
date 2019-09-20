@@ -16,41 +16,35 @@ const sortSettings = {};
 
 function getOrderedSortSettings(id) {
   let sorted = Object.values(sortSettings[id]).sort(function(sortColumnA, sortColumnB) {
-    return sortColumnA.order < sortColumnB.order ? -1 : 1;
+    return sortColumnA.ord < sortColumnB.ord ? -1 : 1;
   });
 
   return sorted.map(function(column) {
-    return column.column;
+    return column.col;
   });
 }
 
 function initDefaultSortSettings(id) {
   sortSettings[id] = {};
 
-  var url = new URLSearchParams(window.location.search),
-      encodedSortSettings = url.get('sortSettings');
-
-  if (encodedSortSettings) {
-    sortSettings[id] = deparam(decodeURIComponent(encodedSortSettings));
-  } else {
-    let order = 0;
-    changeSortSetting(id, SORT_COLUMN_UNITS, SORT_TYPE_DESC, order++);
-    changeSortSetting(id, SORT_COLUMN_BUILDING_AREA, SORT_TYPE_DESC, order++);
-    changeSortSetting(id, SORT_COLUMN_LOT_AREA_SQFT, SORT_TYPE_DESC, order++);
-    changeSortSetting(id, SORT_COLUMN_YEAR_BUILT, SORT_TYPE_DESC, order++);
-    changeSortSetting(id, SORT_COLUMN_SALE_DATE, SORT_TYPE_DESC, order++);
-    changeSortSetting(id, SORT_COLUMN_RELATED_PROPERTIES, SORT_TYPE_DESC, order++);
-    changeSortSetting(id, SORT_COLUMN_FAVORITES_FOLDERS, SORT_TYPE_ASC, order++);
-    changeSortSetting(id, SORT_COLUMN_BEDS, SORT_TYPE_DESC, order++);
-    changeSortSetting(id, SORT_COLUMN_OWNER_NAME, SORT_TYPE_ASC, order++);
-  }
+  let order = 0;
+  changeSortSetting(id, SORT_COLUMN_UNITS, SORT_TYPE_DESC, order++);
+  changeSortSetting(id, SORT_COLUMN_BUILDING_AREA, SORT_TYPE_DESC, order++);
+  changeSortSetting(id, SORT_COLUMN_LOT_AREA_SQFT, SORT_TYPE_DESC, order++);
+  changeSortSetting(id, SORT_COLUMN_YEAR_BUILT, SORT_TYPE_DESC, order++);
+  changeSortSetting(id, SORT_COLUMN_SALE_DATE, SORT_TYPE_DESC, order++);
+  changeSortSetting(id, SORT_COLUMN_RELATED_PROPERTIES, SORT_TYPE_DESC, order++);
+  changeSortSetting(id, SORT_COLUMN_FAVORITES_FOLDERS, SORT_TYPE_ASC, order++);
+  changeSortSetting(id, SORT_COLUMN_BEDS, SORT_TYPE_DESC, order++);
+  changeSortSetting(id, SORT_COLUMN_OWNER_NAME, SORT_TYPE_ASC, order++);
 }
 
 function changeSortSetting(id, column, direction, order) {
+  // these are abbreviated because get requests have a limit on url length
   sortSettings[id][column] = {
-    column: column,
-    direction: direction,
-    order: order
+    col: column,
+    dir: direction,
+    ord: order
   };
 }
 
@@ -82,16 +76,16 @@ function toggleSortDirection(id, column_header, column, direction = null, reorde
   }
 
   // change direction
-  sortSettings[id][column].direction = direction;
+  sortSettings[id][column].dir = direction;
 
   if (reorder_sort_columns && direction != SORT_TYPE_NEITHER) {
     // make this sort filter the most important
-    let previous_order = sortSettings[id][column].order;
+    let previous_order = sortSettings[id][column].ord;
     Object.keys(sortSettings[id]).forEach(function(setting) {
-      if (sortSettings[id][setting].column == column) {
-        sortSettings[id][column].order = 0;
-      } else if (sortSettings[id][setting].order < previous_order) {
-        sortSettings[id][setting].order = sortSettings[id][setting].order + 1;
+      if (sortSettings[id][setting].col == column) {
+        sortSettings[id][column].ord = 0;
+      } else if (sortSettings[id][setting].ord < previous_order) {
+        sortSettings[id][setting].ord = sortSettings[id][setting].ord + 1;
       }
     });
   }
@@ -101,10 +95,8 @@ function toggleSortDirection(id, column_header, column, direction = null, reorde
 
 function setupSortableColumns(id) {
 
-  initDefaultSortSettings(id);
-
   getOrderedSortSettings(id).forEach(function(column) {
-    var direction = sortSettings[id][column].direction;
+    var direction = sortSettings[id][column].dir;
     var column_header = $('[data-id=' + id + "]").find('[data-sortable-column="' + column + '"]');
 
     column_header.addClass('sortable-column');
@@ -128,15 +120,15 @@ function sortProperties(id) {
     for (var index in ordered_sort_settings) {
       var setting = sortSettings[id][ordered_sort_settings[index]];
 
-      let sortPropA = $(propertyA).data(setting.column);
-      let sortPropB = $(propertyB).data(setting.column);
-      let sortDirection = setting.direction;
+      let sortPropA = $(propertyA).data(setting.col);
+      let sortPropB = $(propertyB).data(setting.col);
+      let sortDirection = setting.dir;
 
       if (sortDirection == SORT_TYPE_NEITHER) {
         continue;
       }
 
-      switch (setting.column) {
+      switch (setting.col) {
         case SORT_COLUMN_UNITS:
         case SORT_COLUMN_BEDS:
         case SORT_COLUMN_BUILDING_AREA:

@@ -1,4 +1,5 @@
 <?php
+require_once('SortSettings.php');
 
 class SearchParameters {
 
@@ -177,6 +178,17 @@ class SearchParameters {
 
   public function getNotesContentToMatch() {
     return $this->search_params['notes_content_to_match'];
+  }
+
+  public function getSortByClause() {
+    if (!isset($this->search_params['sortSettings'])) {
+      return "";
+    }
+
+    parse_str($this->search_params['sortSettings'], $raw_sort_settings);
+    $sort_settings = new SortSettings($raw_sort_settings);
+
+    return $sort_settings->getSortByClause();
   }
 
 }

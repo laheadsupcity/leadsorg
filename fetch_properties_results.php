@@ -4,7 +4,12 @@ require_once('CustomDatabaseSearch.php');
 require_once('FavoriteProperties.php');
 require_once('LoggedInUser.php');
 
+ini_set("log_errors", 1);
+ini_set("error_log", "/tmp/php-error.log");
+error_log( "Hello, errors!" );
+
 $search_params = array(
+  'sortSettings' => $_GET['sortSettings'],
   'num_units_min' => $_GET['num_units_min'],
   'num_units_max' => $_GET['num_units_max'],
   'zip' => isset($_GET['zip_codes']) ? $_GET['zip_codes'] : [],
