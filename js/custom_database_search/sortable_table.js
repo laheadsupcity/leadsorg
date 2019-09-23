@@ -33,8 +33,8 @@ function initDefaultSortSettings(id) {
   changeSortSetting(id, SORT_COLUMN_LOT_AREA_SQFT, SORT_TYPE_DESC, order++);
   changeSortSetting(id, SORT_COLUMN_YEAR_BUILT, SORT_TYPE_DESC, order++);
   changeSortSetting(id, SORT_COLUMN_SALE_DATE, SORT_TYPE_DESC, order++);
-  changeSortSetting(id, SORT_COLUMN_RELATED_PROPERTIES, SORT_TYPE_DESC, order++);
-  changeSortSetting(id, SORT_COLUMN_FAVORITES_FOLDERS, SORT_TYPE_ASC, order++);
+  // changeSortSetting(id, SORT_COLUMN_RELATED_PROPERTIES, SORT_TYPE_DESC, order++);
+  // changeSortSetting(id, SORT_COLUMN_FAVORITES_FOLDERS, SORT_TYPE_ASC, order++);
   changeSortSetting(id, SORT_COLUMN_BEDS, SORT_TYPE_DESC, order++);
   changeSortSetting(id, SORT_COLUMN_OWNER_NAME, SORT_TYPE_ASC, order++);
 }
@@ -51,10 +51,17 @@ function changeSortSetting(id, column, direction, order) {
 function handleSortToggle(id, event, column) {
   var target = $(event.currentTarget);
 
-  toggleSortDirection(id, target, column);
+  toggleSortDirection(id, target, column, null, true, true);
 }
 
-function toggleSortDirection(id, column_header, column, direction = null, reorder_sort_columns = true) {
+function toggleSortDirection(
+  id,
+  column_header,
+  column,
+  direction = null,
+  reorder_sort_columns = true,
+  trigger_reload = false
+) {
   if (direction) {
     switch (direction) {
       case SORT_TYPE_ASC:
@@ -90,7 +97,9 @@ function toggleSortDirection(id, column_header, column, direction = null, reorde
     });
   }
 
-  fetchProperties(window.location.search);
+  if (trigger_reload) {
+    fetchProperties(window.location.search);
+  }
 }
 
 function setupSortableColumns(id) {

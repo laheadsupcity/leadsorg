@@ -78,7 +78,9 @@ function fetchProperties(search_parameters, properties_only = true) {
 
       var id = $('.property-list-group').data('id');
 
-      if (!properties_only) {
+      if (data.total_records == 0) {
+        // no op
+      } else if (!properties_only) {
         setupSortableColumns(id);
       }
 
