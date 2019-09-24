@@ -14,6 +14,20 @@ class SearchParameters {
     return $this->search_params;
   }
 
+  private function getPage() {
+    return isset($this->search_params['page']) ? (int) $this->search_params['page'] : 1;
+  }
+
+  private function getOffset() {
+    $page = $this->getPage();
+
+    return ($page - 1) * $this->getPageSize();
+  }
+
+  private function getPageSize() {
+    return isset($this->search_params['page_size']) ? $this->search_params['page_size'] :  10;
+  }
+
   public function getZips()
   {
     if (is_array($this->search_params['zip'])) {
@@ -159,13 +173,13 @@ class SearchParameters {
 
   public function getCaseTypeFilters()
   {
-    if (is_array($this->search_params['casetype'])) {
-      $case_type = array_filter($this->search_params['casetype']);
-    } else {
+    if (!isset($this->search_params['casetype']) ) {
       $case_type = array();
+    } else if (is_array($this->search_params['casetype'])) {
+      $case_type = array_filter($this->search_params['casetype']);
     }
 
-    return $case_type;
+    return new CaseTypeFilters($case_type);
   }
 
   public function isPropertiesWithOpenCasesExclusively() {
@@ -173,7 +187,8 @@ class SearchParameters {
   }
 
   public function isFilteringOnNotes() {
-    return $this->search_params['filter_on_notes'] == "on";
+    return isset($this->search_params['filter_on_notes']) &&
+           $this->search_params['filter_on_notes'] == "on";
   }
 
   public function getNotesContentToMatch() {
@@ -189,6 +204,22 @@ class SearchParameters {
     $sort_settings = new SortSettings($raw_sort_settings);
 
     return $sort_settings->getSortByClause();
+  }
+
+  public function getLimitOffsetClause() {
+    return sprintf(
+      "LIMIT %s, %s",
+      $this->getOffset(),
+      $this->getPageSize()
+    );
+  }
+
+  public function getCasePCIDsToSearch() {
+    if (isset($this->search_params['case_pcids_to_search'])) {
+      return explode(",", $this->search_params['case_pcids_to_search']);
+    } else {
+      return null;
+    }
   }
 
 }

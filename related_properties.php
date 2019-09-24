@@ -8,7 +8,7 @@
 
   $current_page = 1;
   $total_records = count($properties);
-  $num_rec_per_page = 10;
+  $page_size = 10;
 ?>
 <!doctype html>
 <html lang="en" style="font-size: 14px;">

@@ -1,5 +1,7 @@
 <?php
-  $total_pages = ceil($total_records / $num_rec_per_page);
+  $page_size = $search_params['page_size'];
+  $total_pages = ceil($total_records / $page_size);
+  $current_page = $search_params['page'];
   $pagination_start = $current_page > 3 ? $current_page - 3 : $current_page;
   $pagination_end = $total_pages >= $pagination_start + 8 ? $pagination_start + 8 : $total_pages;
 ?>

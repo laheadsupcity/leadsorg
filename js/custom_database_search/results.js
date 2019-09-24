@@ -1,3 +1,5 @@
+var cases_results = null;
+
 function navigateToPage(page) {
   var url = new URL(window.location.href);
 
@@ -13,7 +15,7 @@ function handlePageSizeChange(event) {
   var page_size = $(event.currentTarget).val();
   var url = new URL(window.location.href);
 
-  url.searchParams.set('num_rec_per_page', page_size);
+  url.searchParams.set('page_size', page_size);
 
   fetchProperties(url.search);
 }
@@ -41,8 +43,16 @@ function resizePropertyList() {
 }
 
 function fetchProperties(search_parameters, properties_only = true) {
-  let searchParams = new URLSearchParams(search_parameters),
-      entries = Object.fromEntries(searchParams.entries());
+  let entries;
+  if (cases_results == null) {
+    let searchParams = new URLSearchParams(search_parameters);
+    entries = Object.fromEntries(searchParams.entries());
+  } else {
+    entries = {
+      case_pcids_to_search: Object.values(cases_results).join(",")
+    };
+  }
+
 
   entries.user_id = $('[data-user-id]').data('user-id');
 
@@ -58,11 +68,13 @@ function fetchProperties(search_parameters, properties_only = true) {
     $('[data-results-and-actions]').addClass('d-none');
   }
 
-  $.get(
+  $.post(
     'fetch_properties_results.php',
     entries,
     function(data) {
       data = JSON.parse(data);
+
+      cases_results = data.cases_results;
 
       if (properties_only) {
         $('.property-list').replaceWith(data.properties_list_markup);
@@ -102,7 +114,7 @@ $(document).ready(function() {
     handlePagination(event);
   });
 
-  $('#num_rec_per_page').change(function(event) {
+  $('#page_size').change(function(event) {
     handlePageSizeChange(event);
   });
 

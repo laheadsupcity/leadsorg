@@ -26,7 +26,7 @@
 <body>
   <?php
     include('nav.php');
-    $num_rec_per_page = isset($_REQUEST['num_rec_per_page']) ? $_REQUEST['num_rec_per_page'] : 10;
+    $page_size = isset($_REQUEST['page_size']) ? $_REQUEST['page_size'] : 10;
   ?>
 
   <div class="main-content mx-auto pl-4 pr-4">
@@ -45,15 +45,15 @@
         </div>
         <div>
           <span class="font-weight-bold pr-1">No. of Records Per Page:</span>
-          <select id='num_rec_per_page' name="num_rec_per_page">
-            <option <?php echo ($num_rec_per_page==10)?"selected='selected'":''; ?> value='10'>10</option>
-            <option <?php echo ($num_rec_per_page==25)?"selected='selected'":''; ?> value='25'>25</option>
-            <option <?php echo ($num_rec_per_page==50)?"selected='selected'":''; ?> value='50'>50</option>
-            <option <?php echo ($num_rec_per_page==100)?"selected='selected'":''; ?> value='100'>100</option>
-            <option <?php echo ($num_rec_per_page==250)?"selected='selected'":''; ?> value='250'>250</option>
-            <option <?php echo ($num_rec_per_page==500)?"selected='selected'":''; ?> value='500'>500</option>
-            <option <?php echo ($num_rec_per_page==1000)?"selected='selected'":''; ?> value='1000'>1000</option>
-            <option <?php echo ($num_rec_per_page==5000)?"selected='selected'":''; ?> value='5000'>5000</option>
+          <select id='page_size' name="page_size">
+            <option <?php echo ($page_size==10)?"selected='selected'":''; ?> value='10'>10</option>
+            <option <?php echo ($page_size==25)?"selected='selected'":''; ?> value='25'>25</option>
+            <option <?php echo ($page_size==50)?"selected='selected'":''; ?> value='50'>50</option>
+            <option <?php echo ($page_size==100)?"selected='selected'":''; ?> value='100'>100</option>
+            <option <?php echo ($page_size==250)?"selected='selected'":''; ?> value='250'>250</option>
+            <option <?php echo ($page_size==500)?"selected='selected'":''; ?> value='500'>500</option>
+            <option <?php echo ($page_size==1000)?"selected='selected'":''; ?> value='1000'>1000</option>
+            <option <?php echo ($page_size==5000)?"selected='selected'":''; ?> value='5000'>5000</option>
           </select>
         </div>
       </div>

@@ -100,9 +100,9 @@ tr:nth-child(even) {background-color: #e9ebf5;}
        
         $start_from = $offset = NULL;
         $page = isset($_GET["page"])?$_GET["page"]:1;
-        $num_rec_per_page	= isset($_REQUEST['num_rec_per_page'])?$_REQUEST['num_rec_per_page']:10;
-        $offset = ($page == 1)?( 0 ):(($page - 1)*$num_rec_per_page);
-        $limit = " LIMIT ".$offset." , ".$num_rec_per_page;
+        $page_size	= isset($_REQUEST['page_size'])?$_REQUEST['page_size']:10;
+        $offset = ($page == 1)?( 0 ):(($page - 1)*$page_size);
+        $limit = " LIMIT ".$offset." , ".$page_size;
        
          $response = $db->schedulelivesearch($arr_data , $limit );
 
@@ -124,21 +124,21 @@ tr:nth-child(even) {background-color: #e9ebf5;}
 
                 <div style="float:right; width:45%; text-align:right; font-size:12px; font-weight:600;">
                     <form id ='perpgform1'  style="width: 80px;float: right;">
-                        <input type='text' id='num_rec_per_page1' name="num_rec_per_page" style="padding:2px;width: 65px;height: 21px;<?= isset($_GET['otherfrm'])?'display:block':'display:none' ?>;float:right;" value='<?= isset($num_rec_per_page)?$num_rec_per_page:'' ?>'/>
+                        <input type='text' id='page_size1' name="page_size" style="padding:2px;width: 65px;height: 21px;<?= isset($_GET['otherfrm'])?'display:block':'display:none' ?>;float:right;" value='<?= isset($page_size)?$page_size:'' ?>'/>
                         <input type="hidden" class='pagecl' name="page" value="<?php echo isset($_GET["page"])?$_GET["page"]:1; ?>">
                         <input type='hidden' name='otherfrm' value='other'/>
                     </form>
                     <form id ='perpgform'  style="width: 80px;float: right;">        
-                        <select id='num_rec_per_page' name="num_rec_per_page" style="padding:2px;">
+                        <select id='page_size' name="page_size" style="padding:2px;">
                         <option value=''>Select</option>
-                        <option <?php echo ($num_rec_per_page==10)?"selected='selected'":''; ?> value='10'>10</option>
-                        <option <?php echo ($num_rec_per_page==25)?"selected='selected'":''; ?> value='25'>25</option>
-                        <option <?php echo ($num_rec_per_page==50)?"selected='selected'":''; ?> value='50'>50</option>
-                        <option <?php echo ($num_rec_per_page==100)?"selected='selected'":''; ?> value='100'>100</option>
-                        <option <?php echo ($num_rec_per_page==250)?"selected='selected'":''; ?> value='250'>250</option>
-                        <option <?php echo ($num_rec_per_page==500)?"selected='selected'":''; ?> value='500'>500</option>
-                        <option <?php echo ($num_rec_per_page==1000)?"selected='selected'":''; ?> value='1000'>1000</option>
-                        <option <?php echo ($num_rec_per_page==5000)?"selected='selected'":''; ?> value='5000'>5000</option>
+                        <option <?php echo ($page_size==10)?"selected='selected'":''; ?> value='10'>10</option>
+                        <option <?php echo ($page_size==25)?"selected='selected'":''; ?> value='25'>25</option>
+                        <option <?php echo ($page_size==50)?"selected='selected'":''; ?> value='50'>50</option>
+                        <option <?php echo ($page_size==100)?"selected='selected'":''; ?> value='100'>100</option>
+                        <option <?php echo ($page_size==250)?"selected='selected'":''; ?> value='250'>250</option>
+                        <option <?php echo ($page_size==500)?"selected='selected'":''; ?> value='500'>500</option>
+                        <option <?php echo ($page_size==1000)?"selected='selected'":''; ?> value='1000'>1000</option>
+                        <option <?php echo ($page_size==5000)?"selected='selected'":''; ?> value='5000'>5000</option>
                         <option <?= isset($_GET['otherfrm'])?"selected='selected'":'' ?> value='Other'>Other</option>
                         </select>
                         <input type="hidden" class='pagecl' name="page" value="<?php echo isset($_GET["page"])?$_GET["page"]:1; ?>">
@@ -168,31 +168,31 @@ tr:nth-child(even) {background-color: #e9ebf5;}
 				</tr>
 				</thead>
                 <?php 
-                $start_from = ($page-1) * $num_rec_per_page; 
+                $start_from = ($page-1) * $page_size; 
                 $active="pactive";
                 $deactive="pdeactive";
-                $total_pages = ceil($total_records / $num_rec_per_page);
-                if( $num_rec_per_page){
-                    $goto_1st_pg	=	"<a href='?num_rec_per_page=$num_rec_per_page&page=1' style='text-decoration:none'>".'First'."</a> "; // Goto 1st page
+                $total_pages = ceil($total_records / $page_size);
+                if( $page_size){
+                    $goto_1st_pg	=	"<a href='?page_size=$page_size&page=1' style='text-decoration:none'>".'First'."</a> "; // Goto 1st page
                 }
                 else {
                     $goto_1st_pg	=	"<a href='?page=1' style='text-decoration:none'>".'First'."</a> "; // Goto 1st page  
                 }
 
                 $prepg = ($page == '1')?'1':($page - 1);
-                $previous = "<a href='?num_rec_per_page=$num_rec_per_page&page=".$prepg."' style='text-decoration:none'>&laquo;</a> ";
+                $previous = "<a href='?page_size=$page_size&page=".$prepg."' style='text-decoration:none'>&laquo;</a> ";
                 $nxtpg = ($page == $total_pages)?$total_pages:($page + 1);
-                $next = "<a href='?num_rec_per_page=$num_rec_per_page&page=".$nxtpg."' style='text-decoration:none'>&raquo;</a> ";
+                $next = "<a href='?page_size=$page_size&page=".$nxtpg."' style='text-decoration:none'>&raquo;</a> ";
                 
                 $goto_pg_no	= NULL;
                 for($j = $page - 3 ; $j <= $page + 3 ; $j++) {
                     if($j > 0 && $j <= $total_pages){
-                        $goto_pg_no	.=	"<a href='?page=".$j."&num_rec_per_page=".$num_rec_per_page."' style='text-decoration:none' class=".($j == $page ? $active : $deactive)." >".$j."</a> ";
+                        $goto_pg_no	.=	"<a href='?page=".$j."&page_size=".$page_size."' style='text-decoration:none' class=".($j == $page ? $active : $deactive)." >".$j."</a> ";
                     }
                     
                 };
-                if( $num_rec_per_page){
-                    $goto_last_pg	=	"<a href='?num_rec_per_page=$num_rec_per_page&page=$total_pages' style='text-decoration:none'>".'Last'."</a> "; // Goto last page
+                if( $page_size){
+                    $goto_last_pg	=	"<a href='?page_size=$page_size&page=$total_pages' style='text-decoration:none'>".'Last'."</a> "; // Goto last page
                 }else {
                     $goto_last_pg	=	"<a href='?page=$total_pages' style='text-decoration:none'>".'Last'."</a> "; // Goto last page
                 }
@@ -227,7 +227,7 @@ tr:nth-child(even) {background-color: #e9ebf5;}
                 } 
                 ?>
             </table>
-            <!--<p style='text-align:center;'>Showing <?php echo $start_from; ?> to <?php echo $page*$num_rec_per_page-1; ?> of <?php echo $total_records; ?> entries</p>-->
+            <!--<p style='text-align:center;'>Showing <?php echo $start_from; ?> to <?php echo $page*$page_size-1; ?> of <?php echo $total_records; ?> entries</p>-->
 
             <!--<p style='text-align:center;'><?php echo $goto_1st_pg.$goto_pg_no.$goto_last_pg."&emsp;<span style='color:#0066CC'>[ PAGE : ".$page." ]</span>";  ?></p>-->
             <?php if($resultcount > 0 ){ ?>
@@ -266,14 +266,14 @@ tr:nth-child(even) {background-color: #e9ebf5;}
 		var totrec = <?= $total_records ?>;
 		var totpgs = <?= $total_pages ?>;
 		var currpg = <?= (isset($_GET['page']))?$_GET['page']:1 ?> ;
-                var num_rec_per_page = <?= (isset($_GET['num_rec_per_page']))?$_GET['num_rec_per_page']:10 ?>;
-        if($("#num_rec_per_page option[value='"+num_rec_per_page+"']").length != 0)
+                var page_size = <?= (isset($_GET['page_size']))?$_GET['page_size']:10 ?>;
+        if($("#page_size option[value='"+page_size+"']").length != 0)
         {
 
         }else{
-			$("#num_rec_per_page").val('Other');
-            $("#num_rec_per_page1").val(num_rec_per_page);
-			$("#num_rec_per_page1").css('display','block');
+			$("#page_size").val('Other');
+            $("#page_size1").val(page_size);
+			$("#page_size1").css('display','block');
 		}
 
         function chk(val){
@@ -286,11 +286,11 @@ tr:nth-child(even) {background-color: #e9ebf5;}
 			}
 			return true;
 		}
-		$('#num_rec_per_page').change(function(){
+		$('#page_size').change(function(){
 			var val = this.value;
 			if(val == 'Other'){
-				$("#num_rec_per_page1").val('');
-				$("#num_rec_per_page1").css('display','block');
+				$("#page_size1").val('');
+				$("#page_size1").css('display','block');
 			}else{
 				if(val != ''){
 					var chkflag = chk(val);
@@ -298,7 +298,7 @@ tr:nth-child(even) {background-color: #e9ebf5;}
 				}
 			}
 		});
-		$('#num_rec_per_page1').blur(function(){
+		$('#page_size1').blur(function(){
 			var val = this.value;
 			if(val != ''){
 				var chkflag = chk(val);

@@ -1,7 +1,7 @@
 <?php
   require_once('Property.php');
 
-  $user_id = isset($_SESSION) && $_SESSION['userdetail']['id'] ? $_SESSION['userdetail']['id'] : $_GET['user_id'] ;
+  $user_id = isset($_SESSION) && $_SESSION['userdetail']['id'] ? $_SESSION['userdetail']['id'] : $_REQUEST['user_id'] ;
 
   $favorites_folders = $favorites->getFavoritesFoldersForAPN(
     $user_id,

@@ -9,8 +9,10 @@ class CustomDatabaseSearch {
   private $user_id;
   private $results_count;
   private $apns_to_cases_map;
-  private $result_apns;
+  private $result_page;
+  private $all_result_apns;
   private $case_type_filter_builder;
+  private $cases_results;
   public $cases_query;
 
   function __construct($user_id, $search_param_data)
@@ -19,9 +21,25 @@ class CustomDatabaseSearch {
     $this->user_id = $user_id;
     $this->search_params = new SearchParameters($search_param_data);
 
-    $case_type_filters = $this->search_params->getCaseTypeFilters();
+    $this->case_type_filter_builder = $this->search_params->getCaseTypeFilters();
+  }
 
-    $this->case_type_filter_builder = new CaseTypeFilters($case_type_filters);
+  public function getCasesResults() {
+    return isset($this->cases_results['results']) ? $this->cases_results['results'] : null;
+  }
+
+
+  public function getCasesResultsIDs() {
+    if (!isset($this->cases_results)) {
+      return null;
+    }
+
+    return array_map(
+      function($result) {
+        return $result['pcid'];
+      },
+      $this->cases_results['results']
+    );
   }
 
   private function getStatusInclusionClauses()
@@ -109,77 +127,91 @@ class CustomDatabaseSearch {
   }
 
   private function filterPropertiesWithMatchingCases($apns_with_matching_notes) {
-    if (isset($apns_with_matching_notes) && count($apns_with_matching_notes) == 0) {
-      // notes filter did not match any properties
-      // shortcut and return empty results
-      return [];
-    }
+    $case_pcids_to_search = $this->search_params->getCasePCIDsToSearch();
+    if (isset($case_pcids_to_search)) {
+      $query = sprintf(
+        "SELECT
+          `cases`.`APN` AS `parcel_number`,
+          `cases`.`pcid`,
+          `cases`.`case_type`,
+          `cases`.`case_id`
+        FROM `property_cases` AS `cases`
+        WHERE `cases`.`pcid` IN ('%s');",
+        join($case_pcids_to_search, "','")
+      );
+    } else {
+      if (isset($apns_with_matching_notes) && count($apns_with_matching_notes) == 0) {
+        // notes filter did not match any properties
+        // shortcut and return empty results
+        return [];
+      }
 
-    $included_case_types_expr = $this->case_type_filter_builder->getIncludedIDsExpression();
+      $included_case_types_expr = $this->case_type_filter_builder->getIncludedIDsExpression();
 
-    $conditions = $this->getConditions();
+      $conditions = $this->getConditions();
 
-    if (isset($apns_with_matching_notes)) {
-      $conditions[] = sprintf(
-        "`p`.`parcel_number` IN ('%s')",
-        implode($apns_with_matching_notes, "','")
+      if (isset($apns_with_matching_notes)) {
+        $conditions[] = sprintf(
+          "`p`.`parcel_number` IN ('%s')",
+          implode($apns_with_matching_notes, "','")
+        );
+      }
+
+      if ($this->case_type_filter_builder->hasExclusionFilters()) {
+        $conditions[] = "open_excluded_cases.APN IS NULL";
+      }
+
+      $case_closed_date_clause = $this->getCaseClosedDateClause();
+      if(isset($case_closed_date_clause)) {
+        $conditions[] = $case_closed_date_clause;
+      }
+
+      $case_open_date_clause = $this->getCaseOpenedDateClause();
+      if(isset($case_open_date_clause)) {
+        $conditions[] = $case_open_date_clause;
+      }
+
+      if (!empty($conditions)) {
+        $where = implode(' AND ', $conditions);
+      }
+
+      $query = sprintf(
+        "SELECT
+          `cases`.`APN` AS `parcel_number`,
+          `cases`.`pcid`,
+          `cases`.`case_type`,
+          `cases`.`case_id`
+        FROM (
+          SELECT
+            `APN`,
+            `property_case_detail_id`
+          FROM
+            `property_inspection` AS `pi`
+            %s
+          GROUP BY
+            `APN`,
+            `property_case_detail_id`
+            %s
+        ) as `matching_cases`
+        JOIN `property` AS `p` ON (
+          `p`.`parcel_number` = `matching_cases`.`APN`
+        )
+        JOIN `property_cases_detail` AS `pcd` ON (
+          `pcd`.`id` = `matching_cases`.`property_case_detail_id` AND
+          `pcd`.`apn` = `matching_cases`.`APN`
+        )
+        JOIN `property_cases` AS `cases` ON (
+          `cases`.`pcid` = `pcd`.`property_case_id` AND
+          `cases`.`APN` = `pcd`.`apn`
+        )
+        %s
+        %s;",
+        isset($included_case_types_expr) ? sprintf(" WHERE pi.case_type_id IN ('%s')", $included_case_types_expr) : "",
+        $this->getHavingClauseForMatchingCases(),
+        $this->getExclusionSubquery(),
+        isset($where) ? " WHERE $where" : ""
       );
     }
-
-    if ($this->case_type_filter_builder->hasExclusionFilters()) {
-      $conditions[] = "open_excluded_cases.APN IS NULL";
-    }
-
-    $case_closed_date_clause = $this->getCaseClosedDateClause();
-    if(isset($case_closed_date_clause)) {
-      $conditions[] = $case_closed_date_clause;
-    }
-
-    $case_open_date_clause = $this->getCaseOpenedDateClause();
-    if(isset($case_open_date_clause)) {
-      $conditions[] = $case_open_date_clause;
-    }
-
-    if (!empty($conditions)) {
-      $where = implode(' AND ', $conditions);
-    }
-
-    $query = sprintf(
-      "SELECT
-        `p`.`parcel_number`,
-        `cases`.`pcid`,
-        `cases`.`case_type`,
-        `cases`.`case_id`
-      FROM (
-        SELECT
-          `APN`,
-          `property_case_detail_id`
-        FROM
-          `property_inspection` AS `pi`
-          %s
-        GROUP BY
-          `APN`,
-          `property_case_detail_id`
-          %s
-      ) as `matching_cases`
-      JOIN `property` AS `p` ON (
-        `p`.`parcel_number` = `matching_cases`.`APN`
-      )
-      JOIN `property_cases_detail` AS `pcd` ON (
-        `pcd`.`id` = `matching_cases`.`property_case_detail_id` AND
-        `pcd`.`apn` = `matching_cases`.`APN`
-      )
-      JOIN `property_cases` AS `cases` ON (
-        `cases`.`pcid` = `pcd`.`property_case_id` AND
-        `cases`.`APN` = `pcd`.`apn`
-      )
-      %s
-      %s;",
-      isset($included_case_types_expr) ? sprintf(" WHERE pi.case_type_id IN ('%s')", $included_case_types_expr) : "",
-      $this->getHavingClauseForMatchingCases(),
-      $this->getExclusionSubquery(),
-      isset($where) ? " WHERE $where" : ""
-    );
 
     $this->db->query($query);
 
@@ -189,24 +221,9 @@ class CustomDatabaseSearch {
     ];
   }
 
-  public function getResults($limit = 100, $page = 1)
+  public function getResults()
   {
-    $limit = (int) $limit;
-    $offset = ((int) $page - 1) * $limit;
-
-    $apns_with_notes = null;
-    if ($this->search_params->isFilteringOnNotes()) {
-      $apns_with_notes = $this->filterPropertiesWithMatchingNotes();
-    }
-
-    $cases_results = $this->filterPropertiesWithMatchingCases($apns_with_notes);
-
-    $matching_apns = array_unique(array_map(
-      function($result) {
-        return $result['parcel_number'];
-      },
-      $cases_results['results']
-    ));
+    $matching_apns = $this->getParcelNumbers();
 
     $property_query = sprintf(
       "SELECT
@@ -241,7 +258,7 @@ class CustomDatabaseSearch {
       %s;",
       implode('","', $matching_apns),
       $this->search_params->getSortByClause(),
-      sprintf("LIMIT %s, %s", $offset, $limit)
+      $this->search_params->getLimitOffsetClause()
     );
 
     $this->db->query($property_query);
@@ -253,10 +270,10 @@ class CustomDatabaseSearch {
       $apns_to_search[] = $result['parcel_number'];
     }
 
-    $this->result_apns = $apns_to_search;
+    $this->result_page = $apns_to_search;
+    $this->all_result_apns = $matching_apns;
     $this->results_count = count($matching_apns);
-    $this->matching_cases_data = $cases_results['results'];
-    $this->cases_query = $cases_results['cases_query'];
+    $this->cases_query = $this->cases_results['cases_query'];
 
     return $results;
   }
@@ -308,7 +325,7 @@ class CustomDatabaseSearch {
   }
 
   public function getRelatedPropertiesCounts() {
-    if (empty($this->result_apns)) {
+    if (empty($this->result_page)) {
       return [];
     }
 
@@ -331,7 +348,7 @@ class CustomDatabaseSearch {
       GROUP BY owner_address_and_zip
       HAVING `related_properties_count` > 0;
       ",
-      implode(',', $this->result_apns)
+      implode(',', $this->result_page)
     );
 
     $this->db->query($addresses_query);
@@ -353,9 +370,8 @@ class CustomDatabaseSearch {
     return $this->results_count;
   }
 
-  public function getMatchingCasesForProperties()
-  {
-    return $this->matching_cases_data;
+  public function getAllResultApns() {
+    return $this->all_result_apns;
   }
 
   public function getConditions() {
@@ -616,6 +632,24 @@ class CustomDatabaseSearch {
       )",
       implode(' ', $clauses)
     );
+  }
+
+  private function getParcelNumbers() {
+    $apns_with_notes = null;
+    if ($this->search_params->isFilteringOnNotes()) {
+      $apns_with_notes = $this->filterPropertiesWithMatchingNotes();
+    }
+
+    $this->cases_results = $this->filterPropertiesWithMatchingCases($apns_with_notes);
+
+    $matching_apns = array_unique(array_map(
+      function($result) {
+        return $result['parcel_number'];
+      },
+      $this->cases_results['results']
+    ));
+
+    return $matching_apns;
   }
 
 }
