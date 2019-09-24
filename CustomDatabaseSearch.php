@@ -11,6 +11,7 @@ class CustomDatabaseSearch {
   private $apns_to_cases_map;
   private $result_apns;
   private $case_type_filter_builder;
+  public $cases_query;
 
   function __construct($user_id, $search_param_data)
   {
@@ -167,27 +168,25 @@ class CustomDatabaseSearch {
       JOIN `property_cases_detail` AS `pcd` ON (
         `pcd`.`id` = `matching_cases`.`property_case_detail_id` AND
         `pcd`.`apn` = `matching_cases`.`APN`
-        %s
       )
       JOIN `property_cases` AS `cases` ON (
         `cases`.`pcid` = `pcd`.`property_case_id` AND
         `cases`.`APN` = `pcd`.`apn`
-        %s
       )
       %s
-      %s
-      ORDER BY `p`.`parcel_number`;",
+      %s;",
       isset($included_case_types_expr) ? sprintf(" WHERE pi.case_type_id IN ('%s')", $included_case_types_expr) : "",
       $this->getHavingClauseForMatchingCases(),
-      isset($included_case_types_expr) ? sprintf("AND `pcd`.`case_type_id` IN ('%s')", $included_case_types_expr) : "",
-      isset($included_case_types_expr) ? sprintf("AND `cases`.`case_type_id` IN ('%s')", $included_case_types_expr) : "",
       $this->getExclusionSubquery(),
       isset($where) ? " WHERE $where" : ""
     );
 
     $this->db->query($query);
 
-    return $this->db->result_array();
+    return [
+      'cases_query' => $query,
+      'results' => $this->db->result_array()
+    ];
   }
 
   public function getResults($limit = 100, $page = 1)
@@ -206,7 +205,7 @@ class CustomDatabaseSearch {
       function($result) {
         return $result['parcel_number'];
       },
-      $cases_results
+      $cases_results['results']
     ));
 
     $property_query = sprintf(
@@ -249,9 +248,15 @@ class CustomDatabaseSearch {
 
     $results = $this->db->result_array();
 
+    $apns_to_search = array();
+    foreach ($results as $result) {
+      $apns_to_search[] = $result['parcel_number'];
+    }
+
     $this->result_apns = $apns_to_search;
     $this->results_count = count($matching_apns);
-    $this->matching_cases_data = $cases_results;
+    $this->matching_cases_data = $cases_results['results'];
+    $this->cases_query = $cases_results['cases_query'];
 
     return $results;
   }

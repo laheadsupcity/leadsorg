@@ -4,10 +4,6 @@ require_once('CustomDatabaseSearch.php');
 require_once('FavoriteProperties.php');
 require_once('LoggedInUser.php');
 
-ini_set("log_errors", 1);
-ini_set("error_log", "/tmp/php-error.log");
-error_log( "Hello, errors!" );
-
 $search_params = array(
   'sortSettings' => $_GET['sortSettings'],
   'num_units_min' => $_GET['num_units_min'],
@@ -56,6 +52,8 @@ $properties_only = $_GET['properties_only'] == "true";
 $id = 'custom_database_search_results';
 $is_admin_user = LoggedInUser::isAdminUser($user_id);
 $show_pagination = true;
+$select_all = false;
+$read_only_fields = false;
 
 ob_start();
 include('includes/properties_list.php');
@@ -63,5 +61,6 @@ $properties_list_markup = ob_get_clean();
 
 echo json_encode([
   'total_records' => $total_records,
+  'cases_query' => $searcher->cases_query,
   'properties_list_markup' => $properties_list_markup
 ]);

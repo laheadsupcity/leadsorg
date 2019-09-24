@@ -62,7 +62,6 @@ function fetchProperties(search_parameters, properties_only = true) {
     'fetch_properties_results.php',
     entries,
     function(data) {
-      console.log(data);
       data = JSON.parse(data);
 
       if (properties_only) {
