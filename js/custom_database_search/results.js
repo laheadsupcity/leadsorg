@@ -42,7 +42,9 @@ function resizePropertyList() {
 }
 
 function fetchProperties(search_parameters, properties_only = true) {
+  let original_scrollX = window.scrollX;
   let entries;
+
   if (cases_results == null) {
     let searchParams = new URLSearchParams(search_parameters);
     entries = Object.fromEntries(searchParams.entries());
@@ -64,10 +66,7 @@ function fetchProperties(search_parameters, properties_only = true) {
 
   entries.sortSettings = $.param(sortSettings.custom_database_search_results);
 
-  $('.main-content').width($(window).width());
-  if (properties_only) {
-    $('.property-list').html($('[data-loading]').html());
-  } else {
+  if (!properties_only) {
     $('[data-loading]').addClass('d-flex').removeClass('d-none');
     $('[data-results-and-actions]').addClass('d-none');
   }
@@ -76,6 +75,9 @@ function fetchProperties(search_parameters, properties_only = true) {
     'fetch_properties_results.php',
     entries,
     function(data) {
+      var is_initial_load = cases_results == null,
+          current_scrollX = window.scrollX,
+          current_scrollY = window.scrollY;
       data = JSON.parse(data);
 
       cases_results = data.cases_results;
@@ -89,7 +91,9 @@ function fetchProperties(search_parameters, properties_only = true) {
       }
 
       resizePropertyList();
-      $('.main-content').width($('.properties-scroll').width() + 13);
+      if (is_initial_load) {
+        $('.main-content').width($('.properties-scroll').width() + 13);
+      }
 
       var id = $('.property-list-group').data('id');
 
@@ -104,6 +108,8 @@ function fetchProperties(search_parameters, properties_only = true) {
       setupEditableNotes();
 
       $('[data-total-records]').html(data.total_records);
+
+      window.scrollTo(original_scrollX, 0);
     }
   );
 }
