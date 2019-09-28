@@ -1,14 +1,13 @@
+var current_page = null;
 var cases_results = null;
 
 function navigateToPage(page) {
-  var url = new URL(window.location.href);
-
-  url.searchParams.set('page', page);
+  current_page = page;
 
   $('.page-item').removeClass('active');
   $('.page-' + page).addClass('active');
 
-  fetchProperties(url.search);
+  fetchProperties(window.location.search);
 }
 
 function handlePageSizeChange(event) {
@@ -24,13 +23,13 @@ function handlePagination(event) {
   var target = $(event.currentTarget),
       is_previous = target.data('previous-page'),
       is_next = target.data('next-page'),
-      current_page = target.data('current-page'),
+      next_page = target.data('next-page'),
       page = target.data('page');
 
   if (target.data().hasOwnProperty('previousPage')) {
-    page = current_page - 1;
+    page = next_page - 1;
   } else if (target.data().hasOwnProperty('nextPage')) {
-    page = current_page + 1;
+    page = next_page + 1;
   }
 
   navigateToPage(page);
@@ -47,12 +46,17 @@ function fetchProperties(search_parameters, properties_only = true) {
   if (cases_results == null) {
     let searchParams = new URLSearchParams(search_parameters);
     entries = Object.fromEntries(searchParams.entries());
+
+    if (current_page == null) {
+      current_page = entries.page;
+    }
   } else {
     entries = {
       case_pcids_to_search: Object.values(cases_results).join(",")
     };
   }
 
+  entries.page = current_page;
 
   entries.user_id = $('[data-user-id]').data('user-id');
 

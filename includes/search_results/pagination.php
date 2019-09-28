@@ -10,7 +10,7 @@
     <a href="#" class="page-link" data-page="1"><span aria-hidden="true">First</span></a>
   </li>
   <li class="page-item" <?php if ($current_page == 1) { ?> class="disabled" <?php } ?>>
-    <a class="page-link" href="#" data-previous-page data-current-page="<?php echo $current_page ?>"><span aria-hidden="true">&laquo;</span></a>
+    <a class="page-link" href="#" data-previous-page data-next-page="<?php echo $current_page ?>"><span aria-hidden="true">&laquo;</span></a>
   </li>
   <?php for($page = $pagination_start; $page <= $pagination_end; $page++) { ?>
     <li class="page-item page-<?php echo($page); ?> <?php if ($current_page == $page) {?>active<?php  } ?>">
@@ -18,7 +18,7 @@
     </li>
   <?php } ?>
   <li class="page-item" <?php if ($current_page == $total_pages) { ?> class="disabled" <?php } ?>>
-    <a class="page-link" href="#" data-next-page data-current-page="<?php echo $current_page; ?>"><span aria-hidden="true">&raquo;</span></a>
+    <a class="page-link" href="#" data-next-page data-next-page="<?php echo $current_page; ?>"><span aria-hidden="true">&raquo;</span></a>
   </li>
   <li class="page-item">
     <a class="page-link" href="#" data-page="<?php echo $total_pages; ?>"><span aria-hidden="true">Last</span></a>
