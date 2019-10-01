@@ -1,5 +1,26 @@
 var current_page = null;
+var current_page_size = null;
 var cases_results = null;
+var start_time = null;
+var end_time = null;
+
+function initPage() {
+  current_page = 1;
+}
+
+function initPageSize() {
+  current_page_size = 10;
+}
+
+function startTimer() {
+  start_time = new Date();
+}
+
+function endTimer() {
+  end_time = new Date();
+
+  console.log(Math.round((end_time - start_time) / 1000) + " seconds elapsed");
+}
 
 function navigateToPage(page) {
   current_page = page;
@@ -12,11 +33,9 @@ function navigateToPage(page) {
 
 function handlePageSizeChange(event) {
   var page_size = $(event.currentTarget).val();
-  var url = new URL(window.location.href);
+  current_page_size = page_size;
 
-  url.searchParams.set('page_size', page_size);
-
-  fetchProperties(url.search);
+  fetchProperties(window.location.search);
 }
 
 function handlePagination(event) {
@@ -48,10 +67,6 @@ function fetchProperties(search_parameters, properties_only = true) {
   if (cases_results == null) {
     let searchParams = new URLSearchParams(search_parameters);
     entries = Object.fromEntries(searchParams.entries());
-
-    if (current_page == null) {
-      current_page = entries.page;
-    }
   } else {
     entries = {
       case_pcids_to_search: Object.values(cases_results).join(",")
@@ -59,6 +74,8 @@ function fetchProperties(search_parameters, properties_only = true) {
   }
 
   entries.page = current_page;
+
+  entries.page_size = current_page_size;
 
   entries.user_id = $('[data-user-id]').data('user-id');
 
@@ -69,6 +86,8 @@ function fetchProperties(search_parameters, properties_only = true) {
   if (!properties_only) {
     $('[data-loading]').addClass('d-flex').removeClass('d-none');
     $('[data-results-and-actions]').addClass('d-none');
+  } else {
+    $('.properties-scroll').replaceWith("");
   }
 
   $.post(
@@ -117,6 +136,10 @@ function fetchProperties(search_parameters, properties_only = true) {
 $(document).ready(function() {
 
   initDefaultSortSettings('custom_database_search_results');
+
+  initPage();
+
+  initPageSize();
 
   fetchProperties(window.location.search, false);
 
