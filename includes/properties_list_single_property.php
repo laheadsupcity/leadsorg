@@ -3,10 +3,7 @@
 
   $user_id = isset($_SESSION) && $_SESSION['userdetail']['id'] ? $_SESSION['userdetail']['id'] : $_REQUEST['user_id'] ;
 
-  $favorites_folders = $favorites->getFavoritesFoldersForAPN(
-    $user_id,
-    $property['parcel_number']
-  );
+  $favorites_folders = explode(',', $property['favorite_folders']);
 
   if ($show_matching_cases) {
     $matching_cases_for_property = [];
@@ -56,7 +53,6 @@
   data-owner_name="<?php echo trim($property['owner_name2']); ?>"
   data-matching-cases-string="<?php echo $matching_cases_for_property_string; ?>"
   data-property-url="<?php echo $property_url; ?>"
-  data-favorites_folders="<?php echo implode(',', $favorites_folders); ?>"
   class="property-item border-bottom w-100 d-flex justify-content-between align-items-center">
 
   <div class="d-flex flex-fill">

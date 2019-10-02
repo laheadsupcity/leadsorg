@@ -17,7 +17,8 @@ class SortSettings {
     'owner_name' => '`p`.`owner_name2`',
     'sale_date' => '`p`.`sales_date`',
     'year_built' => '`p`.`year_built`',
-    'related_properties' => '`related_property_counts`.`count`'
+    'related_properties' => '`related_property_counts`.`count`',
+    'favorites_folders' => '`favorites_folders`.`favorite_folders`'
   ];
 
   private $sort_settings = array();
@@ -59,7 +60,18 @@ class SortSettings {
     $clauses = array();
     foreach ($this->getOrderedSettings() as $setting) {
       $column_name = self::getColumnName($setting['column']);
+
       if (isset($column_name) && $setting['direction'] != self::NEITHER) {
+        // favorites folders is a corner case
+        // because we have to sort by number of folders first
+        if ($setting['column'] == "favorites_folders") {
+          $clauses[] = sprintf(
+            "%s %s",
+            "folder_count",
+            $setting['direction'] == self::DESCENDING ? self::DESCENDING : self::ASCENDING
+          );
+        }
+
         $clauses[] = sprintf(
           "%s %s",
           $column_name,

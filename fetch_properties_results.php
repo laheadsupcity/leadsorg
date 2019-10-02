@@ -73,6 +73,7 @@ $pagination_markup = ob_get_clean();
 
 echo json_encode([
   // 'cases_query' => $searcher->cases_query,
+  'property_query' => $searcher->property_query,
   'total_records' => $total_records,
   'all_result_apns' => $all_result_apns,
   'properties_list_markup' => $properties_list_markup,

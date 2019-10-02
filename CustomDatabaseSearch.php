@@ -13,7 +13,9 @@ class CustomDatabaseSearch {
   private $all_result_apns;
   private $case_type_filter_builder;
   private $cases_results;
+
   public $cases_query;
+  public $property_query;
 
   function __construct(
     $user_id,
@@ -400,7 +402,9 @@ class CustomDatabaseSearch {
       p.email2,
       p.owner_address_and_zip,
       p.id,
-      `related_property_counts`.`count` AS `related_property_count`
+      `related_property_counts`.`count` AS `related_property_count`,
+      `favorites_folders`.`favorite_folders`,
+      `favorites_folders`.`folder_count`
       FROM `property` AS p
       LEFT JOIN (
         SELECT
@@ -416,11 +420,25 @@ class CustomDatabaseSearch {
           `count` > 0
       ) as `related_property_counts`
       ON `p`.`owner_address_and_zip` = `related_property_counts`.`owner_address_and_zip`
+      LEFT JOIN (
+        SELECT
+          `fav`.`parcel_number`,
+          GROUP_CONCAT(`folder`.`name`) AS `favorite_folders`,
+          COUNT(`folder`.`name`) AS `folder_count`
+        FROM `favorite_properties` AS `fav`
+        JOIN `favorite_properties_folders` AS `folder` ON (
+          `folder`.`folder_id` = `fav`.`folder_id`
+        )
+        WHERE `folder`.`user_id` = %s
+        GROUP BY `fav`.`parcel_number`
+      ) AS `favorites_folders`
+      ON `favorites_folders`.`parcel_number` = `p`.`parcel_number`
       WHERE p.parcel_number IN (
         \"%s\"
       )
       %s
       %s;",
+      $this->user_id,
       implode('","', $matching_apns),
       $this->search_params->getSortByClause(),
       $this->search_params->getLimitOffsetClause()
@@ -439,6 +457,7 @@ class CustomDatabaseSearch {
     $this->all_result_apns = $matching_apns;
     $this->results_count = count($matching_apns);
     $this->cases_query = $this->cases_results['cases_query'];
+    $this->property_query = $property_query;
 
     return $results;
   }

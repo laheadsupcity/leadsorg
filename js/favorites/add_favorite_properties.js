@@ -159,8 +159,6 @@ function populateFavoriteFoldersColumn(parcel_number_folders_map) {
       )
     )
   });
-
-  sortProperties();
 }
 
 $(document).ready(function() {
