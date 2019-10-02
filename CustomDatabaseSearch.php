@@ -15,31 +15,15 @@ class CustomDatabaseSearch {
   private $cases_results;
   public $cases_query;
 
-  function __construct($user_id, $search_param_data)
-  {
+  function __construct(
+    $user_id,
+    $search_param_data
+  ) {
     $this->db = Database::instance();
     $this->user_id = $user_id;
     $this->search_params = new SearchParameters($search_param_data);
 
     $this->case_type_filter_builder = $this->search_params->getCaseTypeFilters();
-  }
-
-  public function getCasesResults() {
-    return isset($this->cases_results['results']) ? $this->cases_results['results'] : null;
-  }
-
-
-  public function getCasesResultsIDs() {
-    if (!isset($this->cases_results)) {
-      return null;
-    }
-
-    return array_map(
-      function($result) {
-        return $result['pcid'];
-      },
-      $this->cases_results['results']
-    );
   }
 
   private function getStatusInclusionClauses()
@@ -100,7 +84,8 @@ class CustomDatabaseSearch {
     return $query;
   }
 
-  private function getHavingClauseForMatchingCases() {
+  private function getHavingClauseForMatchingCases()
+  {
     $clauses = [];
 
     $inclusion_clauses = $this->getStatusInclusionClauses();
@@ -126,15 +111,160 @@ class CustomDatabaseSearch {
     }
   }
 
-  private function filterPropertiesWithMatchingCases($apns_with_matching_notes) {
+  private function getCaseClosedDateClause()
+  {
+    $case_closed_date_filters = $this->case_type_filter_builder->getCaseClosedDateFilters();
+
+    if (empty($case_closed_date_filters)) {
+      return null;
+    }
+
+    $clauses = array();
+    foreach ($case_closed_date_filters as $inclusion_filter) {
+      $filter = $inclusion_filter->getCaseClosedDateFilter();
+      $clause = null;
+      if ($filter->isExclude()) {
+        $clause = "cases.case_date = \"\"";
+      } else if (!$filter->hasFromDate() && !$filter->hasToDate()) {
+        $clause = "cases.case_date <> \"\"";
+      } else {
+        $from_date_expr = $filter->getFromDateAsExpression();
+        $to_date_expr = $filter->getToDateAsExpression();
+
+        if ($filter->hasFromDate() && $filter->hasToDate()) {
+          $clause = sprintf(
+            "STR_TO_DATE(cases.case_date, '%s') >= %s AND STR_TO_DATE(cases.case_date, '%s') <= %s",
+            '%m/%d/%Y',
+            $from_date_expr,
+            '%m/%d/%Y',
+            $to_date_expr
+          );
+        } else if ($filter->hasFromDate()) {
+          $clause = sprintf(
+            "STR_TO_DATE(cases.case_date, '%s') >= %s",
+            '%m/%d/%Y',
+            $from_date_expr
+          );
+        } else if ($filter->hasToDate()) {
+          $clause = sprintf(
+            "STR_TO_DATE(cases.case_date, '%s') <= %s",
+            '%m/%d/%Y',
+            $to_date_expr
+          );
+        }
+      }
+
+      $clause = sprintf(
+        "WHEN cases.case_type_id = %s THEN %s",
+        $inclusion_filter->getCaseTypeID(),
+        $clause
+      );
+
+      $clauses[] = $clause;
+    }
+
+    return sprintf(
+    "(
+    CASE
+    %s
+    ELSE 1=1
+    END
+
+    )",
+    implode(' ', $clauses)
+    );
+  }
+
+  private function getCaseOpenedDateClause()
+  {
+    $case_open_date_filters = $this->case_type_filter_builder->getCaseOpenedDateFilters();
+
+    if (empty($case_open_date_filters)) {
+      return null;
+    }
+
+    $clauses = array();
+    foreach ($case_open_date_filters as $inclusion_filter) {
+      $filter = $inclusion_filter->getCaseOpenedDateFilter();
+      $clause = null;
+      if ($filter->isExclude()) {
+        $clause = "cases.created_date IS NULL \"\"";
+      } else if (!$filter->hasFromDate() && !$filter->hasToDate()) {
+        $clause = "cases.created_date IS NOT NULL";
+      } else {
+        $from_date_expr = $filter->getFromDateAsDateTimeExpression();
+        $to_date_expr = $filter->getToDateAsDateTimeExpression();
+
+        if ($filter->hasFromDate() && $filter->hasToDate()) {
+          $clause = sprintf(
+          "cases.created_date >= '%s' AND cases.created_date <= '%s'",
+          $from_date_expr,
+          $to_date_expr
+          );
+        } else if ($filter->hasFromDate()) {
+          $clause = sprintf(
+          "cases.created_date >= '%s'",
+          $from_date_expr
+          );
+        } else if ($filter->hasToDate()) {
+          $clause = sprintf(
+          "cases.created_date <= '%s'",
+          $to_date_expr
+          );
+        }
+      }
+
+      $clause = sprintf(
+      "WHEN cases.case_type_id = %s THEN %s",
+      $inclusion_filter->getCaseTypeID(),
+      $clause
+      );
+
+      $clauses[] = $clause;
+    }
+
+    return sprintf(
+    "(
+    CASE
+    %s
+    ELSE 1=1
+    END
+
+    )",
+    implode(' ', $clauses)
+    );
+  }
+
+  private function getParcelNumbers()
+  {
+    $apns_with_notes = null;
+    if ($this->search_params->isFilteringOnNotes()) {
+      $apns_with_notes = $this->filterPropertiesWithMatchingNotes();
+    }
+
+    $this->cases_results = $this->filterPropertiesWithMatchingCases($apns_with_notes);
+
+    $matching_apns = array_unique(array_map(
+    function($result) {
+      return $result['parcel_number'];
+    },
+    $this->cases_results['results']
+    ));
+
+    return $matching_apns;
+  }
+
+  private function filterPropertiesWithMatchingCases(
+    $apns_with_matching_notes
+  ) {
     $case_pcids_to_search = $this->search_params->getCasePCIDsToSearch();
     if (isset($case_pcids_to_search)) {
       $query = sprintf(
         "SELECT
-          `cases`.`APN` AS `parcel_number`,
-          `cases`.`pcid`,
-          `cases`.`case_type`,
-          `cases`.`case_id`
+        `cases`.`APN` AS `parcel_number`,
+        `cases`.`pcid`,
+        `cases`.`case_type`,
+        `cases`.`case_id`
         FROM `property_cases` AS `cases`
         WHERE `cases`.`pcid` IN ('%s');",
         join($case_pcids_to_search, "','")
@@ -176,49 +306,68 @@ class CustomDatabaseSearch {
       }
 
       $query = sprintf(
-        "SELECT
-          `cases`.`APN` AS `parcel_number`,
-          `cases`.`pcid`,
-          `cases`.`case_type`,
-          `cases`.`case_id`
-        FROM (
-          SELECT
-            `APN`,
-            `property_case_detail_id`
-          FROM
-            `property_inspection` AS `pi`
-            %s
-          GROUP BY
-            `APN`,
-            `property_case_detail_id`
-            %s
-        ) as `matching_cases`
-        JOIN `property` AS `p` ON (
-          `p`.`parcel_number` = `matching_cases`.`APN`
-        )
-        JOIN `property_cases_detail` AS `pcd` ON (
-          `pcd`.`id` = `matching_cases`.`property_case_detail_id` AND
-          `pcd`.`apn` = `matching_cases`.`APN`
-        )
-        JOIN `property_cases` AS `cases` ON (
-          `cases`.`pcid` = `pcd`.`property_case_id` AND
-          `cases`.`APN` = `pcd`.`apn`
-        )
-        %s
-        %s;",
-        isset($included_case_types_expr) ? sprintf(" WHERE pi.case_type_id IN ('%s')", $included_case_types_expr) : "",
-        $this->getHavingClauseForMatchingCases(),
-        $this->getExclusionSubquery(),
-        isset($where) ? " WHERE $where" : ""
+      "SELECT
+      `cases`.`APN` AS `parcel_number`,
+      `cases`.`pcid`,
+      `cases`.`case_type`,
+      `cases`.`case_id`
+      FROM (
+      SELECT
+      `APN`,
+      `property_case_detail_id`
+      FROM
+      `property_inspection` AS `pi`
+      %s
+      GROUP BY
+      `APN`,
+      `property_case_detail_id`
+      %s
+      ) as `matching_cases`
+      JOIN `property` AS `p` ON (
+      `p`.`parcel_number` = `matching_cases`.`APN`
+      )
+      JOIN `property_cases_detail` AS `pcd` ON (
+      `pcd`.`id` = `matching_cases`.`property_case_detail_id` AND
+      `pcd`.`apn` = `matching_cases`.`APN`
+      )
+      JOIN `property_cases` AS `cases` ON (
+      `cases`.`pcid` = `pcd`.`property_case_id` AND
+      `cases`.`APN` = `pcd`.`apn`
+      )
+      %s
+      %s;",
+      isset($included_case_types_expr) ? sprintf(" WHERE pi.case_type_id IN ('%s')", $included_case_types_expr) : "",
+      $this->getHavingClauseForMatchingCases(),
+      $this->getExclusionSubquery(),
+      isset($where) ? " WHERE $where" : ""
       );
     }
 
     $this->db->query($query);
 
     return [
-      'cases_query' => $query,
-      'results' => $this->db->result_array()
+    'cases_query' => $query,
+    'results' => $this->db->result_array()
     ];
+  }
+
+  public function getCasesResults()
+  {
+    return isset($this->cases_results['results']) ? $this->cases_results['results'] : null;
+  }
+
+  public function getCasesResultsIDs()
+  {
+    if (!isset($this->cases_results)) {
+      return null;
+    }
+
+    return array_map(
+      function($result) {
+        return $result['pcid'];
+      },
+      $this->cases_results['results']
+    );
   }
 
   public function getResults()
@@ -250,8 +399,24 @@ class CustomDatabaseSearch {
       p.email1,
       p.email2,
       p.owner_address_and_zip,
-      p.id
-      FROM `property` AS p WHERE p.parcel_number IN (
+      p.id,
+      `related_property_counts`.`count` AS `related_property_count`
+      FROM `property` AS p
+      LEFT JOIN (
+        SELECT
+          `owner_address_and_zip`,
+          count(`owner_address_and_zip`) - 1 AS `count`
+        FROM
+          `property`
+        WHERE
+          `full_mail_address` <> \"\"
+        GROUP BY
+          `owner_address_and_zip`
+        HAVING
+          `count` > 0
+      ) as `related_property_counts`
+      ON `p`.`owner_address_and_zip` = `related_property_counts`.`owner_address_and_zip`
+      WHERE p.parcel_number IN (
         \"%s\"
       )
       %s
@@ -278,7 +443,8 @@ class CustomDatabaseSearch {
     return $results;
   }
 
-  public function filterPropertiesWithMatchingNotes() {
+  public function filterPropertiesWithMatchingNotes()
+  {
     if (!$this->search_params->isFilteringOnNotes()) {
       return null;
     }
@@ -324,57 +490,18 @@ class CustomDatabaseSearch {
     );
   }
 
-  public function getRelatedPropertiesCounts() {
-    if (empty($this->result_page)) {
-      return [];
-    }
-
-    $addresses_query = sprintf(
-      "
-      SELECT
-        count(`owner_address_and_zip`) - 1 AS `related_properties_count`,
-        `owner_address_and_zip`
-      FROM `property`
-      WHERE
-        `full_mail_address` <> \"\" AND
-        `owner_address_and_zip` IN (
-          SELECT
-            `owner_address_and_zip`
-          FROM `property`
-          WHERE parcel_number IN (
-            %s
-          )
-        )
-      GROUP BY owner_address_and_zip
-      HAVING `related_properties_count` > 0;
-      ",
-      implode(',', $this->result_page)
-    );
-
-    $this->db->query($addresses_query);
-
-    $results = $this->db->result_array();
-
-    $related_count_map = [];
-    foreach ($results as $result) {
-      $address =  $result['owner_address_and_zip'];
-      $related_properties_count =  $result['related_properties_count'];
-
-      $related_count_map[$address] = $related_properties_count;
-    }
-
-    return $related_count_map;
-  }
-
-  public function getResultCount() {
+  public function getResultCount()
+  {
     return $this->results_count;
   }
 
-  public function getAllResultApns() {
+  public function getAllResultApns()
+  {
     return $this->all_result_apns;
   }
 
-  public function getConditions() {
+  public function getConditions()
+  {
     $search_param_data = $this->search_params->getSearchParamData();
 
     $conditions = array();
@@ -510,146 +637,6 @@ class CustomDatabaseSearch {
     }
 
     return $conditions;
-  }
-
-  private function getCaseClosedDateClause() {
-    $case_closed_date_filters = $this->case_type_filter_builder->getCaseClosedDateFilters();
-
-    if (empty($case_closed_date_filters)) {
-      return null;
-    }
-
-    $clauses = array();
-    foreach ($case_closed_date_filters as $inclusion_filter) {
-      $filter = $inclusion_filter->getCaseClosedDateFilter();
-      $clause = null;
-      if ($filter->isExclude()) {
-        $clause = "cases.case_date = \"\"";
-      } else if (!$filter->hasFromDate() && !$filter->hasToDate()) {
-        $clause = "cases.case_date <> \"\"";
-      } else {
-        $from_date_expr = $filter->getFromDateAsExpression();
-        $to_date_expr = $filter->getToDateAsExpression();
-
-        if ($filter->hasFromDate() && $filter->hasToDate()) {
-          $clause = sprintf(
-            "STR_TO_DATE(cases.case_date, '%s') >= %s AND STR_TO_DATE(cases.case_date, '%s') <= %s",
-            '%m/%d/%Y',
-            $from_date_expr,
-            '%m/%d/%Y',
-            $to_date_expr
-          );
-        } else if ($filter->hasFromDate()) {
-          $clause = sprintf(
-            "STR_TO_DATE(cases.case_date, '%s') >= %s",
-            '%m/%d/%Y',
-            $from_date_expr
-          );
-        } else if ($filter->hasToDate()) {
-          $clause = sprintf(
-            "STR_TO_DATE(cases.case_date, '%s') <= %s",
-            '%m/%d/%Y',
-            $to_date_expr
-          );
-        }
-      }
-
-      $clause = sprintf(
-        "WHEN cases.case_type_id = %s THEN %s",
-        $inclusion_filter->getCaseTypeID(),
-        $clause
-      );
-
-      $clauses[] = $clause;
-    }
-
-    return sprintf(
-      "(
-          CASE
-            %s
-            ELSE 1=1
-          END
-
-      )",
-      implode(' ', $clauses)
-    );
-  }
-
-  private function getCaseOpenedDateClause() {
-    $case_open_date_filters = $this->case_type_filter_builder->getCaseOpenedDateFilters();
-
-    if (empty($case_open_date_filters)) {
-      return null;
-    }
-
-    $clauses = array();
-    foreach ($case_open_date_filters as $inclusion_filter) {
-      $filter = $inclusion_filter->getCaseOpenedDateFilter();
-      $clause = null;
-      if ($filter->isExclude()) {
-        $clause = "cases.created_date IS NULL \"\"";
-      } else if (!$filter->hasFromDate() && !$filter->hasToDate()) {
-        $clause = "cases.created_date IS NOT NULL";
-      } else {
-        $from_date_expr = $filter->getFromDateAsDateTimeExpression();
-        $to_date_expr = $filter->getToDateAsDateTimeExpression();
-
-        if ($filter->hasFromDate() && $filter->hasToDate()) {
-          $clause = sprintf(
-            "cases.created_date >= '%s' AND cases.created_date <= '%s'",
-            $from_date_expr,
-            $to_date_expr
-          );
-        } else if ($filter->hasFromDate()) {
-          $clause = sprintf(
-            "cases.created_date >= '%s'",
-            $from_date_expr
-          );
-        } else if ($filter->hasToDate()) {
-          $clause = sprintf(
-            "cases.created_date <= '%s'",
-            $to_date_expr
-          );
-        }
-      }
-
-      $clause = sprintf(
-        "WHEN cases.case_type_id = %s THEN %s",
-        $inclusion_filter->getCaseTypeID(),
-        $clause
-      );
-
-      $clauses[] = $clause;
-    }
-
-    return sprintf(
-      "(
-          CASE
-            %s
-            ELSE 1=1
-          END
-
-      )",
-      implode(' ', $clauses)
-    );
-  }
-
-  private function getParcelNumbers() {
-    $apns_with_notes = null;
-    if ($this->search_params->isFilteringOnNotes()) {
-      $apns_with_notes = $this->filterPropertiesWithMatchingNotes();
-    }
-
-    $this->cases_results = $this->filterPropertiesWithMatchingCases($apns_with_notes);
-
-    $matching_apns = array_unique(array_map(
-      function($result) {
-        return $result['parcel_number'];
-      },
-      $this->cases_results['results']
-    ));
-
-    return $matching_apns;
   }
 
 }

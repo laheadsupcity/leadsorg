@@ -4,6 +4,7 @@ class SortSettings {
 
   const DESCENDING = "DESC";
   const ASCENDING = "ASC";
+  const NEITHER = "NEITHER";
 
   const COLUMN_NAME_MAP = [
     // whatever idiot made the schema stored int values in varchars
@@ -15,7 +16,8 @@ class SortSettings {
     'num_beds' => '`p`.`bedrooms`',
     'owner_name' => '`p`.`owner_name2`',
     'sale_date' => '`p`.`sales_date`',
-    'year_built' => '`p`.`year_built`'
+    'year_built' => '`p`.`year_built`',
+    'related_properties' => '`related_property_counts`.`count`'
   ];
 
   private $sort_settings = array();
@@ -48,14 +50,16 @@ class SortSettings {
   }
 
   private static function getColumnName($raw_name) {
-    return self::COLUMN_NAME_MAP[$raw_name];
+    return isset(self::COLUMN_NAME_MAP[$raw_name]) ?
+           self::COLUMN_NAME_MAP[$raw_name] :
+           null;
   }
 
   function getSortByClause() {
     $clauses = array();
     foreach ($this->getOrderedSettings() as $setting) {
       $column_name = self::getColumnName($setting['column']);
-      if (isset($column_name)) {
+      if (isset($column_name) && $setting['direction'] != self::NEITHER) {
         $clauses[] = sprintf(
           "%s %s",
           $column_name,

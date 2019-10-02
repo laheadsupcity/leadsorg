@@ -50,7 +50,6 @@ $user_id = $_REQUEST['user_id'];
 $searcher = new CustomDatabaseSearch($user_id, $search_params);
 $properties = $searcher->getResults();
 $matching_cases = $searcher->getCasesResults();
-$related_properties_counts = $searcher->getRelatedPropertiesCounts();
 $all_result_apns = $searcher->getAllResultApns();
 $total_records = $searcher->getResultCount();
 

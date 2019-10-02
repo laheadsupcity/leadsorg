@@ -22,6 +22,19 @@ function endTimer() {
   console.log(Math.round((end_time - start_time) / 1000) + " seconds elapsed");
 }
 
+var start_time = null;
+var end_time = null;
+
+function startTimer() {
+  start_time = new Date();
+}
+
+function endTimer() {
+  end_time = new Date();
+
+  console.log(Math.round((end_time - start_time) / 1000) + " seconds elapsed");
+}
+
 function navigateToPage(page) {
   current_page = page;
 
@@ -61,6 +74,8 @@ function resizePropertyList() {
 }
 
 function fetchProperties(search_parameters, properties_only = true) {
+  startTimer();
+
   let original_scrollX = window.scrollX;
   let entries;
 
@@ -94,9 +109,8 @@ function fetchProperties(search_parameters, properties_only = true) {
     'fetch_properties_results.php',
     entries,
     function(data) {
-      var is_initial_load = cases_results == null,
-          current_scrollX = window.scrollX,
-          current_scrollY = window.scrollY;
+      var is_initial_load = cases_results == null;
+
       data = JSON.parse(data);
 
       cases_results = data.cases_results;
@@ -130,6 +144,8 @@ function fetchProperties(search_parameters, properties_only = true) {
       $('[data-total-records]').html(data.total_records);
 
       window.scrollTo(original_scrollX, 0);
+
+      endTimer();
     }
   );
 }

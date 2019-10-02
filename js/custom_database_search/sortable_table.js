@@ -30,13 +30,13 @@ function initDefaultSortSettings(id) {
   let order = 0;
   changeSortSetting(id, SORT_COLUMN_UNITS, SORT_TYPE_DESC, order++);
   changeSortSetting(id, SORT_COLUMN_BUILDING_AREA, SORT_TYPE_DESC, order++);
-  changeSortSetting(id, SORT_COLUMN_LOT_AREA_SQFT, SORT_TYPE_DESC, order++);
-  changeSortSetting(id, SORT_COLUMN_YEAR_BUILT, SORT_TYPE_DESC, order++);
-  changeSortSetting(id, SORT_COLUMN_SALE_DATE, SORT_TYPE_DESC, order++);
-  // changeSortSetting(id, SORT_COLUMN_RELATED_PROPERTIES, SORT_TYPE_DESC, order++);
-  // changeSortSetting(id, SORT_COLUMN_FAVORITES_FOLDERS, SORT_TYPE_ASC, order++);
-  changeSortSetting(id, SORT_COLUMN_BEDS, SORT_TYPE_DESC, order++);
-  changeSortSetting(id, SORT_COLUMN_OWNER_NAME, SORT_TYPE_ASC, order++);
+  changeSortSetting(id, SORT_COLUMN_LOT_AREA_SQFT, SORT_TYPE_NEITHER, order++);
+  changeSortSetting(id, SORT_COLUMN_YEAR_BUILT, SORT_TYPE_NEITHER, order++);
+  changeSortSetting(id, SORT_COLUMN_SALE_DATE, SORT_TYPE_NEITHER, order++);
+  changeSortSetting(id, SORT_COLUMN_RELATED_PROPERTIES, SORT_TYPE_NEITHER, order++);
+  changeSortSetting(id, SORT_COLUMN_FAVORITES_FOLDERS, SORT_TYPE_NEITHER, order++);
+  changeSortSetting(id, SORT_COLUMN_BEDS, SORT_TYPE_NEITHER, order++);
+  changeSortSetting(id, SORT_COLUMN_OWNER_NAME, SORT_TYPE_NEITHER, order++);
 }
 
 function changeSortSetting(id, column, direction, order) {

@@ -8,13 +8,6 @@
     $property['parcel_number']
   );
 
-  $owner_address = $property['owner_address_and_zip'];
-
-  $related_properties_for_owner_count =
-    isset($property['related_properties_count']) ? $property['related_properties_count'] :
-    isset($related_properties_counts[$owner_address]) ? $related_properties_counts[$owner_address] : 0;
-
-  $has_related_properties = $related_properties_for_owner_count > 0;
   if ($show_matching_cases) {
     $matching_cases_for_property = [];
     foreach ($matching_cases as $case) {
@@ -61,7 +54,6 @@
   data-year_built="<?php echo $property['year_built']; ?>"
   data-sale_date="<?php echo $property['sales_date']; ?>"
   data-owner_name="<?php echo trim($property['owner_name2']); ?>"
-  data-related_properties="<?php echo $related_properties_for_owner_count; ?>"
   data-matching-cases-string="<?php echo $matching_cases_for_property_string; ?>"
   data-property-url="<?php echo $property_url; ?>"
   data-favorites_folders="<?php echo implode(',', $favorites_folders); ?>"
@@ -87,8 +79,8 @@
 
     <?php if ($include_related_properties) { ?>
       <div class="sm-property-info-column related-properties property-info-column sortable-column text-center font-weight-bold">
-        <?php if ($has_related_properties) { ?>
-          <a class="btn btn-outline-dark" href="related_properties.php?parcel_number=<?php echo $property['parcel_number']; ?>" target="_blank"><?php echo $related_properties_for_owner_count; ?></a>
+        <?php if ($property['related_property_count']) { ?>
+          <a class="btn btn-outline-dark" href="related_properties.php?parcel_number=<?php echo $property['parcel_number']; ?>" target="_blank"><?php echo $property['related_property_count']; ?></a>
         <?php } else { ?>
           <span class="font-italic font-weight-light">none</span>
         <?php } ?>
