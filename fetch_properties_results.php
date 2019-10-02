@@ -68,10 +68,15 @@ ob_start();
 include('includes/properties_list.php');
 $properties_list_markup = ob_get_clean();
 
+ob_start();
+include('includes/search_results/pagination.php');
+$pagination_markup = ob_get_clean();
+
 echo json_encode([
   // 'cases_query' => $searcher->cases_query,
   'total_records' => $total_records,
   'all_result_apns' => $all_result_apns,
   'properties_list_markup' => $properties_list_markup,
+  'pagination_markup' => $pagination_markup,
   'cases_results' => $searcher->getCasesResultsIDs()
 ]);

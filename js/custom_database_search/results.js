@@ -103,6 +103,7 @@ function fetchProperties(search_parameters, properties_only = true) {
 
       if (properties_only) {
         $('.property-list').replaceWith(data.properties_list_markup);
+        $('.pagination').replaceWith(data.pagination_markup);
       } else {
         $('[data-properties-list]').html(data.properties_list_markup);
         $('[data-loading]').removeClass('d-flex').addClass('d-none');
