@@ -48,6 +48,9 @@ function handlePageSizeChange(event) {
   var page_size = $(event.currentTarget).val();
   current_page_size = page_size;
 
+  // when page size changes we must go back to first page
+  initPage();
+
   fetchProperties(window.location.search);
 }
 
