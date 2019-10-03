@@ -1,7 +1,5 @@
 <?php
-
 require_once('CustomDatabaseSearch.php');
-require_once('FavoriteProperties.php');
 require_once('LoggedInUser.php');
 
 $search_params = array(

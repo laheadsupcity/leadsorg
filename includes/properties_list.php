@@ -1,8 +1,4 @@
 <?php if (!empty($properties) && $properties_only) { ?>
-  <?php
-    $favorites = new FavoriteProperties();
-  ?>
-
   <div class="property-list">
     <div class="properties-scroll">
       <?php foreach ($properties as $property) { ?>
@@ -11,10 +7,6 @@
     </div>
   </div>
 <?php } else if (!empty($properties)) { ?>
-  <?php
-    $favorites = new FavoriteProperties();
-  ?>
-
   <div
     data-id="<?php echo($id); ?>"
     class="border property-list-group mb-4">
