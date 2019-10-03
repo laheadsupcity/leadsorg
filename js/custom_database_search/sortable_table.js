@@ -146,7 +146,7 @@ function setupSortableColumns(id) {
 
   getAllSortSettings().forEach(function(column) {
     var direction = sortSettings[id][column].dir;
-    var column_header = $('[data-id=' + id + "]").find('[data-sortable-column="' + column + '"]');
+    var column_header = $('[data-results-id=' + id + "]").find('[data-sortable-column="' + column + '"]');
 
     column_header.addClass('sortable-column');
 

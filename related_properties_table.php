@@ -14,4 +14,4 @@ $include_related_properties = false;
 $select_all = true;
 $id = "related_properties_for_" . $parcel_number . "_modal";
 
-include('includes/properties_list.php');
+include('includes/properties_list_container.php');

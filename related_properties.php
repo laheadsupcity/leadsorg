@@ -50,7 +50,7 @@
         $include_related_properties = false;
         $show_pagination = false;
         $id = 'related_properties';
-        include('includes/properties_list.php');
+        include('includes/properties_list_container.php');
       ?>
 
       <div class="mt-3 mb-3 d-flex align-items-center">

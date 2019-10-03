@@ -70,7 +70,7 @@
             $show_matching_cases = false;
             $include_related_properties = true;
             $id = 'favorites_list';
-            include('includes/properties_list.php');
+            include('includes/properties_list_container.php');
           ?>
 
           <div class="mt-3 d-flex justify-content-between">

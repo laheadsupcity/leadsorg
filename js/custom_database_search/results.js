@@ -1,3 +1,5 @@
+var is_initial_load = true;
+
 var current_page = null;
 var current_page_size = null;
 var cases_results = null;
@@ -76,7 +78,7 @@ function resizePropertyList() {
   $('.property-list').height(window_height - 350);
 }
 
-function fetchProperties(search_parameters, properties_only = true) {
+function fetchProperties(search_parameters) {
   startTimer();
 
   let original_scrollX = window.scrollX;
@@ -97,32 +99,27 @@ function fetchProperties(search_parameters, properties_only = true) {
 
   entries.user_id = $('[data-user-id]').data('user-id');
 
-  entries.properties_only = properties_only;
-
   entries.sortSettings = $.param(sortSettings.custom_database_search_results);
 
-  if (!properties_only) {
+  if (is_initial_load) {
     $('[data-loading]').addClass('d-flex').removeClass('d-none');
     $('[data-results-and-actions]').addClass('d-none');
   } else {
-    $('.properties-scroll').replaceWith("");
+    $('[data-properties-list]').html("");
   }
 
   $.post(
     'fetch_properties_results.php',
     entries,
     function(data) {
-      var is_initial_load = cases_results == null;
-
       data = JSON.parse(data);
 
       cases_results = data.cases_results;
 
-      if (properties_only) {
-        $('.property-list').replaceWith(data.properties_list_markup);
-        $('.pagination').replaceWith(data.pagination_markup);
-      } else {
-        $('[data-properties-list]').html(data.properties_list_markup);
+      $('[data-properties-list]').html(data.properties_list_markup);
+      $('.pagination').replaceWith(data.pagination_markup);
+
+      if (is_initial_load) {
         $('[data-loading]').removeClass('d-flex').addClass('d-none');
         $('[data-results-and-actions]').removeClass('d-none');
       }
@@ -132,12 +129,12 @@ function fetchProperties(search_parameters, properties_only = true) {
         $('.main-content').width($('.properties-scroll').width() + 13);
       }
 
-      var id = $('.property-list-group').data('id');
+      var results_id = $('.property-list-group').data('results-id');
 
       if (data.total_records == 0) {
         // no op
-      } else if (!properties_only) {
-        setupSortableColumns(id);
+      } else if (is_initial_load) {
+        setupSortableColumns(results_id);
       }
 
       setupEditableFields();
@@ -146,6 +143,7 @@ function fetchProperties(search_parameters, properties_only = true) {
 
       window.scrollTo(original_scrollX, 0);
 
+      is_initial_load = false;
       endTimer();
     }
   );

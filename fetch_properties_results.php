@@ -51,15 +51,14 @@ $matching_cases = $searcher->getCasesResults();
 $all_result_apns = $searcher->getAllResultApns();
 $total_records = $searcher->getResultCount();
 
+////
 $show_favorites_flag = false;
 $show_matching_cases = true;
 $include_related_properties = true;
-$properties_only = $_REQUEST['properties_only'] == "true";
-$id = 'custom_database_search_results';
-$is_admin_user = LoggedInUser::isAdminUser($user_id);
 $show_pagination = true;
 $select_all = false;
 $read_only_fields = false;
+////
 
 ob_start();
 include('includes/properties_list.php');
@@ -70,8 +69,6 @@ include('includes/search_results/pagination.php');
 $pagination_markup = ob_get_clean();
 
 echo json_encode([
-  // 'cases_query' => $searcher->cases_query,
-  'property_query' => $searcher->property_query,
   'total_records' => $total_records,
   'all_result_apns' => $all_result_apns,
   'properties_list_markup' => $properties_list_markup,

@@ -58,7 +58,17 @@
         </div>
       </div>
 
-      <div data-properties-list></div>
+      <?php
+        $results_id = "custom_database_search_results";
+        $select_all = false;
+        $show_pagination = true;
+        $read_only_fields = false;
+        $show_favorites_flag = false;
+        $show_matching_cases = true;
+        $include_related_properties = true;
+
+        include('includes/properties_list_container.php');
+      ?>
 
       <div class="mt-3 mb-3 d-flex align-items-center">
         <?php if ($is_admin_user) { ?>
