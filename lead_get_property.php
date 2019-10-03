@@ -78,7 +78,12 @@
     </div>
   </div>
 
+  <?php include('includes/confirm_edit_contact_info_modal.php'); ?>
+
+  <?php include('includes/confirm_edit_notes_modal.php'); ?>
+
   <?php include('includes/create_lead_batch_modal.php') ?>
+
   <?php
     $is_search_results = true;
     include('includes/favorites_folders/add_to_favorites_modal.php');

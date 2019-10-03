@@ -10,126 +10,20 @@ const unknownFieldMarkup = "<span class='font-italic'>unknown</span>";
 
 const noNotesMarkup = "<span class='font-italic'>no notes yet</span>";
 
-var editable_fields = [];
+var editable_fields;
 
-function getUserID() {
-  // TO DO: This is temporary hack until user sessions are handled properly
-  return $('[data-user-id]').data('user-id');
+function setupEditableFields() {
+  editable_fields = [];
+
+  resetHandlers();
+
+  setupEditableContactInfoFields();
+  setupEditableNotes();
 }
 
-function getParcelNumber(editable_field) {
-  return editable_field.parents('.property-item').data('parcel_number');
-}
-
-function getOwnerName(editable_field) {
-  return editable_field.parents('.property-item').data('owner_name');
-}
-
-function shouldEditRelated(edited_field_data) {
-  var property_row = $('[data-parcel_number=' + edited_field_data.parcel_number + ']'),
-      edit_related_checkbox = property_row.find('[data-edit-related-checkbox]');
-
-  return edit_related_checkbox.prop('checked');
-}
-
-function getRelatedPropertiesTableForAPN(parcel_number, callback) {
-  $.get(
-    'related_properties_table.php',
-    {
-      'user_id': getUserID(),
-      'parcel_number': parcel_number
-    },
-    callback
-  );
-}
-
-function confirmContactInfoEdit(edited_field_data) {
-  var related_properties_table = $('#editContactInfoModal [data-related-properties]');
-  related_properties_table.empty();
-
-  var edit_related = shouldEditRelated(edited_field_data);
-
-  if (edit_related) {
-    getRelatedPropertiesTableForAPN(
-      edited_field_data.parcel_number,
-      function(data) {
-        related_properties_table.html(data);
-        related_properties_table.prop('hidden', !(edit_related && data != ""));
-        related_properties_table.height(300);
-
-        setupSortableColumns("related_properties_for_" + edited_field_data.parcel_number + '_modal');
-      }
-    );
-  }
-
-  $('#editContactInfoModal [data-owner-name]').html(edited_field_data.owner_name.trim());
-  $('#editContactInfoModal [data-new-contact-info]').html(
-    edited_field_data.new_value == "" ? unknownFieldMarkup : edited_field_data.new_value
-  );
-
-  $('#editContactInfoModal').modal('show');
-}
-
-function confirmNotesEdit(edited_field_data) {
-  $('#editNotesModal [data-new-notes]').html(edited_field_data.new_value);
-  $('#editNotesModal').modal('show');
-}
-
-function confirmEdit(edited_field_data) {
-  if (edited_field_data.type == TYPE_CONTACT_INFO) {
-    confirmContactInfoEdit(edited_field_data);
-  } else if (edited_field_data.type == TYPE_NOTES) {
-    confirmNotesEdit(edited_field_data);
-  }
-}
-
-function makeEdit(id) {
-  let edited_field = $('#' + id),
-      edited_field_data = editable_fields[id],
-      new_value = edited_field.find('.form-control').val();
-
-  if (edited_field_data.current_value != new_value) {
-    editable_fields[id].new_value = new_value;
-    confirmEdit(edited_field_data);
-  } else {
-    toggleEdit(id);
-  }
-}
-
-function toggleEdit(id) {
-  var editable_field = $('#' + id);
-  var value_element = editable_field.find('[data-field-value]'),
-      input_element = editable_field.find('[data-edit-input]')
-      is_edit_mode = !editable_fields[id].is_editing;
-
-    if (editable_fields[id].is_editing) {
-      editable_field.removeClass('is-editing').addClass('is-not-editing');
-    } else {
-      editable_field.removeClass('is-not-editing').addClass('is-editing');
-    }
-
-    editable_fields[id].is_editing = is_edit_mode;
-
-    value_element.prop('hidden', is_edit_mode);
-    input_element.prop('hidden', !is_edit_mode);
-
-  if (is_edit_mode) {
-    let input = input_element.find('.form-control');
-    input.val(editable_fields[id].current_value);
-    input.focus();
-  } else {
-    var new_content = editable_fields[id].current_value == "" ?
-      (editable_fields[id].type == TYPE_NOTES ? noNotesMarkup : unknownFieldMarkup) :
-      editable_fields[id].current_value;
-
-    value_element.html(new_content);
-
-    if (editable_fields[id].type == TYPE_CONTACT_INFO) {
-      $('#editContactInfoModal').modal('hide');
-    } else if (editable_fields[id].type == TYPE_NOTES) {
-      $('#editNotesModal').modal('hide');
-    }
-  }
+function resetHandlers() {
+  $('#editNotesModal [data-action=confirm_edit]').off('click', handleSaveNote);
+  $('#editNotesModal [data-action=cancel_edit]').off('click', handleCancelNoteEdit);
 }
 
 function setupEditableContactInfoFields() {
@@ -273,29 +167,153 @@ function setupEditableNotes() {
     });
   });
 
-  $('#editNotesModal [data-action=confirm_edit]').click(function() {
-    let edited_field_data = Object.values(editable_fields).filter(field => field.is_editing)[0];
+  $('#editNotesModal [data-action=confirm_edit]').on('click', handleSaveNote);
 
-    $.post(
-      "edit_property_notes.php",
-      {
-        user_id: getUserID(),
-        parcel_number: edited_field_data.parcel_number,
-        content: edited_field_data.new_value,
-        is_private: edited_field_data.is_private
-      },
-      function() {
-        editable_fields[edited_field_data.id].current_value = editable_fields[edited_field_data.id].new_value;
-        editable_fields[edited_field_data.id].new_value = null;
-        toggleEdit(edited_field_data.id);
+  $('#editNotesModal [data-action=cancel_edit]').on('click', handleCancelNoteEdit);
+}
+
+function getUserID() {
+  // TO DO: This is temporary hack until user sessions are handled properly
+  return $('[data-user-id]').data('user-id');
+}
+
+function getParcelNumber(editable_field) {
+  return editable_field.parents('.property-item').data('parcel_number');
+}
+
+function getOwnerName(editable_field) {
+  return editable_field.parents('.property-item').data('owner_name');
+}
+
+function shouldEditRelated(edited_field_data) {
+  var property_row = $('[data-parcel_number=' + edited_field_data.parcel_number + ']'),
+      edit_related_checkbox = property_row.find('[data-edit-related-checkbox]');
+
+  return edit_related_checkbox.prop('checked');
+}
+
+function getRelatedPropertiesTableForAPN(parcel_number, callback) {
+  $.get(
+    'related_properties_table.php',
+    {
+      'user_id': getUserID(),
+      'parcel_number': parcel_number
+    },
+    callback
+  );
+}
+
+function confirmContactInfoEdit(edited_field_data) {
+  var related_properties_table = $('#editContactInfoModal [data-related-properties]');
+  related_properties_table.empty();
+
+  var edit_related = shouldEditRelated(edited_field_data);
+
+  if (edit_related) {
+    getRelatedPropertiesTableForAPN(
+      edited_field_data.parcel_number,
+      function(data) {
+        related_properties_table.html(data);
+        related_properties_table.prop('hidden', !(edit_related && data != ""));
+        related_properties_table.height(300);
+
+        setupSortableColumns("related_properties_for_" + edited_field_data.parcel_number + '_modal');
       }
     );
-  });
+  }
 
-  $('#editNotesModal [data-action=cancel_edit]').click(function() {
-    let edited_field_data = Object.values(editable_fields).filter(field => field.is_editing)[0];
-    toggleEdit(edited_field_data.id);
-  });
+  $('#editContactInfoModal [data-owner-name]').html(edited_field_data.owner_name.trim());
+  $('#editContactInfoModal [data-new-contact-info]').html(
+    edited_field_data.new_value == "" ? unknownFieldMarkup : edited_field_data.new_value
+  );
+
+  $('#editContactInfoModal').modal('show');
+}
+
+function confirmNotesEdit(edited_field_data) {
+  $('#editNotesModal [data-new-notes]').html(edited_field_data.new_value);
+  $('#editNotesModal').modal('show');
+}
+
+function handleSaveNote() {
+  let edited_field_data = Object.values(editable_fields).filter(field => field.is_editing)[0];
+
+  $.post(
+    "edit_property_notes.php",
+    {
+      user_id: getUserID(),
+      parcel_number: edited_field_data.parcel_number,
+      content: edited_field_data.new_value,
+      is_private: edited_field_data.is_private
+    },
+    function() {
+      editable_fields[edited_field_data.id].current_value = editable_fields[edited_field_data.id].new_value;
+      editable_fields[edited_field_data.id].new_value = null;
+      toggleEdit(edited_field_data.id);
+    }
+  );
+}
+
+function handleCancelNoteEdit() {
+  let edited_field_data = Object.values(editable_fields).filter(field => field.is_editing)[0];
+  toggleEdit(edited_field_data.id);
+}
+
+function confirmEdit(edited_field_data) {
+  if (edited_field_data.type == TYPE_CONTACT_INFO) {
+    confirmContactInfoEdit(edited_field_data);
+  } else if (edited_field_data.type == TYPE_NOTES) {
+    confirmNotesEdit(edited_field_data);
+  }
+}
+
+function makeEdit(id) {
+  let edited_field = $('#' + id),
+      edited_field_data = editable_fields[id],
+      new_value = edited_field.find('.form-control').val();
+
+  if (edited_field_data.current_value != new_value) {
+    editable_fields[id].new_value = new_value;
+    confirmEdit(edited_field_data);
+  } else {
+    toggleEdit(id);
+  }
+}
+
+function toggleEdit(id) {
+  var editable_field = $('#' + id);
+  var value_element = editable_field.find('[data-field-value]'),
+      input_element = editable_field.find('[data-edit-input]')
+      is_edit_mode = !editable_fields[id].is_editing;
+
+    if (editable_fields[id].is_editing) {
+      editable_field.removeClass('is-editing').addClass('is-not-editing');
+    } else {
+      editable_field.removeClass('is-not-editing').addClass('is-editing');
+    }
+
+    editable_fields[id].is_editing = is_edit_mode;
+
+    value_element.prop('hidden', is_edit_mode);
+    input_element.prop('hidden', !is_edit_mode);
+
+  if (is_edit_mode) {
+    let input = input_element.find('.form-control');
+    input.val(editable_fields[id].current_value);
+    input.focus();
+  } else {
+    var new_content = editable_fields[id].current_value == "" ?
+      (editable_fields[id].type == TYPE_NOTES ? noNotesMarkup : unknownFieldMarkup) :
+      editable_fields[id].current_value;
+
+    value_element.html(new_content);
+
+    if (editable_fields[id].type == TYPE_CONTACT_INFO) {
+      $('#editContactInfoModal').modal('hide');
+    } else if (editable_fields[id].type == TYPE_NOTES) {
+      $('#editNotesModal').modal('hide');
+    }
+  }
 }
 
 function handleEditRelatedCheckboxChange(event) {

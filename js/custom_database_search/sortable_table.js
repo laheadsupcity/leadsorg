@@ -14,16 +14,6 @@ const SORT_COLUMN_FAVORITES_FOLDERS = "favorites_folders";
 
 const sortSettings = {};
 
-function getOrderedSortSettings(id) {
-  let sorted = Object.values(sortSettings[id]).sort(function(sortColumnA, sortColumnB) {
-    return sortColumnA.ord < sortColumnB.ord ? -1 : 1;
-  });
-
-  return sorted.map(function(column) {
-    return column.col;
-  });
-}
-
 function initDefaultSortSettings(id) {
   sortSettings[id] = {};
 
@@ -104,7 +94,7 @@ function toggleSortDirection(
 
 function setupSortableColumns(id) {
 
-  getOrderedSortSettings(id).forEach(function(column) {
+  Object.keys(sortSettings[id]).forEach(function(column) {
     var direction = sortSettings[id][column].dir;
     var column_header = $('[data-id=' + id + "]").find('[data-sortable-column="' + column + '"]');
 

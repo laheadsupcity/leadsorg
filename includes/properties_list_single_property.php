@@ -44,12 +44,6 @@
 
 <div
   data-parcel_number="<?php echo $property['parcel_number']; ?>"
-  data-num_units="<?php echo $property['number_of_units']; ?>"
-  data-num_beds="<?php echo $property['bedrooms']; ?>"
-  data-building_area="<?php echo $property['building_area']; ?>"
-  data-lot_area_sqft="<?php echo $property['lot_area_sqft']; ?>"
-  data-year_built="<?php echo $property['year_built']; ?>"
-  data-sale_date="<?php echo $property['sales_date']; ?>"
   data-owner_name="<?php echo trim($property['owner_name2']); ?>"
   data-matching-cases-string="<?php echo $matching_cases_for_property_string; ?>"
   data-property-url="<?php echo $property_url; ?>"

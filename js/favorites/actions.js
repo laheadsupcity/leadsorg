@@ -113,8 +113,6 @@ $(document).ready(function() {
   var id = $('.property-list-group').data('id');
   setupSortableColumns(id);
 
-  setupEditableContactInfoFields();
-
-  setupEditableNotes();
+  setupEditableFields();
 
 });

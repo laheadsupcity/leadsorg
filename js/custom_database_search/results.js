@@ -140,9 +140,7 @@ function fetchProperties(search_parameters, properties_only = true) {
         setupSortableColumns(id);
       }
 
-      setupEditableContactInfoFields();
-
-      setupEditableNotes();
+      setupEditableFields();
 
       $('[data-total-records]').html(data.total_records);
 

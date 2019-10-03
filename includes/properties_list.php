@@ -119,10 +119,4 @@
       require('includes/search_results/pagination.php');
     }
   ?>
-
-  <?php include('includes/confirm_edit_contact_info_modal.php'); ?>
-
-  <?php include('includes/confirm_edit_notes_modal.php'); ?>
-
-
 <?php } ?>
