@@ -217,7 +217,9 @@ function confirmContactInfoEdit(edited_field_data) {
         related_properties_table.prop('hidden', !(edit_related && data != ""));
         related_properties_table.height(300);
 
-        setupSortableColumns("related_properties_for_" + edited_field_data.parcel_number + '_modal');
+        var result_set_id = "related_properties_for_" + edited_field_data.parcel_number + '_modal';
+        initDefaultSortSettings(result_set_id);
+        setupSortableColumns(result_set_id);
       }
     );
   }

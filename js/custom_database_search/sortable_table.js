@@ -12,21 +12,71 @@ const SORT_COLUMN_SALE_DATE = "sale_date";
 const SORT_COLUMN_RELATED_PROPERTIES = "related_properties";
 const SORT_COLUMN_FAVORITES_FOLDERS = "favorites_folders";
 
+const defaultSortSettings = [
+  {
+    column: SORT_COLUMN_UNITS,
+    direction: SORT_TYPE_DESC,
+    order: 0
+  },
+  {
+    column: SORT_COLUMN_BUILDING_AREA,
+    direction: SORT_TYPE_DESC,
+    order: 1
+  },
+  {
+    column: SORT_COLUMN_LOT_AREA_SQFT,
+    direction: SORT_TYPE_NEITHER,
+    order: 2
+  },
+  {
+    column: SORT_COLUMN_YEAR_BUILT,
+    direction: SORT_TYPE_NEITHER,
+    order: 3
+  },
+  {
+    column: SORT_COLUMN_SALE_DATE,
+    direction: SORT_TYPE_NEITHER,
+    order: 4
+  },
+  {
+    column: SORT_COLUMN_RELATED_PROPERTIES,
+    direction: SORT_TYPE_NEITHER,
+    order: 5
+  },
+  {
+    column: SORT_COLUMN_FAVORITES_FOLDERS,
+    direction: SORT_TYPE_NEITHER,
+    order: 6
+  },
+  {
+    column: SORT_COLUMN_BEDS,
+    direction: SORT_TYPE_NEITHER,
+    order: 7
+  },
+  {
+    column: SORT_COLUMN_OWNER_NAME,
+    direction: SORT_TYPE_NEITHER,
+    order: 8
+  }
+];
+
 const sortSettings = {};
 
+
+function getAllSortSettings() {
+  return defaultSortSettings.map(function(setting) {return setting.column;});
+}
 function initDefaultSortSettings(id) {
   sortSettings[id] = {};
 
-  let order = 0;
-  changeSortSetting(id, SORT_COLUMN_UNITS, SORT_TYPE_DESC, order++);
-  changeSortSetting(id, SORT_COLUMN_BUILDING_AREA, SORT_TYPE_DESC, order++);
-  changeSortSetting(id, SORT_COLUMN_LOT_AREA_SQFT, SORT_TYPE_NEITHER, order++);
-  changeSortSetting(id, SORT_COLUMN_YEAR_BUILT, SORT_TYPE_NEITHER, order++);
-  changeSortSetting(id, SORT_COLUMN_SALE_DATE, SORT_TYPE_NEITHER, order++);
-  changeSortSetting(id, SORT_COLUMN_RELATED_PROPERTIES, SORT_TYPE_NEITHER, order++);
-  changeSortSetting(id, SORT_COLUMN_FAVORITES_FOLDERS, SORT_TYPE_NEITHER, order++);
-  changeSortSetting(id, SORT_COLUMN_BEDS, SORT_TYPE_NEITHER, order++);
-  changeSortSetting(id, SORT_COLUMN_OWNER_NAME, SORT_TYPE_NEITHER, order++);
+  defaultSortSettings.forEach(function(setting) {
+    changeSortSetting(
+      id,
+      setting.column,
+      setting.direction,
+      setting.order
+    );
+  });
 }
 
 function changeSortSetting(id, column, direction, order) {
@@ -94,7 +144,7 @@ function toggleSortDirection(
 
 function setupSortableColumns(id) {
 
-  Object.keys(sortSettings[id]).forEach(function(column) {
+  getAllSortSettings().forEach(function(column) {
     var direction = sortSettings[id][column].dir;
     var column_header = $('[data-id=' + id + "]").find('[data-sortable-column="' + column + '"]');
 
