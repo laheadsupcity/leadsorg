@@ -132,7 +132,9 @@ function fetchProperties(search_parameters) {
       var results_id = $('.property-list-group').data('results-id');
 
       if (data.total_records == 0) {
-        // no op
+        $('.main-content').addClass('w-100')
+        $('[data-results-and-actions]').addClass('d-none');
+        $('#no_results_alert').removeClass('d-none');
       } else if (is_initial_load) {
         setupSortableColumns(results_id);
       }

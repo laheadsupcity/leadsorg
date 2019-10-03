@@ -348,8 +348,8 @@ class CustomDatabaseSearch {
     $this->db->query($query);
 
     return [
-    'cases_query' => $query,
-    'results' => $this->db->result_array()
+      'cases_query' => $query,
+      'results' => $this->db->result_array()
     ];
   }
 
