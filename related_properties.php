@@ -1,14 +1,6 @@
 <?php
   require_once('config.php');
-  require_once('Property.php');
   require_once('LoggedInUser.php');
-
-  $parcel_number = $_GET['parcel_number'];
-  $properties = Property::getRelatedPropertiesForAPN($parcel_number);
-
-  $current_page = 1;
-  $total_records = count($properties);
-  $page_size = 10;
 ?>
 <!doctype html>
 <html lang="en" style="font-size: 14px;">
@@ -37,40 +29,44 @@
 
   <div class="main-content mx-auto pl-4 pr-4">
     <?php include('includes/select_properties_alert.php'); ?>
-    <?php if (!empty($properties)) { ?>
-      <div class="d-flex justify-content-between">
-        <div>
-          <h5>Properties related to APN #<?php echo($parcel_number); ?> <span class="font-weight-light">(<?php echo $total_records; ?> total)</span></h5>
-        </div>
+    <div class="d-flex justify-content-between">
+      <div>
+        <h5>Properties related to APN #<?php echo($_REQUEST['properties_related_to_parcel_number']); ?> <span class="font-weight-light">(<span data-total-records></span> total)</span></h5>
       </div>
+    </div>
 
-      <?php
-        $show_favorites_flag = false;
-        $show_matching_cases = false;
-        $include_related_properties = false;
-        $show_pagination = false;
-        $id = 'related_properties';
-        include('includes/properties_list_container.php');
-      ?>
+    <?php
+      $show_pagination = true;
+      $results_id = 'related_properties';
+      include('includes/properties_list_container.php');
+    ?>
 
-      <div class="mt-3 mb-3 d-flex align-items-center">
-        <?php if ($is_admin_user) { ?>
-          <button type="submit" class="btn btn-primary mr-1" data-toggle="modal" data-target="#createLeadBatchModal">Create Lead Batch</button>
-        <?php } ?>
-        <button type="submit" id="export_properties_csv_button" class="btn btn-primary mr-1">Export Selected</button>
-        <button type="button" class="btn btn-primary mr-1" data-toggle="modal" data-target="#addToFavoritesFolderModal">Add to Favorites</button>
-        <button data-action="open_all" class="mr-1 btn btn-primary">Open All</button>
+    <div class="mt-3 mb-3 d-flex align-items-center">
+      <?php if ($is_admin_user) { ?>
+        <button type="submit" class="btn btn-primary mr-1" data-toggle="modal" data-target="#createLeadBatchModal">Create Lead Batch</button>
+      <?php } ?>
+      <button type="submit" id="export_properties_csv_button" class="btn btn-primary mr-1">Export Selected</button>
+      <button type="button" class="btn btn-primary mr-1" data-toggle="modal" data-target="#addToFavoritesFolderModal">Add to Favorites</button>
+      <button data-action="open_all" class="mr-1 btn btn-primary">Open All</button>
+    </div>
+
+
+    <div class="jumbotron jumbotron-fluid d-none">
+      <div class="container">
+        <h1 class="display-4">No results...</h1>
+        <p class="lead">There are no properties matching your filters. Try adjusting your filters to get more results.</p>
       </div>
-
-    <?php } else { ?>
-      <div class="jumbotron jumbotron-fluid">
-        <div class="container">
-          <h1 class="display-4">No results...</h1>
-          <p class="lead">There are no properties matching your filters. Try adjusting your filters to get more results.</p>
-        </div>
-      </div>
-    <?php } ?>
+    </div>
   </div>
+
+  <?php include('includes/confirm_edit_contact_info_modal.php'); ?>
+
+  <?php include('includes/confirm_edit_notes_modal.php'); ?>
+
+  <?php
+    $is_search_results = true;
+    include('includes/favorites_folders/add_to_favorites_modal.php');
+  ?>
 
   <?php include('includes/create_lead_batch_modal.php') ?>
   <?php

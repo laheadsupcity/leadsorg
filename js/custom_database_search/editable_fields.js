@@ -336,6 +336,4 @@ $(document).ready(function() {
     handleEditRelatedCheckboxChange(event);
   });
 
-
-
 });

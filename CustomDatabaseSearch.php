@@ -1,7 +1,8 @@
 <?php
 require_once('config.php');
-include('CaseTypeFilters.php');
-include('SearchParameters.php');
+require_once('CaseTypeFilters.php');
+require_once('SearchParameters.php');
+require_once('Property.php');
 
 class CustomDatabaseSearch {
 
@@ -11,7 +12,6 @@ class CustomDatabaseSearch {
   private $apns_to_cases_map;
   private $result_page;
   private $all_result_apns;
-  private $case_type_filter_builder;
   private $cases_results;
 
   public $cases_query;
@@ -19,18 +19,17 @@ class CustomDatabaseSearch {
 
   function __construct(
     $user_id,
-    $search_param_data
+    $raw_search_parameters,
+    $raw_case_parameters = null
   ) {
     $this->db = Database::instance();
     $this->user_id = $user_id;
-    $this->search_params = new SearchParameters($search_param_data);
-
-    $this->case_type_filter_builder = $this->search_params->getCaseTypeFilters();
+    $this->search_params = new SearchParameters($raw_search_parameters, $raw_case_parameters);
   }
 
   private function getStatusInclusionClauses()
   {
-    $inclusion_filters = $this->case_type_filter_builder->getInclusionFilters();
+    $inclusion_filters = $this->search_params->getCaseTypeFilters()->getInclusionFilters();
 
     if (empty($inclusion_filters)) {
       return "";
@@ -49,7 +48,7 @@ class CustomDatabaseSearch {
 
   private function getExclusionSubquery()
   {
-    $expr = $this->case_type_filter_builder->getExcludedIDsExpression();
+    $expr = $this->search_params->getCaseTypeFilters()->getExcludedIDsExpression();
 
     if (empty($expr)) {
       return "";
@@ -115,7 +114,7 @@ class CustomDatabaseSearch {
 
   private function getCaseClosedDateClause()
   {
-    $case_closed_date_filters = $this->case_type_filter_builder->getCaseClosedDateFilters();
+    $case_closed_date_filters = $this->search_params->getCaseTypeFilters()->getCaseClosedDateFilters();
 
     if (empty($case_closed_date_filters)) {
       return null;
@@ -179,7 +178,7 @@ class CustomDatabaseSearch {
 
   private function getCaseOpenedDateClause()
   {
-    $case_open_date_filters = $this->case_type_filter_builder->getCaseOpenedDateFilters();
+    $case_open_date_filters = $this->search_params->getCaseTypeFilters()->getCaseOpenedDateFilters();
 
     if (empty($case_open_date_filters)) {
       return null;
@@ -239,6 +238,12 @@ class CustomDatabaseSearch {
 
   private function getParcelNumbers()
   {
+    if ($this->search_params->isSearchingRelatedProperties()) {
+      $parcel_number = $this->search_params->getParcelNumberForRelatedProperties();
+
+      return Property::getRelatedPropertiesForAPN($parcel_number);
+    }
+
     $apns_with_notes = null;
     if ($this->search_params->isFilteringOnNotes()) {
       $apns_with_notes = $this->filterPropertiesWithMatchingNotes();
@@ -247,10 +252,10 @@ class CustomDatabaseSearch {
     $this->cases_results = $this->filterPropertiesWithMatchingCases($apns_with_notes);
 
     $matching_apns = array_unique(array_map(
-    function($result) {
-      return $result['parcel_number'];
-    },
-    $this->cases_results['results']
+      function($result) {
+        return $result['parcel_number'];
+      },
+      $this->cases_results['results']
     ));
 
     return $matching_apns;
@@ -278,7 +283,7 @@ class CustomDatabaseSearch {
         return [];
       }
 
-      $included_case_types_expr = $this->case_type_filter_builder->getIncludedIDsExpression();
+      $included_case_types_expr = $this->search_params->getCaseTypeFilters()->getIncludedIDsExpression();
 
       $conditions = $this->getConditions();
 
@@ -289,7 +294,7 @@ class CustomDatabaseSearch {
         );
       }
 
-      if ($this->case_type_filter_builder->hasExclusionFilters()) {
+      if ($this->search_params->getCaseTypeFilters()->hasExclusionFilters()) {
         $conditions[] = "open_excluded_cases.APN IS NULL";
       }
 
@@ -521,43 +526,43 @@ class CustomDatabaseSearch {
 
   public function getConditions()
   {
-    $search_param_data = $this->search_params->getSearchParamData();
+    $raw_search_parameters = $this->search_params->getSearchParamData();
 
     $conditions = array();
 
-    $num_units_min = $search_param_data['num_units_min'];
-    $num_units_max = $search_param_data['num_units_max'];
+    $num_units_min = $raw_search_parameters['num_units_min'];
+    $num_units_max = $raw_search_parameters['num_units_max'];
 
     $zips = $this->search_params->getZips();
     $cities = $this->search_params->getCities();
     $zoning = $this->search_params->getZoning();
     $exemption = $this->search_params->getExemption();
 
-    $num_beds_min = $search_param_data['num_bedrooms_min'];
-    $num_beds_max = $search_param_data['num_bedrooms_max'];
+    $num_beds_min = $raw_search_parameters['num_bedrooms_min'];
+    $num_beds_max = $raw_search_parameters['num_bedrooms_max'];
 
-    $num_baths_min = $search_param_data['num_baths_min'];
-    $num_baths_max = $search_param_data['num_baths_max'];
+    $num_baths_min = $raw_search_parameters['num_baths_min'];
+    $num_baths_max = $raw_search_parameters['num_baths_max'];
 
-    $num_stories_min = $search_param_data['num_stories_min'];
-    $num_stories_max = $search_param_data['num_stories_max'];
+    $num_stories_min = $raw_search_parameters['num_stories_min'];
+    $num_stories_max = $raw_search_parameters['num_stories_max'];
 
-    $cost_per_sq_ft_min = $search_param_data['cost_per_sq_ft_min'];
-    $cost_per_sq_ft_max = $search_param_data['cost_per_sq_ft_max'];
+    $cost_per_sq_ft_min = $raw_search_parameters['cost_per_sq_ft_min'];
+    $cost_per_sq_ft_max = $raw_search_parameters['cost_per_sq_ft_max'];
 
-    $lot_area_sq_ft_min = $search_param_data['lot_area_sq_ft_min'];
-    $lot_area_sq_ft_max = $search_param_data['lot_area_sq_ft_max'];
+    $lot_area_sq_ft_min = $raw_search_parameters['lot_area_sq_ft_min'];
+    $lot_area_sq_ft_max = $raw_search_parameters['lot_area_sq_ft_max'];
 
-    $sales_price_min = $search_param_data['sales_price_min'];
-    $sales_price_max = $search_param_data['sales_price_max'];
+    $sales_price_min = $raw_search_parameters['sales_price_min'];
+    $sales_price_max = $raw_search_parameters['sales_price_max'];
 
-    $is_owner_occupied = $search_param_data['is_owner_occupied'];
+    $is_owner_occupied = $raw_search_parameters['is_owner_occupied'];
 
-    $year_built_min = $search_param_data['year_built_min'];
-    $year_built_max = $search_param_data['year_built_max'];
+    $year_built_min = $raw_search_parameters['year_built_min'];
+    $year_built_max = $raw_search_parameters['year_built_max'];
 
-    $sales_date_min = $search_param_data['sales_date_from'];
-    $sales_date_max = $search_param_data['sales_date_to'];
+    $sales_date_min = $raw_search_parameters['sales_date_from'];
+    $sales_date_max = $raw_search_parameters['sales_date_to'];
 
     if ($num_units_min != '' && $num_units_max == '') {
         $conditions[]= '(number_of_units >='.$num_units_min.')' ;

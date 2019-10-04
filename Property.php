@@ -8,7 +8,7 @@ class Property {
 
     $query = sprintf(
       "
-      SELECT * FROM `property`
+      SELECT parcel_number FROM `property`
         WHERE
         `owner_address_and_zip` IN (
             SELECT `owner_address_and_zip` FROM `property`
@@ -25,7 +25,9 @@ class Property {
 
     $db->query($query);
 
-    return $db->result_array();
+    return array_map(function($result) {
+      return $result['parcel_number'];
+    }, $db->result_array());
   }
 
   public static function getPrivateNoteForAPN($user_id, $parcel_number) {

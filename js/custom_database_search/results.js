@@ -1,4 +1,5 @@
 var is_initial_load = true;
+var results_id;
 
 var current_page = null;
 var current_page_size = null;
@@ -99,7 +100,10 @@ function fetchProperties(search_parameters) {
 
   entries.user_id = $('[data-user-id]').data('user-id');
 
-  entries.sortSettings = $.param(sortSettings.custom_database_search_results);
+  entries.sortSettings = $.param(sortSettings[results_id]);
+
+  entries.show_matching_cases = results_id == "custom_database_search_results";
+  entries.include_related_properties = results_id == "custom_database_search_results";
 
   if (is_initial_load) {
     $('[data-loading]').addClass('d-flex').removeClass('d-none');
@@ -129,8 +133,6 @@ function fetchProperties(search_parameters) {
         $('.main-content').width($('.properties-scroll').width() + 13);
       }
 
-      var results_id = $('.property-list-group').data('results-id');
-
       if (data.total_records == 0) {
         $('.main-content').addClass('w-100')
         $('[data-results-and-actions]').addClass('d-none');
@@ -153,7 +155,9 @@ function fetchProperties(search_parameters) {
 
 $(document).ready(function() {
 
-  initDefaultSortSettings('custom_database_search_results');
+  results_id = $('[data-results-id]').data('results-id');
+
+  initDefaultSortSettings(results_id);
 
   initPage();
 

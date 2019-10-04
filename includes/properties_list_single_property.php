@@ -70,7 +70,7 @@
     <?php if ($include_related_properties) { ?>
       <div class="sm-property-info-column related-properties property-info-column sortable-column text-center font-weight-bold">
         <?php if ($property['related_property_count']) { ?>
-          <a class="btn btn-outline-dark" href="related_properties.php?parcel_number=<?php echo $property['parcel_number']; ?>" target="_blank"><?php echo $property['related_property_count']; ?></a>
+          <a class="btn btn-outline-dark" href="related_properties.php?properties_related_to_parcel_number=<?php echo $property['parcel_number']; ?>" target="_blank"><?php echo $property['related_property_count']; ?></a>
         <?php } else { ?>
           <span class="font-italic font-weight-light">none</span>
         <?php } ?>
