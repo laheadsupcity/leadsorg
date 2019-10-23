@@ -64,18 +64,6 @@ const defaultSortSettings = [
 
 const sortSettings = {};
 
-function initDefaultSortSettings(results_id) {
-  sortSettings[results_id] = {};
-
-  defaultSortSettings.forEach(function(setting) {
-    sortSettings[results_id][setting.column] = {
-      column: setting.column,
-      direction: setting.direction,
-      order: setting.order
-    };
-  });
-}
-
 function toggleSortDirection(
   results_id,
   column_header,
@@ -114,13 +102,23 @@ function toggleSortDirection(
 }
 
 function setupSortableColumns(results_id) {
+  sortSettings[results_id] = {};
+
+  defaultSortSettings.forEach(function(setting) {
+    sortSettings[results_id][setting.column] = {
+      column: setting.column,
+      direction: setting.direction,
+      order: setting.order
+    };
+  });
+
   getAllSortSettings().forEach(function(column_name) {
     var column_header = getColumnHeaderForColumnName(results_id, column_name);
 
     column_header
       .addClass('sortable-column')
       .append(ARROW_MARKUP)
-      .click(function(event) {
+      .on('click', function(event) {
         handleSortToggle(results_id, event, column_name);
       });
 

@@ -137,8 +137,6 @@ function fetchProperties(search_parameters) {
         $('.main-content').addClass('w-100')
         $('[data-results-and-actions]').addClass('d-none');
         $('#no_results_alert').removeClass('d-none');
-      } else if (is_initial_load) {
-        setupSortableColumns(results_id);
       }
 
       setupEditableFields();
@@ -157,7 +155,7 @@ $(document).ready(function() {
 
   results_id = $('[data-results-id]').data('results-id');
 
-  initDefaultSortSettings(results_id);
+  setupSortableColumns(results_id);
 
   initPage();
 

@@ -191,7 +191,6 @@ function confirmContactInfoEdit(edited_field_data) {
 
         if (is_initial_inline_load) {
           var result_set_id = "confirm_contact_info_edit_related_properties";
-          initDefaultSortSettings(result_set_id);
           setupSortableColumns(result_set_id);
         }
 

@@ -1,6 +1,7 @@
 <?php
 require_once('CustomDatabaseSearch.php');
 require_once('LoggedInUser.php');
+require_once('FavoriteProperties.php');
 
 $search_params = $_REQUEST;
 
@@ -33,6 +34,24 @@ if ($_REQUEST['related_apns_for_parcel_number']) {
 
   $result_data = [
     'total_records' => $total_records,
+    'all_result_apns' => $all_result_apns
+  ];
+} else if ($_REQUEST['apns_for_favorites_folder']) {
+  $folder_id = $_REQUEST['apns_for_favorites_folder'];
+  $favorites = new FavoriteProperties();
+  $folder = $favorites->getFolderFromID($folder_id);
+  $properties = $favorites->getPropertiesForFolder($folder_id);
+
+  $all_result_apns = array_map(
+    function($result) {
+      return $result['parcel_number'];
+    },
+    $properties
+  );
+
+  $result_data = [
+    'total_records' => count($properties),
+    'folder_name' => $folder['name'],
     'all_result_apns' => $all_result_apns
   ];
 } else {
