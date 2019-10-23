@@ -419,7 +419,7 @@
                  $user_id = $_SESSION['userdetail']['id'];
                  $private_note = Property::getPrivateNoteForAPN($user_id, $parcel_number);
 
-                 echo isset($private_note) ? trim($private_note['content']) : "";
+                 echo $private_note;
                ?></div>
             </div>
             <div style="border:1px solid #337ab7; margin:10px 0 0;">
@@ -427,7 +427,7 @@
              <div class="field1data spdata note" style="width:100%; height: 59px; overflow-y: scroll;"><?php
                  $public_note = Property::getPublicNoteForAPN($parcel_number);
 
-                 echo isset($public_note) ? trim($public_note['content']) : "";
+                 echo $public_note;
                ?></div>
             </div>
         </div>

@@ -159,15 +159,14 @@ $user_id = $_SESSION['userdetail']['id'];
             <?php
               $public_note = Property::getPublicNoteForAPN($property_data['parcel_number']);
             ?>
-            <textarea class="form-control" id="notes" name="public_note" rows="12"><?php echo isset($public_note) ? trim($public_note['content']) : ""; ?></textarea>
+            <textarea class="form-control" id="notes" name="public_note" rows="12"><?php echo trim($public_note['content']); ?></textarea>
           </div>
           <div class="col-4">
             <h5 class="text-primary font-weight-bold">Private Notes</h5>
             <?php
               $private_note = Property::getPrivateNoteForAPN($user_id, $property_data['parcel_number']);
-              $public_note = Property::getPublicNoteForAPN($property_data['parcel_number']);
             ?>
-            <textarea class="form-control" id="notes" name="private_note" rows="12"><?php echo isset($private_note) ? trim($private_note['content']) : ""; ?></textarea>
+            <textarea class="form-control" id="notes" name="private_note" rows="12"><?php echo $private_note; ?></textarea>
           </div>
         </div>
         <div class="text-center">

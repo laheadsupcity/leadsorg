@@ -179,20 +179,18 @@
     <div class="xlg-property-info-column property-info-column font-weight-light">
       <?php
         $public_note = Property::getPublicNoteForAPN($property['parcel_number']);
-        $content = isset($public_note) ? $public_note['content'] : "";
       ?>
       <div data-property-note data-is-private="false" class="public-notes-column editable-field">
-        <?php echo $content; ?>
+        <?php echo $public_note; ?>
       </div>
     </div>
 
     <div class="xlg-property-info-column property-info-column font-weight-light">
       <?php
         $private_note = Property::getPrivateNoteForAPN($user_id, $property['parcel_number']);
-        $content = isset($private_note) ? $private_note['content'] : "";
       ?>
       <div data-property-note data-is-private="true" class="private-notes-column editable-field">
-        <?php echo $content; ?>
+        <?php echo $private_note; ?>
       </div>
     </div>
   </div>

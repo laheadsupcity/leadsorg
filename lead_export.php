@@ -1,7 +1,9 @@
 <?php
 require_once('config.php');
+require_once('Property.php');
 
 $selected_property_data = $_POST['selected_property_data'];
+$user_id = $_REQUEST['user_id'];
 
 if (!empty($selected_property_data)) {
   $filename = "toy_csv.csv";
@@ -11,10 +13,10 @@ if (!empty($selected_property_data)) {
 
   foreach ($selected_property_data as $index => $data) {
     $parcel_number = $data['parcel_number'];
-    $csv_data = getCSVExportData($parcel_number);
-    $csv_data['matching_cases'] = $data['matching_cases'];
-    $csv_data['private_note'] = $data['private_note'];
-    $csv_data['public_note'] = $data['public_note'];
+    $csv_data = Property::getCSVExportDataForAPN($user_id, $parcel_number);
+    // $csv_data['matching_cases'] = $data['matching_cases'];
+    // $csv_data['private_note'] = $data['private_note'];
+    // $csv_data['public_note'] = $data['public_note'];
 
     $objmerged[] = array_merge((array) $csv_data, (array) $table);
   }
@@ -31,12 +33,4 @@ if (!empty($selected_property_data)) {
     fputcsv($fp, $v);
   }
   exit;
-}
-
-function getCSVExportData($id)
-{
-  $db = Database::instance();
-  $db->getCSVExportDataForProperty($id);
-  $result=$db->result_array();
-  return $result[0];
 }

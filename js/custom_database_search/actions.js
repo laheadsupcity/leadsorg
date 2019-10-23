@@ -138,6 +138,7 @@ $(document).ready(function() {
         type: "POST",
         url: "lead_export.php",
         data: {
+          'user_id': getUserID(),
           'selected_property_data': selected_property_data
         },
         success: function(response) {
@@ -214,3 +215,12 @@ $(document).ready(function() {
   });
 
 });
+
+/// UTILITIES
+
+function getUserID() {
+  // TO DO: This is temporary hack until user sessions are handled properly
+  return $('[data-user-id]').data('user-id');
+}
+
+/// UTILITIES
