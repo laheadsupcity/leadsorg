@@ -238,12 +238,6 @@ class CustomDatabaseSearch {
 
   private function getParcelNumbers()
   {
-    if ($this->search_params->isSearchingRelatedProperties()) {
-      $parcel_number = $this->search_params->getParcelNumberForRelatedProperties();
-
-      return Property::getRelatedPropertiesForAPN($parcel_number);
-    }
-
     $apns_with_notes = null;
     if ($this->search_params->isFilteringOnNotes()) {
       $apns_with_notes = $this->filterPropertiesWithMatchingNotes();

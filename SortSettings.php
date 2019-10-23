@@ -32,9 +32,9 @@ class SortSettings {
 
   static function convertRawSortSetting($setting) {
     return [
-      'column' => $setting['col'],
-      'order' => (int)$setting['ord'],
-      'direction' => $setting['dir']
+      'column' => $setting['column'],
+      'order' => (int)$setting['order'],
+      'direction' => $setting['direction']
     ];
   }
 

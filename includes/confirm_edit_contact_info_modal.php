@@ -12,7 +12,20 @@
 
         <div class="h4 text-center text-primary mt-2 text-truncate" data-new-contact-info></div>
 
-        <div class="mt-4" data-related-properties style="width: 2376px;"></div>
+        <div data-related-properties-inline-list hidden style="width: 2376px;">
+          <?php
+            $results_id = "confirm_contact_info_edit_related_properties";
+            $select_all = true;
+            $show_pagination = false;
+            $read_only_fields = true;
+            $show_favorites_flag = false;
+            $show_matching_cases = false;
+            $include_related_properties = false;
+
+            include('includes/properties_list_container.php');
+          ?>
+        </div>
+
       </div>
       <div class="modal-footer">
         <button data-action="cancel_edit" type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>

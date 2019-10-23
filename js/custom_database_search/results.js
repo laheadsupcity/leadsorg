@@ -109,7 +109,7 @@ function fetchProperties(search_parameters) {
     $('[data-loading]').addClass('d-flex').removeClass('d-none');
     $('[data-results-and-actions]').addClass('d-none');
   } else {
-    $('[data-properties-list]').html("");
+    $('[data-properties-list="custom_database_search_results"]').html("");
   }
 
   $.post(
@@ -120,7 +120,7 @@ function fetchProperties(search_parameters) {
 
       cases_results = data.cases_results;
 
-      $('[data-properties-list]').html(data.properties_list_markup);
+      $('[data-properties-list="custom_database_search_results"]').html(data.properties_list_markup);
       $('.pagination').replaceWith(data.pagination_markup);
 
       if (is_initial_load) {

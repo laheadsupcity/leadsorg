@@ -8,7 +8,32 @@ class Property {
 
     $query = sprintf(
       "
-      SELECT parcel_number FROM `property`
+      SELECT
+        p.parcel_number,
+        p.street_number,
+        p.street_name,
+        p.site_address_city_state,
+        p.site_address_zip,
+        p.owner_name2,
+        p.full_mail_address,
+        p.mail_address_zip,
+        p.number_of_units,
+        p.number_of_stories,
+        p.bedrooms,
+        p.bathrooms,
+        p.lot_area_sqft,
+        p.building_area,
+        p.cost_per_sq_ft,
+        p.year_built,
+        p.sales_date,
+        p.sales_price,
+        p.phone1,
+        p.phone2,
+        p.email1,
+        p.email2,
+        p.owner_address_and_zip,
+        p.id
+      FROM `property` AS `p`
         WHERE
         `owner_address_and_zip` IN (
             SELECT `owner_address_and_zip` FROM `property`
@@ -16,18 +41,14 @@ class Property {
         ) AND
         `full_mail_address` <> \"\" AND
         `parcel_number` <> %s
-
       ",
-      $parcel_number,
       $parcel_number,
       $parcel_number
     );
 
     $db->query($query);
 
-    return array_map(function($result) {
-      return $result['parcel_number'];
-    }, $db->result_array());
+    return $db->result_array();
   }
 
   public static function getPrivateNoteForAPN($user_id, $parcel_number) {

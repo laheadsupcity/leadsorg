@@ -232,10 +232,6 @@ class SearchParameters {
     }
   }
 
-  public function isSearchingRelatedProperties() {
-    return isset($this->raw_search_parameters['properties_related_to_parcel_number']);
-  }
-
   public function getParcelNumberForRelatedProperties() {
     return $this->raw_search_parameters['properties_related_to_parcel_number'];
   }

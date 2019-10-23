@@ -1,3 +1,5 @@
+let is_initial_inline_load;
+
 const TYPE_CONTACT_INFO = "contact_info";
 const TYPE_NOTES = "notes";
 
@@ -15,15 +17,18 @@ var editable_fields;
 function setupEditableFields() {
   editable_fields = [];
 
-  resetHandlers();
+  resetModalActionHandlers();
 
   setupEditableContactInfoFields();
   setupEditableNotes();
 }
 
-function resetHandlers() {
+function resetModalActionHandlers() {
   $('#editNotesModal [data-action=confirm_edit]').off('click', handleSaveNote);
   $('#editNotesModal [data-action=cancel_edit]').off('click', handleCancelNoteEdit);
+
+  $('#editContactInfoModal [data-action=confirm_edit]').off('click', handleSaveContactInfo);
+  $('#editContactInfoModal [data-action=cancel_edit]').off('click', handleCancelContactInfoEdit);
 }
 
 function setupEditableContactInfoFields() {
@@ -80,49 +85,8 @@ function setupEditableContactInfoFields() {
     });
   });
 
-  $('#editContactInfoModal [data-action=confirm_edit]').click(function() {
-    var edited_field_data = Object.values(editable_fields).filter(field => field.is_editing)[0],
-        related_properties_to_edit = $('#editContactInfoModal').find('[data-property-checkbox]:checked').map(
-          function() {
-            return this.value;
-          }
-        );
-
-    $.post(
-      "edit_owner_contact_information.php",
-      {
-        parcel_number: edited_field_data.parcel_number,
-        field: edited_field_data.field,
-        value: edited_field_data.new_value,
-        related_properties_to_edit: related_properties_to_edit.toArray()
-      },
-      function(data) {
-        data = JSON.parse(data);
-        var edited_apns = data.parcel_numbers.split(','),
-            new_value = data.new_value;
-
-        var fields_to_update = Object.values(editable_fields).filter(function(data) {
-          return data.type == TYPE_CONTACT_INFO &&
-            data.field == edited_field_data.field &&
-            edited_apns.includes(String(data.parcel_number));
-        });
-
-
-        for (var index in fields_to_update) {
-          var data = fields_to_update[index];
-          editable_fields[data.id].current_value = new_value;
-          editable_fields[data.id].is_editing = true;
-          editable_fields[data.id].new_value = null;
-          toggleEdit(data.id);
-        }
-      }
-    );
-  });
-
-  $('#editContactInfoModal [data-action=cancel_edit]').click(function() {
-    let edited_field_data = Object.values(editable_fields).filter(field => field.is_editing)[0];
-    toggleEdit(edited_field_data.id);
-  });
+  $('#editContactInfoModal [data-action=confirm_edit]').on('click', handleSaveContactInfo);
+  $('#editContactInfoModal [data-action=cancel_edit]').on('click', handleCancelContactInfoEdit);
 }
 
 function setupEditableNotes() {
@@ -194,10 +158,15 @@ function shouldEditRelated(edited_field_data) {
 
 function getRelatedPropertiesTableForAPN(parcel_number, callback) {
   $.get(
-    'related_properties_table.php',
+    'fetch_properties_results.php',
     {
+      'read_only_fields': true,
+      'select_all': true,
+      'read_only_fields': true,
+      'show_favorites_flag': false,
+      'show_matching_cases': false,
       'user_id': getUserID(),
-      'parcel_number': parcel_number
+      'related_apns_for_parcel_number': parcel_number
     },
     callback
   );
@@ -213,13 +182,20 @@ function confirmContactInfoEdit(edited_field_data) {
     getRelatedPropertiesTableForAPN(
       edited_field_data.parcel_number,
       function(data) {
-        related_properties_table.html(data);
-        related_properties_table.prop('hidden', !(edit_related && data != ""));
-        related_properties_table.height(300);
+        data = JSON.parse(data);
 
-        var result_set_id = "related_properties_for_" + edited_field_data.parcel_number + '_modal';
-        initDefaultSortSettings(result_set_id);
-        setupSortableColumns(result_set_id);
+        if (data.total_records > 0) {
+          $('[data-properties-list="confirm_contact_info_edit_related_properties"]').html(data.properties_list_markup);
+          $('[data-related-properties-inline-list]').prop('hidden', false);
+        }
+
+        if (is_initial_inline_load) {
+          var result_set_id = "confirm_contact_info_edit_related_properties";
+          initDefaultSortSettings(result_set_id);
+          setupSortableColumns(result_set_id);
+        }
+
+        is_initial_inline_load = false;
       }
     );
   }
@@ -261,12 +237,56 @@ function handleCancelNoteEdit() {
   toggleEdit(edited_field_data.id);
 }
 
+function handleSaveContactInfo() {
+  var edited_field_data = Object.values(editable_fields).filter(field => field.is_editing)[0],
+      related_properties_to_edit = $('#editContactInfoModal').find('[data-property-checkbox]:checked').map(
+        function() {
+          return this.value;
+        }
+      );
+
+  $.post(
+    "edit_owner_contact_information.php",
+    {
+      parcel_number: edited_field_data.parcel_number,
+      field: edited_field_data.field,
+      value: edited_field_data.new_value,
+      related_properties_to_edit: related_properties_to_edit.toArray()
+    },
+    function(data) {
+      data = JSON.parse(data);
+      var edited_apns = data.parcel_numbers.split(','),
+          new_value = data.new_value;
+
+      var fields_to_update = Object.values(editable_fields).filter(function(data) {
+        return data.type == TYPE_CONTACT_INFO &&
+          data.field == edited_field_data.field &&
+          edited_apns.includes(String(data.parcel_number));
+      });
+
+
+      for (var index in fields_to_update) {
+        var data = fields_to_update[index];
+        editable_fields[data.id].current_value = new_value;
+        editable_fields[data.id].is_editing = true;
+        editable_fields[data.id].new_value = null;
+        toggleEdit(data.id);
+      }
+    }
+  );
+}
+
 function confirmEdit(edited_field_data) {
   if (edited_field_data.type == TYPE_CONTACT_INFO) {
     confirmContactInfoEdit(edited_field_data);
   } else if (edited_field_data.type == TYPE_NOTES) {
     confirmNotesEdit(edited_field_data);
   }
+}
+
+function handleCancelContactInfoEdit() {
+  let edited_field_data = Object.values(editable_fields).filter(field => field.is_editing)[0];
+  toggleEdit(edited_field_data.id);
 }
 
 function makeEdit(id) {
@@ -331,6 +351,8 @@ function handleEditRelatedCheckboxChange(event) {
 }
 
 $(document).ready(function() {
+
+  is_initial_inline_load = true;
 
   $(document).on('change', '[data-edit-related-checkbox]', function(event) {
     handleEditRelatedCheckboxChange(event);

@@ -62,7 +62,6 @@
         $results_id = "custom_database_search_results";
         $select_all = false;
         $show_pagination = true;
-        $read_only_fields = false;
         $show_favorites_flag = false;
         $show_matching_cases = true;
         $include_related_properties = true;

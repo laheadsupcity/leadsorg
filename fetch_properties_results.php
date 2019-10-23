@@ -11,13 +11,6 @@ $case_types = isset($_REQUEST['case_types']) ? $_REQUEST['case_types'] : null;
 
 $user_id = $_REQUEST['user_id'];
 
-$searcher = new CustomDatabaseSearch($user_id, $search_params, $case_types);
-
-$properties = $searcher->getResults();
-$matching_cases = $searcher->getCasesResults();
-$all_result_apns = $searcher->getAllResultApns();
-$total_records = $searcher->getResultCount();
-
 //// variables for template files
 $show_favorites_flag = isset($_REQUEST['show_favorites_flag']) && $_REQUEST['show_favorites_flag'] == "true";
 $show_matching_cases = isset($_REQUEST['show_matching_cases']) && $_REQUEST['show_matching_cases'] == "true";
@@ -25,6 +18,38 @@ $include_related_properties = isset($_REQUEST['include_related_properties']) && 
 $select_all = isset($_REQUEST['select_all']) && $_REQUEST['select_all'] == "true";
 $read_only_fields = isset($_REQUEST['read_only_fields']) && $_REQUEST['read_only_fields'] == "true";
 ////
+
+if ($_REQUEST['related_apns_for_parcel_number']) {
+  $properties = Property::getRelatedPropertiesForAPN($_REQUEST['related_apns_for_parcel_number']);
+
+  $all_result_apns = array_map(
+    function($result) {
+      return $result['parcel_number'];
+    },
+    $properties
+  );
+
+  $total_records = count($properties);
+
+  $result_data = [
+    'total_records' => $total_records,
+    'all_result_apns' => $all_result_apns
+  ];
+} else {
+  $searcher = new CustomDatabaseSearch($user_id, $search_params, $case_types);
+
+  $properties = $searcher->getResults();
+  $matching_cases = $searcher->getCasesResults();
+  $all_result_apns = $searcher->getAllResultApns();
+  $total_records = $searcher->getResultCount();
+
+  $result_data = [
+    'cases_query' => $searcher->cases_query,
+    'total_records' => $total_records,
+    'all_result_apns' => $all_result_apns,
+    'cases_results' => $searcher->getCasesResultsIDs()
+  ];
+}
 
 ob_start();
 include('includes/properties_list.php');
@@ -34,11 +59,12 @@ ob_start();
 include('includes/search_results/pagination.php');
 $pagination_markup = ob_get_clean();
 
-echo json_encode([
-  'cases_query' => $searcher->cases_query,
-  'total_records' => $total_records,
-  'all_result_apns' => $all_result_apns,
-  'properties_list_markup' => $properties_list_markup,
-  'pagination_markup' => $pagination_markup,
-  'cases_results' => $searcher->getCasesResultsIDs()
-]);
+$result_data = array_merge(
+  $result_data,
+  [
+    'properties_list_markup' => $properties_list_markup,
+    'pagination_markup' => $pagination_markup
+  ]
+);
+
+echo json_encode($result_data);

@@ -90,7 +90,8 @@
   </div>
   <div class="property-list">
     <div class="properties-scroll">
-      <div data-properties-list></div>
+      <div data-properties-list=<?php echo $results_id; ?>>
+      </div>
     </div>
   </div>
 </div>
