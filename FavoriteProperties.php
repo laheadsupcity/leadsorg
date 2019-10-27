@@ -66,20 +66,47 @@ class FavoriteProperties {
   public function getPropertiesForFolder($folder_id) {
     $query = sprintf(
       "SELECT
-        `property1`.*,
+        `p`.`parcel_number`,
+        `p`.`street_number`,
+        `p`.`street_name`,
+        `p`.`site_address_city_state`,
+        `p`.`site_address_zip`,
+        `p`.`owner_name2`,
+        `p`.`full_mail_address`,
+        `p`.`mail_address_zip`,
+        `p`.`number_of_units`,
+        `p`.`number_of_stories`,
+        `p`.`bedrooms`,
+        `p`.`bathrooms`,
+        `p`.`lot_area_sqft`,
+        `p`.`building_area`,
+        `p`.`cost_per_sq_ft`,
+        `p`.`year_built`,
+        `p`.`sales_date`,
+        `p`.`sales_price`,
+        `p`.`phone1`,
+        `p`.`phone2`,
+        `p`.`email1`,
+        `p`.`email2`,
+        `p`.`owner_address_and_zip`,
+        `p`.`id`,
         `properties_with_updates_info`.`has_unseen_updates`,
-        `related_properties`.`count` AS `related_properties_count`
-      FROM (
+        `related_property_counts`.`count` AS `related_property_count`
+      FROM `property` AS `p`
+      LEFT JOIN (
         SELECT
           `owner_address_and_zip`,
-          count(`owner_address_and_zip`)-1 AS `count`
-        FROM `property`
-        WHERE `full_mail_address` <> \"\"
-        GROUP BY `owner_address_and_zip`
-      ) AS `related_properties`
-      RIGHT JOIN `property` AS `property1` ON (
-        `property1`.`owner_address_and_zip` = `related_properties`.`owner_address_and_zip`
-      )
+          count(`owner_address_and_zip`) - 1 AS `count`
+        FROM
+          `property`
+        WHERE
+          `full_mail_address` <> \"\"
+        GROUP BY
+          `owner_address_and_zip`
+        HAVING
+          `count` > 0
+      ) as `related_property_counts`
+      ON `p`.`owner_address_and_zip` = `related_property_counts`.`owner_address_and_zip`
       JOIN (
         SELECT
           DISTINCT `property2`.`parcel_number`,
@@ -107,7 +134,7 @@ class FavoriteProperties {
           `property2`.`parcel_number`,
           `property2`.`date_modified`
       ) AS `properties_with_updates_info` ON (
-        `properties_with_updates_info`.`parcel_number` = `property1`.`parcel_number`
+        `properties_with_updates_info`.`parcel_number` = `p`.`parcel_number`
       )
       ORDER BY `properties_with_updates_info`.`has_unseen_updates` DESC;",
       $folder_id

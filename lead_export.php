@@ -11,12 +11,8 @@ if (!empty($selected_property_data)) {
   $table = array();
   $objmerged = array();
 
-  foreach ($selected_property_data as $index => $data) {
-    $parcel_number = $data['parcel_number'];
+  foreach ($selected_property_data as $parcel_number) {
     $csv_data = Property::getCSVExportDataForAPN($user_id, $parcel_number);
-    // $csv_data['matching_cases'] = $data['matching_cases'];
-    // $csv_data['private_note'] = $data['private_note'];
-    // $csv_data['public_note'] = $data['public_note'];
 
     $objmerged[] = array_merge((array) $csv_data, (array) $table);
   }

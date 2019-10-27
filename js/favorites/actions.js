@@ -14,12 +14,6 @@ function getConfirmResetFolderModal() {
   return $('#resetFlagsFolderModal');
 }
 
-function getSelectedProperties() {
-  return $("[data-property-checkbox]:checked").map(function(index, checkbox) {
-    return checkbox.value;
-  }).toArray();
-}
-
 function handleConfirmRemove(folder_id) {
   var selected_properties = getSelectedProperties();
 
