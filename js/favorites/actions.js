@@ -1,5 +1,11 @@
 let is_initial_load = true;
 
+function getFolderID() {
+  var url = new URL(window.location.href);
+
+  return url.searchParams.get('folder_id');
+}
+
 function resizePropertyList() {
   var window_height = $(window).height();
 
@@ -14,13 +20,13 @@ function getConfirmResetFolderModal() {
   return $('#resetFlagsFolderModal');
 }
 
-function handleConfirmRemove(folder_id) {
+function handleConfirmRemove() {
   var selected_properties = getSelectedProperties();
 
   $.post(
     "remove_properties_favorites_folder.php",
     {
-      folder_id: folder_id,
+      folder_id: getFolderID(),
       parcel_numbers: selected_properties
     },
     function(data) {
@@ -49,7 +55,7 @@ function handleRemoveFromFolder() {
 function resetFolderFlags() {
   var selected_properties = getSelectedProperties();
 
-  var folder_id = getConfirmResetFolderModal().data('folder-id');
+  var folder_id = getFolderID();
 
   $.post(
     'reset_favorites_folder_flags.php',
@@ -107,8 +113,7 @@ $(document).ready(function() {
   });
 
   $('[data-action="remove"]').click(function(event) {
-    var folder_id = $('#removeFromFolderModal').data('folder-id');
-    handleConfirmRemove(folder_id);
+    handleConfirmRemove();
   });
 
   getConfirmDeleteFolderModal().find('[data-action="delete"]').click(function() {
