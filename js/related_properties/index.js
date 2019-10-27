@@ -1,9 +1,17 @@
 let results_id;
 
+function getResultsID() {
+  return $('[data-results-id]').data('results-id');
+}
+
 function getParcelNumber() {
   var url = new URL(window.location.href);
 
   return url.searchParams.get('related_apns_for_parcel_number');
+}
+
+function getSortSettings() {
+  return $.param(sortSettings[getResultsID()]);
 }
 
 function resizePropertyList() {
@@ -13,10 +21,10 @@ function resizePropertyList() {
 }
 
 function fetchProperties() {
-
   var params = {
     user_id: getUserID(),
-    related_apns_for_parcel_number: getParcelNumber()
+    related_apns_for_parcel_number: getParcelNumber(),
+    sortSettings: getSortSettings()
   };
 
   $.post(
@@ -36,9 +44,10 @@ function fetchProperties() {
 }
 
 $(document).ready(function() {
-  results_id = $('[data-results-id]').data('results-id');
-
-  setupSortableColumns(results_id);
+  setupSortableColumns(
+    getResultsID(),
+    fetchProperties
+  );
 
   fetchProperties();
 });
