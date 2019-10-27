@@ -40,7 +40,7 @@ if ($_REQUEST['related_apns_for_parcel_number']) {
   $folder_id = $_REQUEST['apns_for_favorites_folder'];
   $favorites = new FavoriteProperties();
   $folder = $favorites->getFolderFromID($folder_id);
-  $properties = $favorites->getPropertiesForFolder($folder_id);
+  $properties = $favorites->getPropertiesForFolder($user_id, $folder_id);
 
   $all_result_apns = array_map(
     function($result) {

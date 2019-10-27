@@ -48,7 +48,7 @@ class FavoriteProperties {
     foreach ($folders as $folder) {
       $has_unseen_updates = false;
 
-      $properties = $this->getPropertiesForFolder($folder->folder_id);
+      $properties = $this->getPropertiesForFolder($user_id, $folder->folder_id);
 
       foreach ($properties as $property) {
         if ($property['has_unseen_updates']) {
@@ -63,7 +63,7 @@ class FavoriteProperties {
     return $folders;
   }
 
-  public function getPropertiesForFolder($folder_id) {
+  public function getPropertiesForFolder($user_id, $folder_id) {
     $query = sprintf(
       "SELECT
         `p`.`parcel_number`,
@@ -91,7 +91,8 @@ class FavoriteProperties {
         `p`.`owner_address_and_zip`,
         `p`.`id`,
         `properties_with_updates_info`.`has_unseen_updates`,
-        `related_property_counts`.`count` AS `related_property_count`
+        `related_property_counts`.`count` AS `related_property_count`,
+        `favorites_folders`.`favorite_folders`
       FROM `property` AS `p`
       LEFT JOIN (
         SELECT
@@ -107,6 +108,19 @@ class FavoriteProperties {
           `count` > 0
       ) as `related_property_counts`
       ON `p`.`owner_address_and_zip` = `related_property_counts`.`owner_address_and_zip`
+      LEFT JOIN (
+        SELECT
+          `fav`.`parcel_number`,
+          GROUP_CONCAT(`folder`.`name`) AS `favorite_folders`,
+          COUNT(`folder`.`name`) AS `folder_count`
+        FROM `favorite_properties` AS `fav`
+        JOIN `favorite_properties_folders` AS `folder` ON (
+          `folder`.`folder_id` = `fav`.`folder_id`
+        )
+        WHERE `folder`.`user_id` = %s
+        GROUP BY `fav`.`parcel_number`
+      ) AS `favorites_folders`
+      ON `favorites_folders`.`parcel_number` = `p`.`parcel_number`
       JOIN (
         SELECT
           DISTINCT `property2`.`parcel_number`,
@@ -137,6 +151,7 @@ class FavoriteProperties {
         `properties_with_updates_info`.`parcel_number` = `p`.`parcel_number`
       )
       ORDER BY `properties_with_updates_info`.`has_unseen_updates` DESC;",
+      $user_id,
       $folder_id
     );
 
@@ -236,5 +251,3 @@ class FavoriteProperties {
   }
 
 }
-
-?>
