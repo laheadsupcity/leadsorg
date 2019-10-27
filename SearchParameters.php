@@ -232,8 +232,4 @@ class SearchParameters {
     }
   }
 
-  public function getParcelNumberForRelatedProperties() {
-    return $this->raw_search_parameters['properties_related_to_parcel_number'];
-  }
-
 }

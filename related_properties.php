@@ -13,10 +13,10 @@
 
   <script type="text/javascript" src="js/jquery.min.js"></script>
   <script type="text/javascript" src="js/bootstrap.min.js"></script>
-  <script type="text/javascript" src="js/custom_database_search/results.js"></script>
   <script type="text/javascript" src="js/custom_database_search/sortable_table.js"></script>
   <script type="text/javascript" src="js/custom_database_search/editable_fields.js"></script>
   <script type="text/javascript" src="js/custom_database_search/actions.js"></script>
+  <script type="text/javascript" src="js/related_properties/index.js"></script>
   <script type="text/javascript" src="js/favorites/add_favorite_properties.js"></script>
   <meta name="format-detection" content="telephone=no"/>
 </head>
@@ -27,16 +27,17 @@
     $is_admin_user = LoggedInUser::isAdminUser($user_id);
   ?>
 
-  <div class="main-content mx-auto pl-4 pr-4">
+  <div data-results-and-actions class="main-content mx-auto pl-4 pr-4" hidden>
     <?php include('includes/select_properties_alert.php'); ?>
     <div class="d-flex justify-content-between">
       <div>
-        <h5>Properties related to APN #<?php echo($_REQUEST['properties_related_to_parcel_number']); ?> <span class="font-weight-light">(<span data-total-records></span> total)</span></h5>
+        <h5>Properties related to APN #<?php echo($_REQUEST['related_apns_for_parcel_number']); ?> <span class="font-weight-light">(<span data-total-records></span> total)</span></h5>
       </div>
     </div>
 
     <?php
       $show_pagination = true;
+      $show_pagination = false;
       $results_id = 'related_properties';
       include('includes/properties_list_container.php');
     ?>
@@ -50,13 +51,6 @@
       <button data-action="open_all" class="mr-1 btn btn-primary">Open All</button>
     </div>
 
-
-    <div class="jumbotron jumbotron-fluid d-none">
-      <div class="container">
-        <h1 class="display-4">No results...</h1>
-        <p class="lead">There are no properties matching your filters. Try adjusting your filters to get more results.</p>
-      </div>
-    </div>
   </div>
 
   <?php include('includes/confirm_edit_contact_info_modal.php'); ?>

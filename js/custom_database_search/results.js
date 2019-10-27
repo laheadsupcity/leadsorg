@@ -15,29 +15,6 @@ function initPageSize() {
   current_page_size = 10;
 }
 
-function startTimer() {
-  start_time = new Date();
-}
-
-function endTimer() {
-  end_time = new Date();
-
-  console.log(Math.round((end_time - start_time) / 1000) + " seconds elapsed");
-}
-
-var start_time = null;
-var end_time = null;
-
-function startTimer() {
-  start_time = new Date();
-}
-
-function endTimer() {
-  end_time = new Date();
-
-  console.log(Math.round((end_time - start_time) / 1000) + " seconds elapsed");
-}
-
 function navigateToPage(page) {
   current_page = page;
 
@@ -176,3 +153,17 @@ $(document).ready(function() {
   });
 
 });
+
+/// UTILITIES
+
+function startTimer() {
+  start_time = new Date();
+}
+
+function endTimer() {
+  end_time = new Date();
+
+  console.log(Math.round((end_time - start_time) / 1000) + " seconds elapsed");
+}
+
+/// UTILITIES

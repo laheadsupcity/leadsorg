@@ -295,7 +295,7 @@
               </tr>
               <tr>
                 <td class="field1">Related Properties:</td>
-                <td class="field1data spdata"><a href="related_properties.php?properties_related_to_parcel_number=<?php echo $parcel_number; ?>" target="_blank"><?php echo getRelatedPropertyCount($property); ?></a></td>
+                <td class="field1data spdata"><a href="related_properties.php?related_apns_for_parcel_number=<?php echo $parcel_number; ?>" target="_blank"><?php echo getRelatedPropertyCount($property); ?></a></td>
               </tr>
               <tr>
                 <td class="field1">Phone 1:</td>
