@@ -12,7 +12,8 @@ if (!empty($selected_property_data)) {
   $objmerged = array();
 
   foreach ($selected_property_data as $parcel_number) {
-    $csv_data = Property::getCSVExportDataForAPN($user_id, $parcel_number);
+    $property = new Property();
+    $csv_data = $property->getCSVExportDataForAPN($user_id, $parcel_number);
 
     $objmerged[] = array_merge((array) $csv_data, (array) $table);
   }

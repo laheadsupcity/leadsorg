@@ -2,6 +2,7 @@
 require_once('CustomDatabaseSearch.php');
 require_once('LoggedInUser.php');
 require_once('FavoriteProperties.php');
+require_once('Property.php');
 
 $search_params = $_REQUEST;
 
@@ -12,6 +13,8 @@ $case_types = isset($_REQUEST['case_types']) ? $_REQUEST['case_types'] : null;
 
 $user_id = $_REQUEST['user_id'];
 
+$sort_settings = $search_params['sortSettings'];
+
 //// variables for template files
 $show_favorites_flag = isset($_REQUEST['show_favorites_flag']) && $_REQUEST['show_favorites_flag'] == "true";
 $show_matching_cases = isset($_REQUEST['show_matching_cases']) && $_REQUEST['show_matching_cases'] == "true";
@@ -21,7 +24,9 @@ $read_only_fields = isset($_REQUEST['read_only_fields']) && $_REQUEST['read_only
 ////
 
 if ($_REQUEST['related_apns_for_parcel_number']) {
-  $properties = Property::getRelatedPropertiesForAPN($_REQUEST['related_apns_for_parcel_number']);
+  $property = new Property();
+  parse_str($sort_settings, $raw_sort_settings);
+  $properties = $property->getRelatedPropertiesForAPN($user_id, $raw_sort_settings, $_REQUEST['related_apns_for_parcel_number']);
 
   $all_result_apns = array_map(
     function($result) {

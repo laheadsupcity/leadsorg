@@ -36,7 +36,7 @@ function setupEditableContactInfoFields() {
     editable_field = $(editable_field);
 
     var id = 'editable-contact-info-field-' + index,
-        parcel_number = getParcelNumber(editable_field),
+        parcel_number = getParcelNumberForEditableField(editable_field),
         edit_related = true,
         owner_name = getOwnerName(editable_field),
         current_value = editable_field.html(),
@@ -93,7 +93,7 @@ function setupEditableNotes() {
   $('[data-property-note]').each(function(index, editable_field) {
     editable_field = $(editable_field);
     let id = 'editable-notes-field-' + index,
-        parcel_number = getParcelNumber(editable_field),
+        parcel_number = getParcelNumberForEditableField(editable_field),
         current_value = editable_field.html().trim(),
         content = current_value == "" ? noNotesMarkup : current_value,
         is_private = editable_field.data('is-private');
@@ -141,7 +141,7 @@ function getUserID() {
   return $('[data-user-id]').data('user-id');
 }
 
-function getParcelNumber(editable_field) {
+function getParcelNumberForEditableField(editable_field) {
   return editable_field.parents('.property-item').data('parcel_number');
 }
 
@@ -156,10 +156,12 @@ function shouldEditRelated(edited_field_data) {
   return edit_related_checkbox.prop('checked');
 }
 
-function getRelatedPropertiesTableForAPN(parcel_number, callback) {
+function fetchRelatedProperties() {
+  let parcel_number = getParcelNumberForEditedField();
   $.get(
     'fetch_properties_results.php',
     {
+      'sortSettings': $.param(sortSettings["confirm_contact_info_edit_related_properties"]),
       'read_only_fields': true,
       'select_all': true,
       'read_only_fields': true,
@@ -168,7 +170,16 @@ function getRelatedPropertiesTableForAPN(parcel_number, callback) {
       'user_id': getUserID(),
       'related_apns_for_parcel_number': parcel_number
     },
-    callback
+    function(data) {
+      data = JSON.parse(data);
+
+      if (data.total_records > 0) {
+        $('[data-properties-list="confirm_contact_info_edit_related_properties"]').html(data.properties_list_markup);
+        $('[data-related-properties-inline-list]').prop('hidden', false);
+      }
+
+      is_initial_inline_load = false;
+    }
   );
 }
 
@@ -179,24 +190,7 @@ function confirmContactInfoEdit(edited_field_data) {
   var edit_related = shouldEditRelated(edited_field_data);
 
   if (edit_related) {
-    getRelatedPropertiesTableForAPN(
-      edited_field_data.parcel_number,
-      function(data) {
-        data = JSON.parse(data);
-
-        if (data.total_records > 0) {
-          $('[data-properties-list="confirm_contact_info_edit_related_properties"]').html(data.properties_list_markup);
-          $('[data-related-properties-inline-list]').prop('hidden', false);
-        }
-
-        if (is_initial_inline_load) {
-          var result_set_id = "confirm_contact_info_edit_related_properties";
-          setupSortableColumns(result_set_id);
-        }
-
-        is_initial_inline_load = false;
-      }
-    );
+    fetchRelatedProperties();
   }
 
   $('#editContactInfoModal [data-owner-name]').html(edited_field_data.owner_name.trim());
@@ -357,4 +351,15 @@ $(document).ready(function() {
     handleEditRelatedCheckboxChange(event);
   });
 
+  setupSortableColumns(
+    "confirm_contact_info_edit_related_properties",
+    function() {
+      fetchRelatedProperties();
+    }
+  );
+
 });
+
+function getParcelNumberForEditedField() {
+  return Object.values(editable_fields).filter(field => field.is_editing)[0]['parcel_number'];
+}

@@ -1,5 +1,5 @@
-function getSelectedProperties() {
-  return $("[data-property-checkbox]:checked").map(function(index, checkbox) {
+function getSelectedProperties(results_id) {
+  return $("[data-results-id=" + results_id + "] [data-property-checkbox]:checked").map(function(index, checkbox) {
     return checkbox.value;
   }).toArray();
 }
@@ -114,7 +114,7 @@ $(document).ready(function() {
   });
 
   $("#export_properties_csv_button").click(function() {
-    var selected_property_data = getSelectedProperties(),
+    var selected_property_data = getSelectedProperties("custom_database_search_results"),
         filename = "customsearch.csv";
 
     if (selected_property_data) {

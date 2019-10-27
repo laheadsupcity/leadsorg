@@ -80,6 +80,10 @@
         <?php include('includes/favorites_folders/confirm_reset_folder_flags_modal.php'); ?>
         <?php include('includes/favorites_folders/remove_from_folder_modal.php'); ?>
         <?php include('includes/favorites_folders/delete_favorites_folder_modal.php'); ?>
+
+        <?php include('includes/confirm_edit_contact_info_modal.php'); ?>
+
+        <?php include('includes/confirm_edit_notes_modal.php'); ?>
         <?php
           $folder_id_to_exclude = $folder_id;
           $is_search_results = false;

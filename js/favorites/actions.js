@@ -12,6 +12,10 @@ function resizePropertyList() {
   $('.property-list').height(window_height - 350);
 }
 
+function getResultsID() {
+  return $('.property-list-group').data('results-id');
+}
+
 function getConfirmDeleteFolderModal() {
   return $('#confirmDeleteFavoriteFolder');
 }
@@ -21,7 +25,9 @@ function getConfirmResetFolderModal() {
 }
 
 function handleConfirmRemove() {
-  var selected_properties = getSelectedProperties();
+  var selected_properties = getSelectedProperties(
+    getResultsID()
+  );
 
   $.post(
     "remove_properties_favorites_folder.php",
@@ -53,7 +59,9 @@ function handleRemoveFromFolder() {
 }
 
 function resetFolderFlags() {
-  var selected_properties = getSelectedProperties();
+  var selected_properties = getSelectedProperties(
+    getResultsID()
+  );
 
   var folder_id = getFolderID();
 
@@ -84,7 +92,7 @@ function fetchFavoriteProperties() {
     function(data) {
       data = JSON.parse(data);
 
-      var results_id = $('.property-list-group').data('results-id');
+      var results_id = getResultsID();
 
       $('[data-properties-list="' + results_id + '"]').html(data.properties_list_markup);
 
@@ -136,7 +144,9 @@ $(document).ready(function() {
   });
 
   $('[data-action=reset_flags]').click(function(event) {
-    var selected_properties = getSelectedProperties();
+    var selected_properties = getSelectedProperties(
+      getResultsID()
+    );
 
     if (selected_properties.length == 0) {
       $('#selectPropertiesWarning').prop('hidden', false);

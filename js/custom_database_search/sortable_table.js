@@ -66,10 +66,10 @@ const sortSettings = {};
 
 function toggleSortDirection(
   results_id,
+  results_callback,
   column_header,
   column_name
 ) {
-
   switch(sortSettings[results_id][column_name].direction) {
     case SORT_TYPE_ASC:
       new_direction = SORT_TYPE_NEITHER;
@@ -98,10 +98,10 @@ function toggleSortDirection(
     });
   }
 
-  fetchProperties(window.location.search);
+  results_callback();
 }
 
-function setupSortableColumns(results_id) {
+function setupSortableColumns(results_id, results_callback) {
   sortSettings[results_id] = {};
 
   defaultSortSettings.forEach(function(setting) {
@@ -119,7 +119,7 @@ function setupSortableColumns(results_id) {
       .addClass('sortable-column')
       .append(ARROW_MARKUP)
       .on('click', function(event) {
-        handleSortToggle(results_id, event, column_name);
+        handleSortToggle(results_id, results_callback, event, column_name);
       });
 
     setupDirectionArrows(column_header, sortSettings[results_id][column_name].direction);
@@ -128,10 +128,10 @@ function setupSortableColumns(results_id) {
 
 /// HANDLERS
 
-function handleSortToggle(results_id, event, column) {
+function handleSortToggle(results_id, results_callback, event, column) {
   var target = $(event.currentTarget);
 
-  toggleSortDirection(results_id, target, column);
+  toggleSortDirection(results_id, results_callback, target, column);
 }
 
 /// HANDLERS

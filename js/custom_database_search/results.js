@@ -132,7 +132,12 @@ $(document).ready(function() {
 
   results_id = $('[data-results-id]').data('results-id');
 
-  setupSortableColumns(results_id);
+  setupSortableColumns(
+    results_id,
+    function() {
+      fetchProperties(window.location.search);
+    }
+  );
 
   initPage();
 

@@ -3,8 +3,13 @@ require_once('config.php');
 
 class Property {
 
-  public static function getRelatedPropertiesForAPN($parcel_number) {
+  public function getRelatedPropertiesForAPN($user_id, $raw_sort_settings, $parcel_number) {
     $db = Database::instance();
+
+    if (isset($raw_sort_settings)) {
+      $sort_settings = new SortSettings($raw_sort_settings);
+      $sort_by_clause = $sort_settings->getSortByClause();
+    }
 
     $query = sprintf(
       "
@@ -32,18 +37,35 @@ class Property {
         p.email1,
         p.email2,
         p.owner_address_and_zip,
-        p.id
+        p.id,
+        `favorites_folders`.`favorite_folders`
       FROM `property` AS `p`
-        WHERE
-        `owner_address_and_zip` IN (
-            SELECT `owner_address_and_zip` FROM `property`
-            WHERE `parcel_number` = %s
-        ) AND
-        `full_mail_address` <> \"\" AND
-        `parcel_number` <> %s
+      LEFT JOIN (
+        SELECT
+          `fav`.`parcel_number`,
+          GROUP_CONCAT(`folder`.`name`) AS `favorite_folders`,
+          COUNT(`folder`.`name`) AS `folder_count`
+        FROM `favorite_properties` AS `fav`
+        JOIN `favorite_properties_folders` AS `folder` ON (
+          `folder`.`folder_id` = `fav`.`folder_id`
+        )
+        WHERE `folder`.`user_id` = %s
+        GROUP BY `fav`.`parcel_number`
+      ) AS `favorites_folders`
+      ON `favorites_folders`.`parcel_number` = `p`.`parcel_number`
+      WHERE
+      `owner_address_and_zip` IN (
+          SELECT `owner_address_and_zip` FROM `property` as `p2`
+          WHERE `p2`.`parcel_number` = %s
+      ) AND
+      `full_mail_address` <> \"\" AND
+      `p`.`parcel_number` <> %s
+      %s
       ",
+      $user_id,
       $parcel_number,
-      $parcel_number
+      $parcel_number,
+      isset($sort_by_clause) ? $sort_by_clause : ""
     );
 
     $db->query($query);
@@ -93,7 +115,7 @@ class Property {
     return empty($results) ? "" : $results[0]['content'];
   }
 
-  public static function getCSVExportDataForAPN($user_id, $parcel_number)
+  public function getCSVExportDataForAPN($user_id, $parcel_number)
   {
     $db = Database::instance();
     $query = sprintf(
@@ -189,7 +211,11 @@ class Property {
 
     $result['private_note'] = self::getPrivateNoteForAPN($user_id, $parcel_number);
     $result['public_note'] = self::getPublicNoteForAPN($parcel_number);
-    $result['related_properties_count'] = count(self::getRelatedPropertiesForAPN($parcel_number));
+    $result['related_properties_count'] = count($this->getRelatedPropertiesForAPN(
+      $user_id,
+      null,
+      $parcel_number
+    ));
 
     return $result;
   }
