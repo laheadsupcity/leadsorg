@@ -4,16 +4,6 @@ function getSelectedProperties(results_id) {
   }).toArray();
 }
 
-function getCheckedProperties() {
-  var checkedProperties = [];
-
-  $("[data-property-checkbox]:checked").each(function() {
-    checkedProperties.push($(this).val());
-  });
-
-  return checkedProperties;
-}
-
 function openProperty(property_element) {
   window.open($(property_element).data('property-url'));
 }
@@ -34,7 +24,7 @@ function resetLeadBatchModal() {
 }
 
 function handleOpenAll() {
-  var selected_properties = getCheckedProperties();
+  var selected_properties = getSelectedProperties(getResultsID());
 
   selected_properties.forEach(function(parcel_number) {
     let property = $('[data-parcel_number="' + parcel_number + '"]')
@@ -59,7 +49,7 @@ $(document).ready(function() {
     });
 
     $(document).on('click', "[data-action=batch_submit]", function(event) {
-      var checked_properties = getCheckedProperties(),
+      var checked_properties = getSelectedProperties(getResultsID()),
           name_input = $("#batchName");
 
       var name = name_input.val();
@@ -103,7 +93,7 @@ $(document).ready(function() {
   $(document).on('click', '[data-target="#createLeadBatchModal"],[data-target="#addToFavoritesFolderModal"]', function(event) {
     event.stopPropagation();
 
-    var checked_properties = getCheckedProperties();
+    var checked_properties = getSelectedProperties(getResultsID());
 
     if (checked_properties.length == 0) {
       $('#selectPropertiesWarning').prop('hidden', false);
@@ -114,7 +104,7 @@ $(document).ready(function() {
   });
 
   $("#export_properties_csv_button").click(function() {
-    var selected_property_data = getSelectedProperties("custom_database_search_results"),
+    var selected_property_data = getSelectedProperties(getResultsID()),
         filename = "customsearch.csv";
 
     if (selected_property_data) {
@@ -205,6 +195,10 @@ $(document).ready(function() {
 function getUserID() {
   // TO DO: This is temporary hack until user sessions are handled properly
   return $('[data-user-id]').data('user-id');
+}
+
+function getResultsID() {
+  return "custom_database_search_results";
 }
 
 /// UTILITIES
