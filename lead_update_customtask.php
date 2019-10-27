@@ -159,7 +159,7 @@ $user_id = $_SESSION['userdetail']['id'];
             <?php
               $public_note = Property::getPublicNoteForAPN($property_data['parcel_number']);
             ?>
-            <textarea class="form-control" id="notes" name="public_note" rows="12"><?php echo trim($public_note['content']); ?></textarea>
+            <textarea class="form-control" id="notes" name="public_note" rows="12"><?php echo $public_note; ?></textarea>
           </div>
           <div class="col-4">
             <h5 class="text-primary font-weight-bold">Private Notes</h5>
