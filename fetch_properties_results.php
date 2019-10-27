@@ -42,10 +42,11 @@ if ($_REQUEST['related_apns_for_parcel_number']) {
     'all_result_apns' => $all_result_apns
   ];
 } else if ($_REQUEST['apns_for_favorites_folder']) {
+  parse_str($sort_settings, $raw_sort_settings);
   $folder_id = $_REQUEST['apns_for_favorites_folder'];
   $favorites = new FavoriteProperties();
   $folder = $favorites->getFolderFromID($folder_id);
-  $properties = $favorites->getPropertiesForFolder($user_id, $folder_id);
+  $properties = $favorites->getPropertiesForFolder($user_id, $raw_sort_settings, $folder_id);
 
   $all_result_apns = array_map(
     function($result) {

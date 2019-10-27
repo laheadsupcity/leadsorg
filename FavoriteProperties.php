@@ -1,5 +1,6 @@
 <?php
 require_once('config.php');
+require_once('SortSettings.php');
 
 class FavoriteProperties {
 
@@ -48,7 +49,7 @@ class FavoriteProperties {
     foreach ($folders as $folder) {
       $has_unseen_updates = false;
 
-      $properties = $this->getPropertiesForFolder($user_id, $folder->folder_id);
+      $properties = $this->getPropertiesForFolder($user_id, null, $folder->folder_id);
 
       foreach ($properties as $property) {
         if ($property['has_unseen_updates']) {
@@ -63,7 +64,14 @@ class FavoriteProperties {
     return $folders;
   }
 
-  public function getPropertiesForFolder($user_id, $folder_id) {
+  public function getPropertiesForFolder($user_id, $raw_sort_settings, $folder_id) {
+    if (isset($raw_sort_settings)) {
+      $sort_settings = new SortSettings($raw_sort_settings);
+      $sort_by_clause = $sort_settings->getSortByClause();
+    } else {
+      $sort_by_clause = "ORDER BY `properties_with_updates_info`.`has_unseen_updates` DESC;";
+    }
+
     $query = sprintf(
       "SELECT
         `p`.`parcel_number`,
@@ -150,9 +158,11 @@ class FavoriteProperties {
       ) AS `properties_with_updates_info` ON (
         `properties_with_updates_info`.`parcel_number` = `p`.`parcel_number`
       )
-      ORDER BY `properties_with_updates_info`.`has_unseen_updates` DESC;",
+      %s
+      ",
       $user_id,
-      $folder_id
+      $folder_id,
+      $sort_by_clause
     );
 
     $this->db->query($query);

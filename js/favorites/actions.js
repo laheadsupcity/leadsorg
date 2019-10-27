@@ -6,6 +6,10 @@ function getFolderID() {
   return url.searchParams.get('folder_id');
 }
 
+function getSortSettings() {
+  return $.param(sortSettings[getResultsID()]);
+}
+
 function resizePropertyList() {
   var window_height = $(window).height();
 
@@ -87,7 +91,8 @@ function fetchFavoriteProperties() {
       include_related_properties: true,
       read_only_fields: false,
       show_matching_cases: false,
-      apns_for_favorites_folder: folder_id
+      apns_for_favorites_folder: folder_id,
+      sortSettings: getSortSettings()
     },
     function(data) {
       data = JSON.parse(data);
@@ -103,8 +108,6 @@ function fetchFavoriteProperties() {
       resizePropertyList();
       $('.main-content').width($('.properties-scroll').width() + 13);
 
-      setupSortableColumns(results_id);
-
       setupEditableFields();
 
       is_initial_load = false;
@@ -113,6 +116,11 @@ function fetchFavoriteProperties() {
 }
 
 $(document).ready(function() {
+
+  setupSortableColumns(
+    getResultsID(),
+    fetchFavoriteProperties
+  );
 
   fetchFavoriteProperties();
 
